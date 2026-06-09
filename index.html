@@ -100,7 +100,6 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .tag-cdd{background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;}
 .tag-partiel{background:#FFF7ED;color:#92400E;border:1px solid #FCD34D;}
 .tag-civique{background:#F0FDF4;color:#166534;border:1px solid #86EFAC;}
-.tag-alternance{background:#F5F3FF;color:#5B21B6;border:1px solid #C4B5FD;}
 .tag-stage{background:#FEF9C3;color:#713F12;border:1px solid #FDE68A;}
 .tag-benevole{background:#FFF1F2;color:#9F1239;border:1px solid #FDA4AF;}
 .card-footer{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.7rem;}
@@ -240,8 +239,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
       <button class="chip" data-contract="cdd" onclick="filterContract(this)">📅 CDD</button>
       <button class="chip" data-contract="partiel" onclick="filterContract(this)">🕐 Temps partiel</button>
       <button class="chip" data-contract="civique" onclick="filterContract(this)">🌱 Service civique</button>
-      <button class="chip" data-contract="alternance" onclick="filterContract(this)">🎓 Alternance</button>
-      <button class="chip" data-contract="stage" onclick="filterContract(this)">🔍 Stage</button>
+      <button class="chip" data-contract="stage" onclick="filterContract(this)">🔍 Stage psycho</button>
       <button class="chip" data-contract="benevole" onclick="filterContract(this)">💛 Bénévolat</button>
     </div>
   </div>
@@ -360,10 +358,10 @@ const DEMO = [
   {source:'demo',title:'Animateur·rice périscolaire',company:'Ville de Paris',location:'Paris 18e',contract:'CDD',date:ago(1),url:'#',desc:'animation jeunesse enfant périscolaire BAFA sans expérience débutant'},
   {source:'demo',title:'Chargé·e d\'accueil polyvalent',company:'Mairie du 13e',location:'Paris',contract:'CDI',date:ago(0),url:'#',desc:'accueil relation client administratif guichet usager sans expérience'},
   {source:'demo',title:'Volontaire Service Civique – Jeunesse',company:'Unis-Cité',location:'Île-de-France',contract:'Service civique',date:ago(2),url:'#',desc:'service civique volontariat jeunesse animation sans expérience débutant'},
-  {source:'demo',title:'Alternant·e Coordinateur·rice Éducatif',company:'Ligue de l\'Enseignement',location:'Paris',contract:'Alternance',date:ago(1),url:'#',desc:'alternance apprentissage éducation coordinateur administratif'},
+  {source:'demo',title:'Stage Master Psychologie Clinique',company:'CMP Paris 11e',location:'Paris',contract:'Stage psychologie',date:ago(1),url:'#',desc:'stage psychologie clinique master psycho psychologue stagiaire enfant adolescent'},
   {source:'demo',title:'Éducateur·rice jeunes enfants',company:'Crèche Les Coccinelles',location:'Vincennes',contract:'CDI',date:ago(3),url:'#',desc:'enfant jeunesse bébé éducation crèche maternelle'},
   {source:'demo',title:'Agent·e d\'accueil – temps partiel',company:'Bibliothèque municipale',location:'Montreuil',contract:'CDD temps partiel',date:ago(2),url:'#',desc:'accueil relation client administratif temps partiel mi-temps sans expérience'},
-  {source:'demo',title:'Stagiaire Assistant·e de projet social',company:'Fondation Abbé Pierre',location:'Paris 15e',contract:'Stage',date:ago(0),url:'#',desc:'stage stagiaire administratif social coordinateur jeunesse'},
+  {source:'demo',title:'Stage Psychologie – Protection de l\'enfance',company:'ASE Paris',location:'Paris',contract:'Stage master psychologie',date:ago(0),url:'#',desc:'stage psychologie clinique psychologue stagiaire protection enfance jeunesse master psycho'},
   {source:'demo',title:'Conseiller·ère emploi jeunes',company:'Mission Locale Est',location:'Montreuil',contract:'CDI',date:ago(4),url:'#',desc:'jeunesse conseiller relation client usager débutant junior'},
   {source:'demo',title:'Bénévole animateur·rice numérique',company:'Emmaüs Connect',location:'Paris',contract:'Bénévolat',date:ago(1),url:'#',desc:'bénévole bénévolat animation numérique éducation formation'},
   {source:'demo',title:'Chargé·e de mission jeunesse',company:'Département 93',location:'Seine-Saint-Denis',contract:'CDD',date:ago(5),url:'#',desc:'jeunesse coordinateur chargé de mission administratif sans expérience'},
@@ -383,8 +381,7 @@ let cvJobData={};
 // ── CONTRACT DETECTION ───────────────────────────────
 const CONTRACT_KW = {
   civique: ['service civique','volontariat','VSC','mission civique'],
-  alternance: ['alternance','apprentissage','contrat d\'apprentissage','contrat de professionnalisation','apprenti'],
-  stage: ['stage','stagiaire','convention de stage'],
+  stage: ['stage psychologie','stage psycho','stage en psychologie','master psycho','licence psycho','psychologie clinique','psychologue stagiaire','stage master psychologie'],
   benevole: ['bénévole','bénévolat','volontaire','volunteering'],
   partiel: ['temps partiel','mi-temps','0.5 ETP','20h','25h','temps non complet','TPT'],
   cdi: ['CDI','contrat à durée indéterminée','poste permanent'],
@@ -404,12 +401,12 @@ function detectContract(j) {
 
 const CONTRACT_LABELS = {
   cdi:'💼 CDI', cdd:'📅 CDD', partiel:'🕐 Temps partiel',
-  civique:'🌱 Service civique', alternance:'🎓 Alternance',
-  stage:'🔍 Stage', benevole:'💛 Bénévolat', other:''
+  civique:'🌱 Service civique',
+  stage:'🔍 Stage psycho', benevole:'💛 Bénévolat', other:''
 };
 const CONTRACT_CLS = {
   cdi:'tag-cdi', cdd:'tag-cdd', partiel:'tag-partiel',
-  civique:'tag-civique', alternance:'tag-alternance',
+  civique:'tag-civique',
   stage:'tag-stage', benevole:'tag-benevole', other:'tag-social'
 };
 
