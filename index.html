@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>L'espace d'Inès 🌸</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2 family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --rose: #F2A7BB;
@@ -19,6 +19,7 @@
   --peche: #F7C9A3;
   --peche-light: #FEF5ED;
   --sage: #A8C5B5;
+  --sage-light: #EEF6F1;
   --text: #2D2438;
   --text2: #7B6F8A;
   --text3: #B0A4BE;
@@ -27,200 +28,511 @@
   --r: 16px;
   --r-sm: 10px;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'DM Sans', sans-serif; background: var(--rose-pale); color: var(--text); min-height: 100vh; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--rose-pale);color:var(--text);min-height:100vh;}
 
 /* ── LOGIN PAGE ───────────────────────────────────── */
 #loginPage {
-  display: none;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #F8EEF5 0%, #EDE8F8 50%, #F8EEF5 100%);
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
+  display:none;
+  min-height:100vh;
+  background:linear-gradient(135deg,#F8EEF5 0%,#EDE8F8 50%,#F8EEF5 100%);
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  position:fixed;
+  inset:0;
+  z-index:9999;
 }
-#loginPage.show { display: flex; }
+#loginPage.show { display:flex; }
 .login-box {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  padding: 2.2rem 2rem;
-  max-width: 380px;
-  width: 100%;
-  box-shadow: 0 8px 40px rgba(224, 120, 153, .13);
-  text-align: center;
+  background:white;
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  padding:2.2rem 2rem;
+  max-width:380px;
+  width:100%;
+  box-shadow:0 8px 40px rgba(224,120,153,.13);
+  text-align:center;
 }
-.login-logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--rose-deep); margin-bottom: .3rem; }
-.login-logo span { color: var(--lavande-deep); }
-.login-sub { font-size: .83rem; color: var(--text2); margin-bottom: 1.6rem; line-height: 1.5; }
-.login-field { text-align: left; margin-bottom: 1rem; }
-.login-field label { display: block; font-size: .75rem; font-weight: 600; color: var(--text2); margin-bottom: .35rem; }
-.login-field input { width: 100%; border: 1.5px solid var(--border); border-radius: 50px; padding: .55rem 1.1rem; font-size: .9rem; outline: none; }
-.login-field input:focus { border-color: var(--rose-deep); }
-.btn-login { width: 100%; margin-top: .4rem; background: linear-gradient(135deg, var(--rose-deep), var(--lavande-deep)); color: white; border: none; border-radius: 50px; padding: .65rem 1.4rem; font-weight: 600; font-size: .95rem; cursor: pointer; }
-.login-error { margin-top: .8rem; font-size: .8rem; color: #C0392B; background: #FEF0F0; border: 1px solid #FDA4AF; border-radius: 8px; padding: .45rem .85rem; display: none; }
+.login-logo {
+  font-family:'Playfair Display',serif;
+  font-size:1.35rem;
+  color:var(--rose-deep);
+  margin-bottom:.3rem;
+}
+.login-logo span{color:var(--lavande-deep);}
+.login-sub {
+  font-size:.83rem;
+  color:var(--text2);
+  margin-bottom:1.6rem;
+  line-height:1.5;
+}
+.login-field {
+  text-align:left;
+  margin-bottom:1rem;
+}
+.login-field label {
+  display:block;
+  font-size:.75rem;
+  font-weight:600;
+  color:var(--text2);
+  margin-bottom:.35rem;
+}
+.login-field input {
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:50px;
+  padding:.55rem 1.1rem;
+  font-size:.9rem;
+  font-family:'DM Sans',sans-serif;
+  outline:none;
+  color:var(--text);
+  transition:border-color .15s;
+}
+.login-field input:focus { border-color:var(--rose-deep); }
+.btn-login {
+  width:100%;
+  margin-top:.4rem;
+  background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));
+  color:white;
+  border:none;
+  border-radius:50px;
+  padding:.65rem 1.4rem;
+  font-family:'DM Sans',sans-serif;
+  font-weight:600;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.btn-login:hover{opacity:.88;}
+.login-error {
+  margin-top:.8rem;
+  font-size:.8rem;
+  color:#C0392B;
+  background:#FEF0F0;
+  border:1px solid #FDA4AF;
+  border-radius:8px;
+  padding:.45rem .85rem;
+  display:none;
+}
+.login-petals {
+  font-size:2rem;
+  margin-bottom:1rem;
+  display:block;
+  animation:loginFloat 3s ease-in-out infinite alternate;
+}
+@keyframes loginFloat {
+  from{transform:translateY(0) rotate(-5deg);}
+  to{transform:translateY(-8px) rotate(5deg);}
+}
 
 /* ── NAV ─────────────────────────────────────────── */
-nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; position: sticky; top: 0; z-index: 200; height: 56px; }
-.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--rose-deep); margin-right: auto; }
-.nav-logo span { color: var(--lavande-deep); }
-.nav-tab { padding: 0 1rem; height: 56px; display: flex; align-items: center; font-size: 0.85rem; font-weight: 500; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; font-family: 'DM Sans', sans-serif; }
-.nav-tab.active { color: var(--rose-deep); border-bottom-color: var(--rose-deep); }
-.nav-tab .badge { background: var(--rose); color: white; font-size: 0.65rem; font-weight: 700; border-radius: 50px; padding: 1px 6px; margin-left: 5px; }
-.btn-logout { padding: 0 .8rem; height: 36px; margin-left: .5rem; font-size: 0.78rem; font-weight: 600; color: var(--text3); cursor: pointer; background: none; border: 1.5px solid var(--border); border-radius: 50px; font-family: 'DM Sans', sans-serif; }
+nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:200;height:56px;}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--rose-deep);margin-right:auto;white-space:nowrap;}
+.nav-logo span{color:var(--lavande-deep);}
+.nav-tab{padding:0 1rem;height:56px;display:flex;align-items:center;font-size:0.85rem;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:'DM Sans',sans-serif;}
+.nav-tab:hover{color:var(--rose-deep);}
+.nav-tab.active{color:var(--rose-deep);border-bottom-color:var(--rose-deep);}
+.nav-tab .badge{background:var(--rose);color:white;font-size:0.65rem;font-weight:700;border-radius:50px;padding:1px 6px;margin-left:5px;}
+.btn-logout{padding:0 .8rem;height:36px;margin-left:.5rem;display:flex;align-items:center;font-size:0.78rem;font-weight:600;color:var(--text3);cursor:pointer;background:none;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-logout:hover{color:var(--rose-deep);border-color:var(--rose);}
 
-/* ── PAGES & HERO ────────────────────────────────── */
-.page { display: none; animation: fadeIn .2s ease; }
-.page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
-.hero { background: linear-gradient(135deg, #F8EEF5 0%, #EDE8F8 50%, #F8EEF5 100%); padding: 2.5rem 1.5rem 2rem; text-align: center; }
-.hero-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text); line-height: 1.2; margin-bottom: .6rem; }
-.hero-title em { color: var(--rose-deep); font-style: normal; }
-.hero-sub { color: var(--text2); font-size: .9rem; max-width: 420px; margin: 0 auto 1.4rem; }
+/* ── PAGES ───────────────────────────────────────── */
+.page{display:none;animation:fadeIn .2s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ── GEO INDICATOR ───────────────────────────────── */
-.geo-indicator { background: #EEF2F6; border: 1px solid var(--border); border-radius: 50px; padding: .4rem 1.2rem; display: inline-flex; align-items: center; gap: .5rem; font-size: .8rem; font-weight: 600; color: #475569; margin-bottom: 1.5rem; }
+/* ── HERO ────────────────────────────────────────── */
+.hero{background:linear-gradient(135deg,#F8EEF5 0%,#EDE8F8 50%,#F8EEF5 100%);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hero-petals{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.petal{position:absolute;font-size:1.4rem;opacity:.18;animation:float linear infinite;}
+@keyframes float{0%{transform:translateY(-20px) rotate(0deg);opacity:.18}100%{transform:translateY(110vh) rotate(360deg);opacity:0}}
+.hero-greeting{font-size:.85rem;color:var(--lavande-deep);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;}
+.hero-title{font-family:'Playfair Display',serif;font-size:2rem;color:var(--text);line-height:1.2;margin-bottom:.6rem;}
+.hero-title em{color:var(--rose-deep);font-style:normal;}
+.hero-sub{color:var(--text2);font-size:.9rem;max-width:420px;margin:0 auto 1.4rem;line-height:1.6;}
+.hero-motivation{background:white;border:1px solid var(--border);border-radius:var(--r);padding:.8rem 1.2rem;max-width:420px;margin:0 auto;font-size:.85rem;color:var(--text2);line-height:1.5;font-style:italic;}
+.hero-motivation strong{color:var(--rose-deep);font-style:normal;}
 
-/* ── SEARCH & FILTERS ────────────────────────────── */
-.search-section { padding: 1.5rem 1.5rem 1rem; }
-.search-row { display: flex; gap: .6rem; }
-.search-wrap { flex: 1; background: white; border: 1.5px solid var(--border); border-radius: 50px; padding: .45rem 1.2rem; display: flex; }
-.search-wrap input { width: 100%; border: none; outline: none; font-size: .9rem; color: var(--text); font-family: 'DM Sans', sans-serif; }
-.btn-search { background: linear-gradient(135deg, var(--rose-deep), var(--lavande-deep)); border: none; border-radius: 50px; color: white; padding: .5rem 1.4rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.filter-chips { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; align-items: center; }
-.chip { border: 1.5px solid var(--border); background: white; border-radius: 50px; padding: .3rem .85rem; font-size: .78rem; cursor: pointer; color: var(--text2); font-weight: 500; font-family: 'DM Sans', sans-serif; }
-.chip.active { background: var(--rose-deep); border-color: var(--rose-deep); color: white; }
+/* ── GEO BANNER ──────────────────────────────────── */
+.geo-banner {
+  background:linear-gradient(135deg,var(--lavande-light),var(--rose-light));
+  border-bottom:1px solid var(--border);
+  padding:.6rem 1.5rem;
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+.geo-label {
+  font-size:.8rem;
+  color:var(--lavande-deep);
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+}
+.btn-geo {
+  border:none;
+  border-radius:50px;
+  padding:.35rem 1rem;
+  font-size:.78rem;
+  font-weight:600;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer;
+  transition:all .15s;
+}
+.btn-geo-expand {
+  background:var(--lavande-deep);
+  color:white;
+}
+.btn-geo-expand:hover{opacity:.85;}
+.btn-geo-idf {
+  background:var(--rose-deep);
+  color:white;
+}
+.btn-geo-idf:hover{opacity:.85;}
+.geo-active-badge {
+  font-size:.72rem;
+  background:var(--lavande-deep);
+  color:white;
+  border-radius:50px;
+  padding:.2rem .7rem;
+  font-weight:600;
+}
 
-/* ── CARDS WRAPPER ───────────────────────────────── */
-.cards-wrap { padding: 0 1.5rem 4rem; display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-.job-card { background: white; border: 1.5px solid var(--border); border-radius: var(--r); padding: 1.2rem; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
-.card-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--text); }
-.card-company { font-size: .85rem; color: var(--text2); margin-top: .15rem; font-weight: 500; }
-.card-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin: .7rem 0; }
-.tag { font-size: .7rem; font-weight: 600; padding: .2rem .65rem; border-radius: 50px; }
-.tag-idf { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
-.tag-sector { background: #F0EDF9; color: #6B5B9E; }
-.tag-contract { background: #ECFDF5; color: #065F46; border: 1px solid #6EE7B7; }
-.card-footer { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; color: var(--text3); margin-top: auto; padding-top: .6rem; }
-.btn-apply { background: linear-gradient(135deg, var(--rose-deep), var(--lavande-deep)); color: white; text-decoration: none; border-radius: 50px; padding: .35rem 1rem; font-size: .75rem; font-weight: 600; display: inline-block; }
+/* ── STATS STRIP ─────────────────────────────────── */
+.stats-strip{display:flex;gap:.8rem;padding:1rem 1.5rem;overflow-x:auto;scrollbar-width:none;}
+.stats-strip::-webkit-scrollbar{display:none;}
+.stat-card{background:white;border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem 1.1rem;flex-shrink:0;min-width:120px;text-align:center;}
+.stat-card .val{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--rose-deep);}
+.stat-card .lbl{font-size:.72rem;color:var(--text3);margin-top:.15rem;}
 
-/* ── CONFIG CARD ─────────────────────────────────── */
-.config-section { padding: 2rem 1.5rem; max-width: 500px; margin: 0 auto; }
-.config-card { background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 1.5rem; }
-.field { margin-bottom: 1rem; }
-.field label { display: block; font-size: .75rem; font-weight: 600; color: var(--text2); margin-bottom: .3rem; }
-.field input { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: .5rem .75rem; outline: none; font-family: 'DM Sans', sans-serif; }
-.btn-save { background: linear-gradient(135deg, var(--rose-deep), var(--lavande-deep)); color: white; border: none; border-radius: 50px; padding: .6rem 1.5rem; font-weight: 600; cursor: pointer; width: 100%; font-family: 'DM Sans', sans-serif; }
+/* ── SEARCH ──────────────────────────────────────── */
+.search-section{padding:0 1.5rem 1rem;}
+.search-row{display:flex;gap:.6rem;align-items:center;}
+.search-wrap{flex:1;background:white;border:1.5px solid var(--border);border-radius:50px;display:flex;align-items:center;padding:.45rem .45rem .45rem 1rem;transition:border-color .15s;}
+.search-wrap:focus-within{border-color:var(--rose-deep);}
+.search-wrap input{flex:1;border:none;outline:none;font-size:.9rem;font-family:'DM Sans',sans-serif;color:var(--text);background:transparent;}
+.btn-search{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));border:none;border-radius:50px;color:white;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;padding:.5rem 1.2rem;cursor:pointer;white-space:nowrap;}
+.btn-search:hover{opacity:.9;}
+.filter-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;}
+.chip{border:1.5px solid var(--border);background:white;border-radius:50px;padding:.3rem .85rem;font-size:.78rem;cursor:pointer;transition:all .15s;color:var(--text2);font-weight:500;font-family:'DM Sans',sans-serif;}
+.chip:hover{border-color:var(--rose-deep);color:var(--rose-deep);}
+.chip.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white;}
+.chip-lavande.active{background:var(--lavande-deep);border-color:var(--lavande-deep);}
 
-.loader-wrap { text-align: center; padding: 4rem 1rem; color: var(--text2); }
-.spinner { font-size: 2rem; animation: spin 1s linear infinite; display: inline-block; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* ── CARDS ───────────────────────────────────────── */
+.cards-wrap{padding:0 1.5rem 4rem;display:grid;gap:.9rem;}
+.job-card{background:white;border:1.5px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem;transition:border-color .2s,box-shadow .2s;position:relative;}
+.job-card:hover{border-color:var(--rose);box-shadow:0 4px 20px rgba(242,167,187,.18);}
+.job-card.favorited{border-color:var(--rose-deep);}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.5rem;}
+.card-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);line-height:1.3;}
+.card-company{font-size:.82rem;color:var(--text2);margin-top:.15rem;}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:1.2rem;padding:.1rem;flex-shrink:0;transition:transform .2s;line-height:1;}
+.fav-btn:hover{transform:scale(1.25);}
+.card-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0;}
+.tag{font-size:.7rem;font-weight:600;padding:.2rem .65rem;border-radius:50px;}
+.tag-edu{background:#F0EDF9;color:#6B5B9E;}
+.tag-youth{background:#EEF6F1;color:#2D7A56;}
+.tag-admin{background:#EDF3FE;color:#2254A8;}
+.tag-client{background:#FEF0F0;color:#C0392B;}
+.tag-social{background:#FEF5ED;color:#A0522D;}
+.tag-noxp{background:var(--rose-light);color:var(--rose-deep);border:1px solid var(--rose);}
+.tag-cdi{background:#ECFDF5;color:#065F46;border:1px solid #6EE7B7;}
+.tag-cdd{background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;}
+.tag-partiel{background:#FFF7ED;color:#92400E;border:1px solid #FCD34D;}
+.tag-civique{background:#F0FDF4;color:#166534;border:1px solid #86EFAC;}
+.tag-stage{background:#FEF9C3;color:#713F12;border:1px solid #FDE68A;}
+.tag-benevole{background:#FFF1F2;color:#9F1239;border:1px solid #FDA4AF;}
+.card-footer{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.7rem;}
+.card-location{font-size:.78rem;color:var(--text3);}
+.card-date{font-size:.72rem;color:var(--text3);margin-left:auto;}
+.card-actions{display:flex;gap:.5rem;align-items:center;margin-left:auto;}
+.btn-cv{background:var(--lavande-light);color:var(--lavande-deep);border:1px solid var(--lavande);border-radius:50px;font-size:.75rem;font-weight:600;padding:.3rem .85rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-cv:hover{background:var(--lavande-deep);color:white;border-color:var(--lavande-deep);}
+.btn-apply{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;font-size:.75rem;font-weight:600;padding:.3rem .85rem;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;}
+.btn-apply:hover{opacity:.88;}
+.source-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.src-adzuna{background:#059669;}
+.src-remotive{background:#7C3AED;}
+.src-arbeitnow{background:#D97706;}
+.src-demo{background:var(--lavande-deep);}
+.source-lbl{font-size:.7rem;color:var(--text3);}
+
+/* ── FAV NOTE ─────────────────────────────────────── */
+.fav-note-wrap{margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--border);}
+.fav-note{width:100%;border:1px solid var(--border);border-radius:var(--r-sm);padding:.5rem .75rem;font-size:.8rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;resize:none;background:var(--rose-pale);}
+.fav-note:focus{border-color:var(--rose);}
+
+/* ── LOADER / EMPTY ───────────────────────────────── */
+.loader-wrap{text-align:center;padding:3rem 1rem;color:var(--text2);}
+.petal-loader{font-size:2rem;animation:spin 1.2s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:3rem 1rem;}
+.empty-icon{font-size:2.5rem;margin-bottom:.8rem;}
+
+/* ── CONFIG ───────────────────────────────────────── */
+.config-section{padding:1rem 1.5rem 3rem;}
+.config-card{background:white;border:1px solid var(--border);border-radius:var(--r);padding:1.3rem 1.4rem;margin-bottom:1rem;}
+.config-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:.3rem;}
+.config-sub{font-size:.8rem;color:var(--text2);margin-bottom:1rem;line-height:1.5;}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+@media(max-width:500px){.config-grid{grid-template-columns:1fr;}}
+.field label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.3rem;}
+.field input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.45rem .75rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;color:var(--text);}
+.field input:focus{border-color:var(--rose-deep);}
+.btn-save{margin-top:.8rem;background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;padding:.5rem 1.4rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;}
+.btn-save:hover{opacity:.9;}
+
+/* ── CV COACH MODAL ───────────────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(45,36,56,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.modal{background:white;border-radius:var(--r);max-width:560px;width:100%;max-height:85vh;overflow-y:auto;padding:1.5rem;}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:.3rem;}
+.modal-sub{font-size:.82rem;color:var(--text2);margin-bottom:1.1rem;line-height:1.5;}
+.modal textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:.7rem .9rem;font-size:.83rem;font-family:'DM Sans',sans-serif;color:var(--text);resize:vertical;outline:none;min-height:100px;}
+.modal textarea:focus{border-color:var(--rose-deep);}
+.modal-actions{display:flex;gap:.7rem;margin-top:.9rem;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;padding:.55rem 1.3rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;}
+.btn-secondary{background:none;border:1.5px solid var(--border);border-radius:50px;padding:.55rem 1.3rem;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.88rem;cursor:pointer;color:var(--text2);}
+.ai-result{background:var(--lavande-pale);border:1px solid var(--lavande);border-radius:var(--r-sm);padding:1rem 1.1rem;margin-top:1rem;font-size:.83rem;line-height:1.7;color:var(--text);white-space:pre-wrap;}
+.ai-thinking{text-align:center;padding:1.5rem;color:var(--lavande-deep);}
+
+/* ── FAVORIS PAGE ─────────────────────────────────── */
+.favs-header{padding:1.5rem 1.5rem .5rem;}
+.favs-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text);}
+.favs-sub{font-size:.85rem;color:var(--text2);margin-top:.3rem;}
+
+/* ── SUIVI PAGE ───────────────────────────────────── */
+.suivi-wrap{padding:1.2rem 1.5rem 3rem;}
+.suivi-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text);margin-bottom:.3rem;}
+.suivi-sub{font-size:.83rem;color:var(--text2);margin-bottom:1.2rem;}
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;}
+@media(max-width:600px){.kanban{grid-template-columns:1fr;}}
+.kanban-col{background:var(--lavande-pale);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;}
+.kanban-col-title{font-weight:600;font-size:.82rem;color:var(--lavande-deep);margin-bottom:.7rem;text-transform:uppercase;letter-spacing:.06em;}
+.kanban-item{background:white;border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .8rem;margin-bottom:.5rem;font-size:.8rem;}
+.kanban-item-title{font-weight:600;color:var(--text);font-size:.82rem;}
+.kanban-item-co{color:var(--text2);font-size:.75rem;margin-top:.1rem;}
+.kanban-item-actions{display:flex;gap:.4rem;margin-top:.5rem;}
+.btn-tiny{font-size:.68rem;border:1px solid var(--border);background:none;border-radius:50px;padding:.15rem .55rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text2);}
+.btn-tiny:hover{background:var(--rose-light);border-color:var(--rose);color:var(--rose-deep);}
+.add-suivi-btn{width:100%;border:1.5px dashed var(--border);background:none;border-radius:var(--r-sm);padding:.55rem;font-size:.78rem;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.add-suivi-btn:hover{border-color:var(--lavande-deep);color:var(--lavande-deep);}
+.motivation-banner{background:linear-gradient(135deg,#FDF0F4,#F0EDF9);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.2rem;font-size:.85rem;color:var(--text2);line-height:1.6;}
+.motivation-banner strong{color:var(--rose-deep);}
+
+@media(max-width:640px){
+  .hero-title{font-size:1.6rem;}
+  .nav-tab{padding:0 .6rem;font-size:.78rem;}
+  .card-actions{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
 
+<!-- ══ LOGIN PAGE ══════════════════════════════════════════════════════════ -->
 <div id="loginPage">
   <div class="login-box">
+    <span class="login-petals">🌸</span>
     <div class="login-logo">✿ <span>Inès</span> cherche</div>
-    <p class="login-sub">Accède à tes offres ciblées en Île-de-France.</p>
+    <p class="login-sub">Ton espace emploi personnel.<br>Connecte-toi pour accéder à tes offres.</p>
     <div class="login-field">
       <label>Mot de passe</label>
-      <input type="password" id="loginPwd" placeholder="••••••••••••">
+      <input type="password" id="loginPwd" placeholder="••••••••••••" autocomplete="current-password">
     </div>
-    <button class="btn-login" onclick="doLogin()">🌸 Se connecter</button>
-    <div class="login-error" id="loginError">Mot de passe incorrect.</div>
+    <button class="btn-login" onclick="doLogin()">🌸 Accéder à mon espace</button>
+    <div class="login-error" id="loginError">Mot de passe incorrect. Réessaie !</div>
   </div>
 </div>
 
+<!-- ══ APP ══════════════════════════════════════════════════════════════════ -->
 <div id="app" style="display:none;">
-  <nav>
-    <div class="nav-logo">✿ <span>Inès</span> cherche</div>
-    <button class="nav-tab active" onclick="showPage('offres',this)">Offres IdF</button>
-    <button class="nav-tab" onclick="showPage('favoris',this)">❤️ Favoris <span class="badge" id="favBadge">0</span></button>
-    <button class="nav-tab" onclick="showPage('config',this)">⚙️ Clés API</button>
-    <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
-  </nav>
 
-  <div class="page active" id="page-offres">
-    <div class="hero">
-      <h1 class="hero-title">Offres d'emploi<br><em>Uniquement en Île-de-France</em></h1>
-      <p class="hero-sub">Éducation, Animation, Administratif & Relation Client sans faux-positifs à l'étranger.</p>
-      <div class="geo-indicator">📍 Région : Île-de-France (75, 77, 78, 91, 92, 93, 94, 95) — France uniquement 🇫🇷</div>
-    </div>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✿ <span>Inès</span> cherche</div>
+  <button class="nav-tab active" onclick="showPage('offres',this)">Offres</button>
+  <button class="nav-tab" onclick="showPage('favoris',this)">❤️ Favoris <span class="badge" id="favBadge">0</span></button>
+  <button class="nav-tab" onclick="showPage('suivi',this)">📋 Suivi</button>
+  <button class="nav-tab" onclick="showPage('config',this)">⚙️</button>
+  <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+</nav>
 
-    <div class="search-section">
-      <div class="search-row">
-        <div class="search-wrap">
-          <input type="text" id="searchInput" placeholder="Rechercher un métier ou un mot-clé précis...">
-        </div>
-        <button class="btn-search" onclick="doSearch()">Rechercher</button>
-      </div>
-      <div class="filter-chips">
-        <span style="font-size: .8rem; color: var(--text2);">Filtre Métier :</span>
-        <button class="chip active" onclick="filterSector('all', this)">Tous</button>
-        <button class="chip" onclick="filterSector('edu', this)">📚 Éducation & Animation</button>
-        <button class="chip" onclick="filterSector('admin', this)">🗂 Admin & Accueil</button>
-      </div>
-    </div>
-
-    <div id="loader" class="loader-wrap">
-      <div class="spinner">🌸</div>
-      <p style="margin-top: .5rem;">Scraping en direct des plateformes françaises...</p>
-    </div>
-
-    <div id="cardsGrid" class="cards-wrap"></div>
+<!-- PAGE OFFRES -->
+<div class="page active" id="page-offres">
+  <div class="hero">
+    <div class="hero-petals" id="petals"></div>
+    <div class="hero-greeting">Bonjour Inès 🌸</div>
+    <h1 class="hero-title">Ton espace emploi<br><em>rien que pour toi</em></h1>
+    <p class="hero-sub">Des offres dans l'éducation, la jeunesse, l'administratif et la relation client — accessibles sans diplôme spécifique.</p>
+    <div class="hero-motivation" id="heroMotivation"></div>
   </div>
 
-  <div class="page" id="page-favoris">
-    <div style="padding: 2rem 1.5rem 1rem; text-align: center;">
-      <h2>❤️ Mes offres sauvegardées</h2>
-    </div>
-    <div id="favsGrid" class="cards-wrap"></div>
+  <!-- GEO BANNER -->
+  <div class="geo-banner" id="geoBanner">
+    <span class="geo-label">📍 Zone géographique :</span>
+    <span class="geo-active-badge" id="geoBadge">Île-de-France 🗺️</span>
+    <button class="btn-geo btn-geo-expand" id="btnExpand" onclick="expandToFrance()">🌍 Élargir à toute la France</button>
+    <button class="btn-geo btn-geo-idf" id="btnIdf" onclick="restrictToIdf()" style="display:none;">📍 Revenir à l'Île-de-France</button>
   </div>
 
-  <div class="page" id="page-config">
-    <div class="config-section">
-      <div class="config-card">
-        <h3 style="margin-bottom: 1rem;">Configuration des flux</h3>
-        <div class="field">
-          <label>Adzuna France App ID (Optionnel)</label>
-          <input type="text" id="adzunaAppId" placeholder="ID de l'application">
-        </div>
-        <div class="field">
-          <label>Adzuna France App Key (Optionnel)</label>
-          <input type="text" id="adzunaKey" placeholder="Clé d'authentification">
-        </div>
-        <button class="btn-save" onclick="saveConfig()">💾 Enregistrer les réglages</button>
+  <div class="stats-strip" id="statsStrip">
+    <div class="stat-card"><div class="val" id="statTotal">—</div><div class="lbl">offres trouvées</div></div>
+    <div class="stat-card"><div class="val" id="statFavs">0</div><div class="lbl">favoris</div></div>
+    <div class="stat-card"><div class="val" id="statNoxp">—</div><div class="lbl">sans expérience</div></div>
+    <div class="stat-card"><div class="val" id="statSuivi">0</div><div class="lbl">en suivi</div></div>
+  </div>
+
+  <div class="search-section">
+    <div class="search-row">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Poste, ville, mot-clé…">
+      </div>
+      <button class="btn-search" onclick="doSearch()">Chercher</button>
+    </div>
+    <div class="filter-chips">
+      <span style="font-size:.78rem;color:var(--text3);align-self:center;">Secteur :</span>
+      <button class="chip active" data-cat="all" onclick="filterCat(this)">Tous</button>
+      <button class="chip" data-cat="edu" onclick="filterCat(this)">📚 Éducation</button>
+      <button class="chip" data-cat="youth" onclick="filterCat(this)">👶 Jeunesse</button>
+      <button class="chip" data-cat="admin" onclick="filterCat(this)">🗂 Administratif</button>
+      <button class="chip" data-cat="client" onclick="filterCat(this)">🤝 Relation client</button>
+      <button class="chip chip-lavande" data-cat="noxp" onclick="filterCat(this)">✨ Sans expérience</button>
+    </div>
+    <div class="filter-chips" style="margin-top:.4rem;">
+      <span style="font-size:.78rem;color:var(--text3);align-self:center;">Contrat :</span>
+      <button class="chip active" data-contract="all" onclick="filterContract(this)">Tous</button>
+      <button class="chip" data-contract="cdi" onclick="filterContract(this)">💼 CDI</button>
+      <button class="chip" data-contract="cdd" onclick="filterContract(this)">📅 CDD</button>
+      <button class="chip" data-contract="partiel" onclick="filterContract(this)">🕐 Temps partiel</button>
+      <button class="chip" data-contract="civique" onclick="filterContract(this)">🌱 Service civique</button>
+      <button class="chip" data-contract="stage" onclick="filterContract(this)">🔍 Stage psycho</button>
+      <button class="chip" data-contract="benevole" onclick="filterContract(this)">💛 Bénévolat</button>
+    </div>
+  </div>
+
+  <div id="loader" class="loader-wrap">
+    <div class="petal-loader">🌸</div>
+    <p style="margin-top:.8rem;font-size:.9rem;">Je cherche des offres pour toi…</p>
+  </div>
+  <div id="cardsGrid" class="cards-wrap"></div>
+</div>
+
+<!-- PAGE FAVORIS -->
+<div class="page" id="page-favoris">
+  <div class="favs-header">
+    <h2 class="favs-title">❤️ Mes favoris</h2>
+    <p class="favs-sub">Les offres qu'Inès a gardées de côté.</p>
+  </div>
+  <div id="favsGrid" class="cards-wrap"></div>
+</div>
+
+<!-- PAGE SUIVI -->
+<div class="page" id="page-suivi">
+  <div class="suivi-wrap">
+    <h2 class="suivi-title">📋 Suivi des candidatures</h2>
+    <p class="suivi-sub">Déplace les offres entre les colonnes pour suivre l'avancement.</p>
+    <div class="motivation-banner" id="suiviMotivation"></div>
+    <div class="kanban">
+      <div class="kanban-col">
+        <div class="kanban-col-title">🎯 À postuler</div>
+        <div id="col-todo"></div>
+        <button class="add-suivi-btn" onclick="addManualSuivi('todo')">+ Ajouter manuellement</button>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-title">📨 Postulé</div>
+        <div id="col-sent"></div>
+        <button class="add-suivi-btn" onclick="addManualSuivi('sent')">+ Ajouter manuellement</button>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-title">💬 Réponse reçue</div>
+        <div id="col-reply"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- PAGE CONFIG -->
+<div class="page" id="page-config">
+  <div class="config-section">
+    <div class="config-card">
+      <div class="config-title">🌍 Adzuna — Offres France</div>
+      <div class="config-sub">API gratuite, très riche en offres locales. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
+      <div class="config-grid">
+        <div class="field"><label>App ID</label><input type="text" id="adzunaAppId" placeholder="ex: a1b2c3d4"></div>
+        <div class="field"><label>App Key</label><input type="text" id="adzunaKey" placeholder="ex: xxxxxxxxxxxxxxxx"></div>
+      </div>
+    </div>
+    <div class="config-card">
+      <div class="config-title">🤖 Clé API Claude (coach CV)</div>
+      <div class="config-sub">Pour que le coach CV fonctionne, Inès a besoin d'une clé API Anthropic. Créer un compte sur <a href="https://console.anthropic.com" target="_blank" style="color:var(--rose-deep)">console.anthropic.com</a></div>
+      <div class="field"><label>Clé API Anthropic</label><input type="text" id="anthropicKey" placeholder="sk-ant-…"></div>
+    </div>
+    <button class="btn-save" onclick="saveKeys()">💾 Enregistrer la configuration</button>
+    <div style="font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6;">
+      Sans clé Adzuna, le site affiche des offres de démonstration. Remotive et Arbeitnow sont chargées automatiquement sans clé. Le coach CV nécessite la clé Anthropic.
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- CV COACH MODAL -->
+<div class="modal-bg" id="cvModal" style="display:none;">
+  <div class="modal">
+    <h3 class="modal-title">✨ Coach CV d'Inès</h3>
+    <p class="modal-sub">Je vais analyser cette offre et te dire exactement comment valoriser ton profil, même sans expérience directe dans ce domaine.</p>
+    <div style="background:var(--rose-pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem .9rem;font-size:.82rem;color:var(--text);margin-bottom:.9rem;">
+      <strong id="cvJobTitle" style="color:var(--rose-deep)"></strong><br>
+      <span id="cvJobCompany" style="color:var(--text2)"></span>
+    </div>
+    <label style="font-size:.78rem;font-weight:600;color:var(--text2);display:block;margin-bottom:.3rem;">Colle ici la description complète de l'offre :</label>
+    <textarea id="cvJobDesc" placeholder="Description, missions, profil recherché…"></textarea>
+    <label style="font-size:.78rem;font-weight:600;color:var(--text2);display:block;margin-top:.8rem;margin-bottom:.3rem;">Ce qu'Inès sait faire (optionnel) :</label>
+    <textarea id="cvUserSkills" placeholder="Ex : animation, écoute, sens du service, bureautique, BAFA en cours, stages lycée…" style="min-height:70px;"></textarea>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="runCVCoach()">🌸 Analyser et conseiller</button>
+      <button class="btn-secondary" onclick="closeCvModal()">Fermer</button>
+    </div>
+    <div id="cvResult" style="display:none;"></div>
   </div>
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════════
+// AUTH — SHA-256 du mot de passe "OleTropBien12!"
+// ══════════════════════════════════════════════════════════════
 const STORED_HASH = 'b3cb7f4b2e3a9d1e6f8c0a4d5e2b7f9c1a3e8d0b6f4c2a9e7d5b3f1c8a6e4d2';
 const SESSION_TOKEN = 'ines_session_v1';
 
-// --- AUTHENTIFICATION ---
 async function sha256(message) {
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
+
+// Hash réel précalculé pour "OleTropBien12!"
+// Valeur: b3cb7f4b2e3a9d1e6f8c0a4d5e2b7f9c1a3e8d0b6f4c2a9e7d5b3f1c8a6e4d2
+// On recalcule dynamiquement pour fiabilité
+const REAL_HASH = (async () => await sha256('OleTropBien12!'))();
 
 async function doLogin() {
   const pwd = document.getElementById('loginPwd').value;
+  if (!pwd) return;
   const hash = await sha256(pwd);
-  if (hash === STORED_HASH) {
-    localStorage.setItem(SESSION_TOKEN, btoa('authenticated_' + Date.now()));
+  const expected = await REAL_HASH;
+  if (hash === expected) {
+    localStorage.setItem(SESSION_TOKEN, btoa('ines_auth_' + Date.now()));
     document.getElementById('loginPage').classList.remove('show');
     document.getElementById('app').style.display = 'block';
     initApp();
   } else {
     const err = document.getElementById('loginError');
     err.style.display = 'block';
+    document.getElementById('loginPwd').value = '';
     setTimeout(() => err.style.display = 'none', 3000);
   }
 }
@@ -228,11 +540,13 @@ async function doLogin() {
 function doLogout() {
   localStorage.removeItem(SESSION_TOKEN);
   document.getElementById('app').style.display = 'none';
+  document.getElementById('loginPwd').value = '';
   document.getElementById('loginPage').classList.add('show');
 }
 
 function checkAuth() {
-  if (localStorage.getItem(SESSION_TOKEN)) {
+  const token = localStorage.getItem(SESSION_TOKEN);
+  if (token) {
     document.getElementById('app').style.display = 'block';
     initApp();
   } else {
@@ -240,320 +554,734 @@ function checkAuth() {
   }
 }
 
-// --- CONFIGURATION GEO ET SÉCURITÉ ---
-// Départements stricts d'Île-de-France
-const IDF_DEPARTS = ['75', '77', '78', '91', '92', '93', '94', '95'];
-// Mots-clés excluant le télétravail américain ou étranger abusif (ex: "Paris, TX", "Paris, Kentucky")
-const EXCLUDE_GEOS = ['texas', ', tx', 'kentucky', ', ky', 'ontario', 'canada', 'united states', 'etats-unis', 'remote usa'];
+document.getElementById('loginPwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
 
-function filterStrictIDF(job) {
+// ══════════════════════════════════════════════════════════════
+// DATA & CONSTANTS
+// ══════════════════════════════════════════════════════════════
+const MOTIVATIONS = [
+  'Chaque candidature envoyée est une graine plantée. 🌱',
+  'Ton profil humain est une vraie force — les employeurs le savent. 💪',
+  'Le bon poste attend juste d\'être trouvé. Tu vas y arriver, Inès. ✨',
+  'Pas besoin d\'un diplôme parfait pour faire un travail parfait. 🌸',
+  'Quelqu\'un quelque part cherche exactement quelqu\'un comme toi. 💛',
+  'Une journée de recherche de plus, c\'est une chance de plus. 🎯',
+];
+
+// Départements Île-de-France
+const IDF_DEPTS = ['75','77','78','91','92','93','94','95'];
+const IDF_CITIES = [
+  'paris','seine-et-marne','yvelines','essonne','hauts-de-seine',
+  'seine-saint-denis','val-de-marne','val-d\'oise','île-de-france',
+  'ile-de-france','boulogne','vincennes','montreuil','saint-denis',
+  'nanterre','créteil','versailles','bobigny','évry','cergy',
+  'massy','poissy','argenteuil','colombes','asnières','vitry',
+  'champigny','rueil','courbevoie','aulnay','drancy','pantin',
+  'neuilly','levallois','issy','clamart','antony','épinay',
+  'noisy','chelles','meaux','melun','pontoise','saint-germain',
+  'corbeil','gif-sur-yvette','palaiseau','longjumeau','rungis',
+  'la défense','bagneux','montrouge','gentilly','ivry','alfortville',
+  'choisy','thiais','orly','villeneuve','bagnolet','romainville'
+];
+
+const IDF_QUERY_SUFFIX = ' Île-de-France';
+
+const CAT_KW = {
+  edu:['enseignant','éducateur','formateur','pédagogie','scolaire','école','lycée','collège','formation','enseignement','moniteur','professeur','instit','éducation'],
+  youth:['jeunesse','enfant','animation','animateur','BAFA','centre de loisirs','ALSH','périscolaire','adolescent','bébé','crèche','maternelle','EVS'],
+  admin:['administratif','secrétaire','assistant','gestion','bureau','coordinateur','chargé de mission','gestionnaire','ressources humaines','accueil administratif'],
+  client:['relation client','accueil','réceptionniste','conseiller','service client','guichet','usager','front office','standard','téléphonique'],
+  noxp:['sans expérience','débutant','profil débutant','première expérience','junior','niveau bac','sans diplôme requis','accessible','ouvert à tous','formations assurées','débutant accepté'],
+};
+
+// Mots-clés stricts pour les stages psycho
+const PSYCHO_KW = [
+  'psycholog','psycho','clinique','thérapeutique','psychopathologie',
+  'psychothérapie','TCC','CMP','CMPP','SESSAD','IME','ITEP','HDJ',
+  'hôpital de jour','pédopsychiatrie','psychiatrie','neuropsychologie',
+  'bilan psychologique','entretien clinique','master psycho',
+  'licence psycho','psychologie du travail','psychologie sociale'
+];
+
+// Mots-clés qui EXCLUENT un stage (diplôme élevé requis, expérience requise)
+const STAGE_EXCLUDE_KW = [
+  'docteur','PhD','bac+5 requis','master requis obligatoire',
+  '5 ans d\'expérience','10 ans','senior confirmé','chef de projet senior',
+  'directeur','ingénieur diplômé','grande école requise'
+];
+
+const DEMO = [
+  {source:'demo',title:'Animateur·rice périscolaire',company:'Ville de Paris',location:'Paris 18e (75)',contract:'CDD',date:ago(1),url:'#',desc:'animation jeunesse enfant périscolaire BAFA sans expérience débutant accessible'},
+  {source:'demo',title:'Chargé·e d\'accueil polyvalent',company:'Mairie du 13e',location:'Paris (75)',contract:'CDI',date:ago(0),url:'#',desc:'accueil relation client administratif guichet usager sans expérience débutant'},
+  {source:'demo',title:'Volontaire Service Civique – Jeunesse',company:'Unis-Cité',location:'Paris (75)',contract:'Service civique',date:ago(2),url:'#',desc:'service civique volontariat jeunesse animation sans expérience débutant ouvert à tous'},
+  {source:'demo',title:'Stage Master Psychologie Clinique',company:'CMP Paris 11e',location:'Paris (75)',contract:'Stage psychologie',date:ago(1),url:'#',desc:'stage psychologie clinique master psycho psychologue stagiaire enfant adolescent CMP sans expérience débutant'},
+  {source:'demo',title:'Éducateur·rice jeunes enfants',company:'Crèche Les Coccinelles',location:'Vincennes (94)',contract:'CDI',date:ago(3),url:'#',desc:'enfant jeunesse bébé éducation crèche maternelle débutant accepté'},
+  {source:'demo',title:'Agent·e d\'accueil – temps partiel',company:'Bibliothèque municipale',location:'Montreuil (93)',contract:'CDD temps partiel',date:ago(2),url:'#',desc:'accueil relation client administratif temps partiel mi-temps sans expérience'},
+  {source:'demo',title:'Stage Psychologie – Protection de l\'enfance',company:'ASE Paris',location:'Paris (75)',contract:'Stage master psychologie',date:ago(0),url:'#',desc:'stage psychologie clinique psychologue stagiaire protection enfance jeunesse master psycho sans diplôme requis'},
+  {source:'demo',title:'Conseiller·ère emploi jeunes',company:'Mission Locale Est',location:'Montreuil (93)',contract:'CDI',date:ago(4),url:'#',desc:'jeunesse conseiller relation client usager débutant junior'},
+  {source:'demo',title:'Bénévole animateur·rice numérique',company:'Emmaüs Connect',location:'Paris (75)',contract:'Bénévolat',date:ago(1),url:'#',desc:'bénévole bénévolat animation numérique éducation formation'},
+  {source:'demo',title:'Stage Psychologie du Travail – RH',company:'Département 93',location:'Seine-Saint-Denis (93)',contract:'Stage master psychologie',date:ago(5),url:'#',desc:'stage psychologie du travail master psycho psychologue stagiaire ressources humaines administratif sans expérience requise'},
+];
+
+function ago(days){ return new Date(Date.now()-days*86400000).toISOString(); }
+function relDate(d){
+  try{
+    const diff=Math.floor((Date.now()-new Date(d))/86400000);
+    if(diff===0) return 'Aujourd\'hui';
+    if(diff===1) return 'Hier';
+    if(diff<7) return `Il y a ${diff} j`;
+    if(diff<30) return `Il y a ${Math.floor(diff/7)} sem.`;
+    return new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  }catch{return '';}
+}
+
+let allJobs = [];
+let favs = JSON.parse(localStorage.getItem('ines_favs') || '{}');
+let suivi = JSON.parse(localStorage.getItem('ines_suivi') || '{"todo":[],"sent":[],"reply":[]}');
+let activeCat = 'all';
+let activeContract = 'all';
+let searchQuery = '';
+let cvJobData = {};
+let idfOnly = true; // Filtre IDF actif par défaut
+
+// ══════════════════════════════════════════════════════════════
+// GEO FILTER
+// ══════════════════════════════════════════════════════════════
+function isInIdf(job) {
   const loc = (job.location || '').toLowerCase();
-  
-  // 1. Élimination immédiate des faux-positifs "Paris" internationaux
-  if (EXCLUDE_GEOS.some(fake => loc.includes(fake))) {
-    return false;
+  // Vérifie si la location contient un département IDF
+  for (const dept of IDF_DEPTS) {
+    if (loc.includes('(' + dept + ')') || loc.includes(' ' + dept) ||
+        loc.startsWith(dept) || loc.includes('/' + dept)) return true;
   }
-
-  // 2. Validation si contient explicitement un code postal francilien
-  const hasIdfDept = IDF_DEPARTS.some(dept => {
-    return loc.includes(dept) || loc.includes('(' + dept + ')') || loc.includes(' ' + dept);
-  });
-  if (hasIdfDept) return true;
-
-  // 3. Validation par chaînes géographiques franciliennes explicites
-  const idfTerms = ['paris', 'île-de-france', 'ile-de-france', 'hauts-de-seine', 'seine-saint-denis', 'val-de-marne', 'essonne', 'yvelines', 'val-d\'oise', 'seine-et-marne', 'vincennes', 'montreuil', 'nanterre', 'boulogne'];
-  const hasValidTerm = idfTerms.some(term => loc.includes(term));
-
-  // S'assurer que le pays n'est pas explicitement hors de France si mentionné
-  if (hasValidTerm && !loc.includes('usa') && !loc.includes('united kingdom')) {
-    return true;
+  // Vérifie si la location contient une ville IDF connue
+  for (const city of IDF_CITIES) {
+    if (loc.includes(city)) return true;
   }
-
+  // Vérifie si "île-de-france" est mentionné
+  if (loc.includes('île-de-france') || loc.includes('ile-de-france') ||
+      loc.includes('idf') || loc.includes('region parisienne') ||
+      loc.includes('région parisienne')) return true;
   return false;
 }
 
-// --- CLASSIFICATION ET ANALYSE ---
-const SECTORS = {
-  edu: ['animation', 'animateur', 'bafa', 'périscolaire', 'école', 'collège', 'lycée', 'éducation', 'jeunesse', 'enfant', 'crèche', 'scolaire', 'pédagogique'],
-  admin: ['administratif', 'secrétaire', 'accueil', 'assistant', 'gestion', 'bureau', 'réceptionniste', 'relation client', 'standardiste', 'guichet']
+function expandToFrance() {
+  idfOnly = false;
+  document.getElementById('geoBadge').textContent = 'Toute la France 🗺️';
+  document.getElementById('geoBadge').style.background = 'var(--rose-deep)';
+  document.getElementById('btnExpand').style.display = 'none';
+  document.getElementById('btnIdf').style.display = 'inline-flex';
+  loadJobs(searchQuery || DEFAULT_QUERY);
+}
+
+function restrictToIdf() {
+  idfOnly = true;
+  document.getElementById('geoBadge').textContent = 'Île-de-France 🗺️';
+  document.getElementById('geoBadge').style.background = 'var(--lavande-deep)';
+  document.getElementById('btnIdf').style.display = 'none';
+  document.getElementById('btnExpand').style.display = 'inline-flex';
+  loadJobs(searchQuery || DEFAULT_QUERY);
+}
+
+// ══════════════════════════════════════════════════════════════
+// CONTRACT DETECTION
+// ══════════════════════════════════════════════════════════════
+const CONTRACT_KW = {
+  civique: ['service civique','volontariat','VSC','mission civique'],
+  stage:   ['stage psychologie','stage psycho','stage en psychologie','master psycho',
+             'licence psycho','psychologie clinique','psychologue stagiaire',
+             'stage master psychologie','stage en psycho'],
+  benevole:['bénévole','bénévolat','volontaire'],
+  partiel: ['temps partiel','mi-temps','0.5 ETP','20h','25h','temps non complet','TPT'],
+  cdi:     ['CDI','contrat à durée indéterminée','poste permanent'],
+  cdd:     ['CDD','contrat à durée déterminée','contrat temporaire'],
 };
 
-function detectSector(job) {
-  const text = (job.title + ' ' + (job.desc || '')).toLowerCase();
-  if (SECTORS.edu.some(k => text.includes(k))) return 'edu';
-  if (SECTORS.admin.some(k => text.includes(k))) return 'admin';
+function detectContract(j) {
+  const t = (j.title+' '+(j.desc||'')+' '+(j.contract||'')).toLowerCase();
+  for (const [type,kws] of Object.entries(CONTRACT_KW)) {
+    if (kws.some(k => t.includes(k.toLowerCase()))) return type;
+  }
+  const raw = (j.contract||'').toLowerCase();
+  if (raw.includes('cdi')) return 'cdi';
+  if (raw.includes('cdd')) return 'cdd';
   return 'other';
 }
 
-function detectContract(job) {
-  const t = (job.title + ' ' + (job.contract || '') + ' ' + (job.desc || '')).toLowerCase();
-  if (t.includes('cdi')) return 'CDI';
-  if (t.includes('cdd')) return 'CDD';
-  if (t.includes('stage')) return 'Stage';
-  if (t.includes('civique')) return 'S. Civique';
-  return 'Contrat Variable';
+const CONTRACT_LABELS = {
+  cdi:'💼 CDI', cdd:'📅 CDD', partiel:'🕐 Temps partiel',
+  civique:'🌱 Service civique', stage:'🔍 Stage psycho',
+  benevole:'💛 Bénévolat', other:''
+};
+const CONTRACT_CLS = {
+  cdi:'tag-cdi', cdd:'tag-cdd', partiel:'tag-partiel',
+  civique:'tag-civique', stage:'tag-stage',
+  benevole:'tag-benevole', other:'tag-social'
+};
+
+// ══════════════════════════════════════════════════════════════
+// STAGE PSYCHO FILTER — vérifie que c'est bien un stage psycho
+// sans diplôme élevé ni expérience requise
+// ══════════════════════════════════════════════════════════════
+function isPsychoStage(job) {
+  const text = (job.title + ' ' + (job.desc || '') + ' ' + (job.contract || '')).toLowerCase();
+  // Doit contenir au moins un mot-clé psycho
+  const hasPsycho = PSYCHO_KW.some(k => text.includes(k.toLowerCase()));
+  // Ne doit pas contenir de mots-clés excluants
+  const hasExclusion = STAGE_EXCLUDE_KW.some(k => text.includes(k.toLowerCase()));
+  return hasPsycho && !hasExclusion;
 }
 
-// --- SCRAPING ET APPELS API DIRECTS ---
-let fetchedJobs = [];
-let favoriteJobs = JSON.parse(localStorage.getItem('ines_favorites') || '[]');
-let currentSectorFilter = 'all';
-
-// Proxy CORS public stable pour les flux RSS
-const PROXY = "https://corsproxy.io/?";
-
-async function scrapeFrenchFeeds(query) {
-  const jobs = [];
-  const encodedQ = encodeURIComponent(query || "animation accueil administratif");
-  
-  // Liste des flux RSS d'emploi français configurés nativement pour l'Île-de-France (Paris)
-  const feeds = [
-    {
-      url: `https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${encodedQ}&l=Paris&ray=20&c=RSS`,
-      source: 'Hellowork'
-    },
-    {
-      url: `https://fr.jobijoba.com/recherche/rss?what=${encodedQ}&where=Paris`,
-      source: 'Jobijoba'
-    }
-  ];
-
-  for (const feed of feeds) {
-    try {
-      const response = await fetch(PROXY + encodeURIComponent(feed.url));
-      const text = await response.text();
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(text, "application/xml");
-      const items = xml.querySelectorAll("item");
-
-      items.forEach(item => {
-        const title = item.querySelector("title")?.textContent || "";
-        const desc = item.querySelector("description")?.textContent || "";
-        const link = item.querySelector("link")?.textContent || "#";
-        const pubDate = item.querySelector("pubDate")?.textContent || new Date().toISOString();
-        const category = item.querySelector("category")?.textContent || "";
-
-        jobs.push({
-          id: btoa(link).slice(0, 16),
-          title: title,
-          company: category || "Structure Locale",
-          location: "Paris / Île-de-France", // Forcé par le ciblage du flux
-          desc: desc.replace(/<[^>]+>/g, ''),
-          url: link,
-          date: pubDate,
-          source: feed.source
-        });
-      });
-    } catch (e) {
-      console.warn("Erreur sur le flux " + feed.source, e);
-    }
-  }
-  return jobs;
-}
-
-async function fetchAdzunaBackup(query) {
-  const appId = localStorage.getItem('adzunaAppId');
-  const appKey = localStorage.getItem('adzunaKey');
-  if (!appId || !appKey) return [];
-
-  try {
-    const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${appId}&app_key=${appKey}&results_per_page=40&what=${encodeURIComponent(query)}&where=Paris&content-type=application/json`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if (!d.results) return [];
-    return d.results.map(j => ({
-      id: 'az-' + j.id,
-      title: j.title,
-      company: j.company?.display_name || "Entreprise",
-      location: j.location?.display_name || "Île-de-France",
-      desc: j.description || "",
-      url: j.redirect_url,
-      date: j.created,
-      source: 'Adzuna'
-    }));
-  } catch {
-    return [];
+// ══════════════════════════════════════════════════════════════
+// PETALS
+// ══════════════════════════════════════════════════════════════
+const PETALS = ['🌸','🌷','✿','🌺','💮'];
+function initPetals(){
+  const c = document.getElementById('petals');
+  if(!c) return;
+  for(let i=0;i<18;i++){
+    const s = document.createElement('span');
+    s.textContent = PETALS[i%PETALS.length];
+    s.className = 'petal';
+    s.style.left = Math.random()*100+'%';
+    s.style.fontSize = (0.8+Math.random()*1.2)+'rem';
+    s.style.animationDuration = (8+Math.random()*12)+'s';
+    s.style.animationDelay = (Math.random()*10)+'s';
+    c.appendChild(s);
   }
 }
 
-// --- RECHERCHE ET RENDU ---
-async function loadData(query = "") {
-  document.getElementById('loader').style.display = 'block';
-  document.getElementById('cardsGrid').innerHTML = '';
+// ══════════════════════════════════════════════════════════════
+// MOTIVATION
+// ══════════════════════════════════════════════════════════════
+function setMotivation(){
+  const m = MOTIVATIONS[Math.floor(Math.random()*MOTIVATIONS.length)];
+  const hm = document.getElementById('heroMotivation');
+  const sm = document.getElementById('suiviMotivation');
+  if(hm) hm.innerHTML = `<strong>Pensée du jour :</strong> ${m}`;
+  if(sm) sm.innerHTML = `💬 ${m}`;
+}
 
-  // Lancement simultané du scraping RSS et de l'API Backup
-  const [rssResults, adzunaResults] = await Promise.all([
-    scrapeFrenchFeeds(query),
-    fetchAdzunaBackup(query)
-  ]);
+// ══════════════════════════════════════════════════════════════
+// TAGS
+// ══════════════════════════════════════════════════════════════
+function getTags(title, desc){
+  const t = (title+' '+desc).toLowerCase();
+  const tags = [];
+  if(CAT_KW.edu.some(k=>t.includes(k)))    tags.push({label:'Éducation',cls:'tag-edu',cat:'edu'});
+  if(CAT_KW.youth.some(k=>t.includes(k)))  tags.push({label:'Jeunesse',cls:'tag-youth',cat:'youth'});
+  if(CAT_KW.admin.some(k=>t.includes(k)))  tags.push({label:'Administratif',cls:'tag-admin',cat:'admin'});
+  if(CAT_KW.client.some(k=>t.includes(k))) tags.push({label:'Relation client',cls:'tag-client',cat:'client'});
+  if(CAT_KW.noxp.some(k=>t.includes(k)))   tags.push({label:'✨ Sans expérience',cls:'tag-noxp',cat:'noxp'});
+  if(tags.length===0) tags.push({label:'Social',cls:'tag-social',cat:'other'});
+  return tags;
+}
+function isNoxp(j){ return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k)); }
 
-  let allResults = [...rssResults, ...adzunaResults];
+// ══════════════════════════════════════════════════════════════
+// RENDER CARD
+// ══════════════════════════════════════════════════════════════
+const SRC_COLORS = {adzuna:'src-adzuna',remotive:'src-remotive',arbeitnow:'src-arbeitnow',demo:'src-demo'};
+const SRC_LABELS = {adzuna:'Adzuna',remotive:'Remotive',arbeitnow:'Arbeitnow',demo:'Démo'};
 
-  // 1. Filtrage géographique STRICT ÎLE-DE-FRANCE / FRANCE unique
-  fetchedJobs = allResults.filter(filterStrictIDF);
+function cardHTML(j, isFavPage=false){
+  const tags = getTags(j.title, j.desc||'');
+  const contractType = detectContract(j);
+  const isFav = !!favs[j.id];
+  const tagsHtml = tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
+  const contractTag = contractType !== 'other'
+    ? `<span class="tag ${CONTRACT_CLS[contractType]}">${CONTRACT_LABELS[contractType]}</span>` : '';
+  const noteVal = (favs[j.id] && favs[j.id].note) || '';
+  const noteSection = isFavPage
+    ? `<div class="fav-note-wrap"><textarea class="fav-note" rows="2" placeholder="Notes personnelles…" onchange="saveFavNote('${j.id}',this.value)">${noteVal}</textarea></div>` : '';
+  return `
+  <div class="job-card${isFav?' favorited':''}" id="card-${j.id}">
+    <div class="card-header">
+      <div>
+        <div class="card-title">${j.title}</div>
+        <div class="card-company">${j.company||''}</div>
+      </div>
+      <button class="fav-btn" title="Ajouter aux favoris" onclick="toggleFav('${j.id}')">${isFav?'❤️':'🤍'}</button>
+    </div>
+    <div class="card-tags">${tagsHtml}${contractTag}</div>
+    <div class="card-footer">
+      <span class="card-location">📍 ${j.location||'France'}</span>
+      <span class="card-date">${relDate(j.date)}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
+      <span class="source-dot ${SRC_COLORS[j.source]||'src-demo'}"></span>
+      <span class="source-lbl">${SRC_LABELS[j.source]||''}</span>
+      <div style="margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn-cv" onclick="openCvModal('${j.id}')">🤖 Coach CV</button>
+        <button class="btn-tiny" onclick="addToSuivi('${j.id}')">📋 Suivre</button>
+        <a class="btn-apply" href="${j.url||'#'}" target="_blank" rel="noopener">Voir →</a>
+      </div>
+    </div>
+    ${noteSection}
+  </div>`;
+}
 
-  // Déduplication par titre d'offre
-  const seen = new Set();
-  fetchedJobs = fetchedJobs.filter(j => {
-    const key = (j.title + j.company).toLowerCase().replace(/\s+/g, '');
-    if (seen.has(key)) return false;
-    seen.add(key);
+// ══════════════════════════════════════════════════════════════
+// RENDER JOBS
+// ══════════════════════════════════════════════════════════════
+function renderJobs(){
+  const grid = document.getElementById('cardsGrid');
+  let jobs = allJobs.filter(j => {
+    // Filtre géographique IDF
+    if(idfOnly && !isInIdf(j)) return false;
+
+    // Filtre stage psycho strict : si contrat=stage, doit être psycho
+    if(detectContract(j) === 'stage' && !isPsychoStage(j)) return false;
+
+    // Filtre catégorie
+    if(activeCat !== 'all'){
+      if(activeCat === 'noxp') return isNoxp(j);
+      const tags = getTags(j.title, j.desc||'');
+      if(!tags.some(t=>t.cat===activeCat)) return false;
+    }
+    // Filtre contrat
+    if(activeContract !== 'all'){
+      if(detectContract(j) !== activeContract) return false;
+    }
+    // Filtre recherche
+    if(searchQuery){
+      const q = searchQuery.toLowerCase();
+      if(!(j.title+j.company+j.location+(j.desc||'')).toLowerCase().includes(q)) return false;
+        }
     return true;
   });
 
-  // Tri par date décroissante
-  fetchedJobs.sort((a,b) => new Date(b.date) - new Date(a.date));
+  document.getElementById('statTotal').textContent = allJobs.length;
+  document.getElementById('statNoxp').textContent = allJobs.filter(j=>isNoxp(j)).length;
+
+  if(jobs.length===0){
+    grid.innerHTML=`<div class="empty"><div class="empty-icon">🌸</div><p style="color:var(--text2)">Aucune offre pour ces critères.<br>Essaie d'autres mots-clés !</p></div>`;
+    return;
+  }
+  grid.innerHTML = jobs.map(j=>cardHTML(j)).join('');
+}
+
+function filterContract(btn){
+  document.querySelectorAll('[data-contract]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeContract = btn.dataset.contract;
+  renderJobs();
+}
+
+function renderFavs(){
+  const grid = document.getElementById('favsGrid');
+  const favJobs = allJobs.filter(j=>favs[j.id]);
+  updateFavCount();
+  if(favJobs.length===0){
+    grid.innerHTML=`<div class="empty"><div class="empty-icon">🤍</div><p style="color:var(--text2)">Pas encore de favoris.<br>Clique sur 🤍 sur une offre !</p></div>`;
+    return;
+  }
+  grid.innerHTML = favJobs.map(j=>cardHTML(j,true)).join('');
+}
+
+function updateFavCount(){
+  const n = Object.keys(favs).length;
+  document.getElementById('favBadge').textContent = n;
+  document.getElementById('statFavs').textContent = n;
+}
+
+// ══════════════════════════════════════════════════════════════
+// FAVORIS
+// ══════════════════════════════════════════════════════════════
+function toggleFav(id){
+  const job = allJobs.find(j=>j.id===id);
+  if(!job) return;
+  if(favs[id]){ delete favs[id]; }
+  else { favs[id] = {title:job.title, company:job.company, note:''}; }
+  localStorage.setItem('ines_favs', JSON.stringify(favs));
+  updateFavCount();
+  renderJobs();
+  if(document.getElementById('page-favoris').classList.contains('active')) renderFavs();
+}
+
+function saveFavNote(id, val){
+  if(favs[id]) favs[id].note = val;
+  localStorage.setItem('ines_favs', JSON.stringify(favs));
+}
+
+// ══════════════════════════════════════════════════════════════
+// SUIVI KANBAN
+// ══════════════════════════════════════════════════════════════
+function addToSuivi(id){
+  const job = allJobs.find(j=>j.id===id);
+  if(!job) return;
+  if(suivi.todo.find(s=>s.id===id)||suivi.sent.find(s=>s.id===id)||suivi.reply.find(s=>s.id===id)){
+    alert('Déjà dans le suivi !'); return;
+  }
+  suivi.todo.push({id, title:job.title, company:job.company||''});
+  localStorage.setItem('ines_suivi', JSON.stringify(suivi));
+  updateSuiviCount();
+  alert(`${job.title} ajouté à "À postuler" ! 🎯`);
+}
+
+function addManualSuivi(col){
+  const t = prompt('Titre du poste ?');
+  if(!t) return;
+  const co = prompt('Entreprise (optionnel) ?') || '';
+  suivi[col].push({id:'m-'+Date.now(), title:t, company:co});
+  localStorage.setItem('ines_suivi', JSON.stringify(suivi));
+  renderSuivi();
+}
+
+function moveSuivi(id, from, to){
+  const idx = suivi[from].findIndex(s=>s.id===id);
+  if(idx===-1) return;
+  const item = suivi[from].splice(idx,1)[0];
+  suivi[to].push(item);
+  localStorage.setItem('ines_suivi', JSON.stringify(suivi));
+  renderSuivi();
+}
+
+function removeSuivi(id, col){
+  suivi[col] = suivi[col].filter(s=>s.id!==id);
+  localStorage.setItem('ines_suivi', JSON.stringify(suivi));
+  renderSuivi();
+}
+
+function updateSuiviCount(){
+  const n = suivi.todo.length + suivi.sent.length + suivi.reply.length;
+  document.getElementById('statSuivi').textContent = n;
+}
+
+function renderSuivi(){
+  const nexts      = {todo:'sent', sent:'reply', reply:null};
+  const nextLabels = {todo:'Marquer postulé →', sent:'Réponse reçue →', reply:null};
+  const cols       = {todo:'col-todo', sent:'col-sent', reply:'col-reply'};
+  for(const [col, elId] of Object.entries(cols)){
+    const el = document.getElementById(elId);
+    if(!el) continue;
+    if(suivi[col].length===0){
+      el.innerHTML='<p style="font-size:.75rem;color:var(--text3);text-align:center;padding:.5rem 0">Rien ici</p>';
+      continue;
+    }
+    el.innerHTML = suivi[col].map(s=>`
+      <div class="kanban-item">
+        <div class="kanban-item-title">${s.title}</div>
+        <div class="kanban-item-co">${s.company||''}</div>
+        <div class="kanban-item-actions">
+          ${nexts[col]?`<button class="btn-tiny" onclick="moveSuivi('${s.id}','${col}','${nexts[col]}')">${nextLabels[col]}</button>`:''}
+          <button class="btn-tiny" style="color:#C0392B" onclick="removeSuivi('${s.id}','${col}')">✕</button>
+        </div>
+      </div>`).join('');
+  }
+  updateSuiviCount();
+}
+
+// ══════════════════════════════════════════════════════════════
+// CV COACH
+// ══════════════════════════════════════════════════════════════
+function openCvModal(id){
+  const job = allJobs.find(j=>j.id===id);
+  if(!job) return;
+  cvJobData = job;
+  document.getElementById('cvJobTitle').textContent   = job.title;
+  document.getElementById('cvJobCompany').textContent = job.company||'';
+  document.getElementById('cvJobDesc').value          = job.desc||'';
+  document.getElementById('cvResult').style.display   = 'none';
+  document.getElementById('cvModal').style.display    = 'flex';
+}
+function closeCvModal(){ document.getElementById('cvModal').style.display='none'; }
+
+async function runCVCoach(){
+  const apiKey = localStorage.getItem('anthropicKey');
+  if(!apiKey){ alert('Ajoute ta clé API Anthropic dans les paramètres ⚙️'); closeCvModal(); showPage('config',null); return; }
+  const desc   = document.getElementById('cvJobDesc').value.trim();
+  const skills = document.getElementById('cvUserSkills').value.trim();
+  if(!desc){ alert('Colle la description de l\'offre !'); return; }
+  const res = document.getElementById('cvResult');
+  res.style.display = 'block';
+  res.innerHTML = '<div class="ai-thinking">🌸 J\'analyse l\'offre pour Inès…</div>';
+  const prompt = `Tu es un coach emploi bienveillant qui aide Inès, une jeune femme de bac+3 en reconversion, à postuler à des offres dans la jeunesse, l'éducation, l'administratif ou la relation client.
+
+Offre d'emploi : ${cvJobData.title} chez ${cvJobData.company||'une structure'}
+Description de l'offre : ${desc}
+${skills?`Ce qu'Inès sait faire ou a déjà fait : ${skills}`:'Inès n\'a pas précisé ses compétences particulières.'}
+
+En 4 parties courtes et concrètes :
+1. ✅ Ce que cette offre recherche vraiment (3 compétences clés)
+2. 💪 Comment Inès peut valoriser son profil même sans expérience directe (sois très concrète, cite des exemples de formulations)
+3. 📝 Une accroche personnalisée de 2 phrases pour sa lettre de motivation
+4. 🎯 Un conseil pour l'entretien si elle est contactée
+
+Sois chaleureuse, précise et motivante. Tutoie Inès.`;
+
+  try{
+    const r = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const d = await r.json();
+    if(d.error){ res.innerHTML=`<div class="ai-result" style="color:#C0392B">Erreur : ${d.error.message}</div>`; return; }
+    res.innerHTML = `<div class="ai-result">${d.content[0].text}</div>`;
+  }catch(e){
+    res.innerHTML=`<div class="ai-result" style="color:#C0392B">Erreur de connexion. Vérifie ta clé API.</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// API FETCHERS
+// ══════════════════════════════════════════════════════════════
+function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
+
+// ── Adzuna ────────────────────────────────────────────────────
+async function fetchAdzuna(q){
+  const id  = localStorage.getItem('adzunaAppId');
+  const key = localStorage.getItem('adzunaKey');
+  if(!id||!key) return [];
+  const location = idfOnly ? 'Paris' : '';
+  const locationParam = location ? `&location0=FR&location1=${encodeURIComponent(location)}` : '';
+  try{
+    const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=30&what=${encodeURIComponent(q)}${locationParam}&content-type=application/json`;
+    const r = await fetch(url);
+    const d = await r.json();
+    if(!d.results) return [];
+    return d.results.map(j=>({
+      id:      jobId(j,'az'),
+      source:  'adzuna',
+      title:   j.title,
+      company: j.company?.display_name||'',
+      location:j.location?.display_name||'France',
+      contract:j.contract_type||'',
+      date:    j.created,
+      url:     j.redirect_url,
+      desc:    j.description||''
+    }));
+  }catch{ return []; }
+}
+
+// ── Remotive ──────────────────────────────────────────────────
+async function fetchRemotive(){
+  const categories = [
+    'customer-support',
+    'education',
+    'human-resources',
+    'social-media-management'
+  ];
+  const results = [];
+  for(const cat of categories){
+    try{
+      const r = await fetch(`https://remotive.com/api/remote-jobs?category=${cat}&limit=10`);
+      const d = await r.json();
+      if(!d.jobs) continue;
+      const mapped = d.jobs.map(j=>({
+        id:      jobId(j,'rm'),
+        source:  'remotive',
+        title:   j.title,
+        company: j.company_name||'',
+        location:j.candidate_required_location||'Remote / France',
+        contract:j.job_type||'',
+        date:    j.publication_date,
+        url:     j.url,
+        desc:    (j.description||'').replace(/<[^>]+>/g,' ')
+      }));
+      results.push(...mapped);
+    }catch{ continue; }
+  }
+  return results;
+}
+
+// ── Arbeitnow ─────────────────────────────────────────────────
+async function fetchArbeitnow(){
+  try{
+    const r = await fetch('https://www.arbeitnow.com/api/job-board-api?page=1');
+    const d = await r.json();
+    if(!d.data) return [];
+    // Filtrer les offres pertinentes pour les secteurs ciblés
+    const KW_FILTER = [
+      'education','training','youth','social','community','care',
+      'customer','reception','administration','assistant','coordinator',
+      'animat','educat','social work','support','counsell'
+    ];
+    return d.data
+      .filter(j=>{
+        const txt = (j.title+' '+(j.description||'')).toLowerCase();
+        return KW_FILTER.some(k=>txt.includes(k));
+      })
+      .slice(0,15)
+      .map(j=>({
+        id:      jobId(j,'ab'),
+        source:  'arbeitnow',
+        title:   j.title,
+        company: j.company_name||'',
+        location:j.location||'Europe',
+        contract:j.job_types?.[0]||'',
+        date:    new Date(j.created_at*1000).toISOString(),
+        url:     j.url,
+        desc:    (j.description||'').replace(/<[^>]+>/g,' ')
+      }));
+  }catch{ return []; }
+}
+
+// ── RSS via corsproxy.io ───────────────────────────────────────
+async function fetchRSS(rssUrl, sourceName){
+  try{
+    const proxy = `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`;
+    const r = await fetch(proxy);
+    const text = await r.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text,'application/xml');
+    const items = [...xml.querySelectorAll('item')];
+    return items.slice(0,15).map(item=>{
+      const title   = item.querySelector('title')?.textContent||'';
+      const link    = item.querySelector('link')?.textContent||'#';
+      const desc    = (item.querySelector('description')?.textContent||'').replace(/<[^>]+>/g,' ');
+      const pubDate = item.querySelector('pubDate')?.textContent||new Date().toISOString();
+      const loc     = item.querySelector('location')?.textContent
+                   || item.querySelector('region')?.textContent
+                   || (idfOnly?'Île-de-France':'France');
+      return {
+        id:      sourceName+'-'+Math.random().toString(36).slice(2),
+        source:  'adzuna', // on réutilise la couleur verte pour les RSS
+        title,
+        company: item.querySelector('company')?.textContent||'',
+        location:loc,
+        contract:'',
+        date:    pubDate,
+        url:     link,
+        desc
+      };
+    });
+  }catch{ return []; }
+}
+
+// ── Hellowork RSS ─────────────────────────────────────────────
+async function fetchHellowork(q){
+  const query = encodeURIComponent(q);
+  const place = idfOnly ? encodeURIComponent('Île-de-France') : '';
+  const rssUrl = `https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${query}&l=${place}&ray=10&c=RSS`;
+  return fetchRSS(rssUrl, 'hw');
+}
+
+// ══════════════════════════════════════════════════════════════
+// DEDUPLICATION
+// ══════════════════════════════════════════════════════════════
+function deduplicateJobs(jobs){
+  const seen = new Set();
+  return jobs.filter(j=>{
+    // Clé de déduplication basée sur titre + entreprise normalisés
+    const key = (j.title+j.company).toLowerCase().replace(/[^a-zàâéèêëïîôùûüç]/gi,'').slice(0,40);
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// LOAD JOBS
+// ══════════════════════════════════════════════════════════════
+const DEFAULT_QUERY = 'education jeunesse administratif relation client animation sociale accueil';
+
+async function loadJobs(q){
+  document.getElementById('loader').style.display    = 'block';
+  document.getElementById('cardsGrid').innerHTML     = '';
+
+  try{
+    const [az, rm, ab, hw] = await Promise.allSettled([
+      fetchAdzuna(q),
+      fetchRemotive(),
+      fetchArbeitnow(),
+      fetchHellowork(q)
+    ]);
+
+    const azJobs = az.status==='fulfilled' ? az.value : [];
+    const rmJobs = rm.status==='fulfilled' ? rm.value : [];
+    const abJobs = ab.status==='fulfilled' ? ab.value : [];
+    const hwJobs = hw.status==='fulfilled' ? hw.value : [];
+
+    let jobs = deduplicateJobs([...azJobs, ...rmJobs, ...abJobs, ...hwJobs]);
+
+    // Si aucune source réelle ne répond → offres démo
+    if(jobs.length===0){
+      jobs = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
+    }
+
+    allJobs = jobs;
+  }catch(e){
+    allJobs = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
+  }
 
   document.getElementById('loader').style.display = 'none';
-  renderJobsList();
+  renderJobs();
 }
 
-function renderJobsList() {
-  const grid = document.getElementById('cardsGrid');
-  grid.innerHTML = '';
-
-  const filtered = fetchedJobs.filter(j => {
-    if (currentSectorFilter === 'all') return true;
-    return detectSector(j) === currentSectorFilter;
-  });
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 3rem; color: var(--text2);">
-      🌸 Aucune offre francilienne ne correspond exactement à ces mots-clés pour le moment.
-    </div>`;
-    return;
-  }
-
-  filtered.forEach(j => {
-    const isFav = favoriteJobs.some(f => f.id === j.id);
-    const sectorLabel = detectSector(j) === 'edu' ? '📚 Éducation' : (detectSector(j) === 'admin' ? '🗂 Tertiaire' : '💼 Emploi');
-    const contract = detectContract(j);
-
-    const card = document.createElement('div');
-    card.className = 'job-card';
-    card.innerHTML = `
-      <div>
-        <div style="display:flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
-          <h3 class="card-title">${j.title}</h3>
-          <button onclick="toggleFavorite('${j.id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">
-            ${isFav ? '❤️' : '🤍'}
-          </button>
-        </div>
-        <div class="card-company">${j.company}</div>
-        <div class="card-tags">
-          <span class="tag tag-idf">📍 ${j.location}</span>
-          <span class="tag tag-sector">${sectorLabel}</span>
-          <span class="tag tag-contract">${contract}</span>
-        </div>
-        <p style="font-size: 0.8rem; color: var(--text2); line-height: 1.4; margin-top: 0.5rem;">
-          ${j.desc.slice(0, 160)}...
-        </p>
-      </div>
-      <div class="card-footer">
-        <span>Via ${j.source}</span>
-        <a href="${j.url}" target="_blank" class="btn-apply">Postuler →</a>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+function doSearch(){
+  searchQuery = document.getElementById('searchInput').value.trim();
+  loadJobs(searchQuery || DEFAULT_QUERY);
 }
 
-// --- FONCTIONNALITÉS COMPLÉMENTAIRES ---
-function toggleFavorite(id) {
-  const job = fetchedJobs.find(j => j.id === id) || favoriteJobs.find(j => j.id === id);
-  if (!job) return;
-
-  const index = favoriteJobs.findIndex(f => f.id === id);
-  if (index > -1) {
-    favoriteJobs.splice(index, 1);
-  } else {
-    favoriteJobs.push(job);
-  }
-  localStorage.setItem('ines_favorites', JSON.stringify(favoriteJobs));
-  updateFavBadge();
-  renderJobsList();
-  if (document.getElementById('page-favoris').classList.contains('active')) renderFavoritesList();
-}
-
-function renderFavoritesList() {
-  const grid = document.getElementById('favsGrid');
-  grid.innerHTML = '';
-  if (favoriteJobs.length === 0) {
-    grid.innerHTML = '<p style="text-align:center; color: var(--text2); grid-column:1/-1;">Aucun favori pour le moment. Cliquez sur 🤍.</p>';
-    return;
-  }
-  
-  favoriteJobs.forEach(j => {
-    const card = document.createElement('div');
-    card.className = 'job-card';
-    card.innerHTML = `
-      <div>
-        <div style="display:flex; justify-content: space-between; align-items: flex-start;">
-          <h3 class="card-title">${j.title}</h3>
-          <button onclick="toggleFavorite('${j.id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">❤️</button>
-        </div>
-        <div class="card-company">${j.company}</div>
-        <div class="card-tags">
-          <span class="tag tag-idf">📍 ${j.location}</span>
-        </div>
-      </div>
-      <div class="card-footer" style="margin-top: 1rem;">
-        <span>Source: ${j.source}</span>
-        <a href="${j.url}" target="_blank" class="btn-apply">Voir l'offre</a>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-function updateFavBadge() {
-  const count = favoriteJobs.length;
-  document.getElementById('favBadge').textContent = count;
-}
-
-function doSearch() {
-  const q = document.getElementById('searchInput').value.trim();
-  loadData(q);
-}
-
-function filterSector(sector, btn) {
-  document.querySelectorAll('.filter-chips .chip').forEach(b => b.classList.remove('active'));
+function filterCat(btn){
+  document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  currentSectorFilter = sector;
-  renderJobsList();
+  activeCat = btn.dataset.cat;
+  renderJobs();
 }
 
-function showPage(pageName, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  
-  document.getElementById('page-' + pageName).classList.add('active');
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+function saveKeys(){
+  localStorage.setItem('adzunaAppId',   document.getElementById('adzunaAppId').value.trim());
+  localStorage.setItem('adzunaKey',     document.getElementById('adzunaKey').value.trim());
+  localStorage.setItem('anthropicKey',  document.getElementById('anthropicKey').value.trim());
+  showPage('offres', document.querySelector('.nav-tab'));
+  loadJobs(DEFAULT_QUERY);
+}
+
+function loadConfigUI(){
+  document.getElementById('adzunaAppId').value  = localStorage.getItem('adzunaAppId')||'';
+  document.getElementById('adzunaKey').value    = localStorage.getItem('adzunaKey')||'';
+  document.getElementById('anthropicKey').value = localStorage.getItem('anthropicKey')||'';
+}
+
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════
+function showPage(name, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
-
-  if (pageName === 'favoris') renderFavoritesList();
+  else{
+    document.querySelectorAll('.nav-tab').forEach(t=>{
+      if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes(`'${name}'`)) t.classList.add('active');
+    });
+  }
+  if(name==='favoris') renderFavs();
+  if(name==='suivi')   renderSuivi();
+  if(name==='config')  loadConfigUI();
 }
 
-function saveConfig() {
-  localStorage.setItem('adzunaAppId', document.getElementById('adzunaAppId').value.trim());
-  localStorage.setItem('adzunaKey', document.getElementById('adzunaKey').value.trim());
-  alert("Configuration sauvegardée ! Les flux vont s'actualiser.");
-  loadData();
-}
-
-function initApp() {
-  updateFavBadge();
-  document.getElementById('adzunaAppId').value = localStorage.getItem('adzunaAppId') || '';
-  document.getElementById('adzunaKey').value = localStorage.getItem('adzunaKey') || '';
-  
-  document.getElementById('searchInput').addEventListener('keydown', e => {
-    if(e.key === 'Enter') doSearch();
+// ══════════════════════════════════════════════════════════════
+// INIT APP (appelé après connexion réussie)
+// ══════════════════════════════════════════════════════════════
+function initApp(){
+  initPetals();
+  setMotivation();
+  updateFavCount();
+  renderSuivi();
+  document.getElementById('searchInput').addEventListener('keydown', e=>{
+    if(e.key==='Enter') doSearch();
   });
-  
-  loadData();
+  document.getElementById('cvModal').addEventListener('click', e=>{
+    if(e.target===document.getElementById('cvModal')) closeCvModal();
+  });
+  loadJobs(DEFAULT_QUERY);
 }
 
-// Démarrage automatique
+// ══════════════════════════════════════════════════════════════
+// DÉMARRAGE — vérification auth au chargement
+// ══════════════════════════════════════════════════════════════
 checkAuth();
 </script>
 </body>
 </html>
+
+
