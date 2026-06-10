@@ -172,6 +172,26 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   align-items:center;
   gap:.4rem;
 }
+.btn-geo {
+  border:none;
+  border-radius:50px;
+  padding:.35rem 1rem;
+  font-size:.78rem;
+  font-weight:600;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer;
+  transition:all .15s;
+}
+.btn-geo-expand {
+  background:var(--lavande-deep);
+  color:white;
+}
+.btn-geo-expand:hover{opacity:.85;}
+.btn-geo-idf {
+  background:var(--rose-deep);
+  color:white;
+}
+.btn-geo-idf:hover{opacity:.85;}
 .geo-active-badge {
   font-size:.72rem;
   background:var(--lavande-deep);
@@ -201,7 +221,6 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .chip:hover{border-color:var(--rose-deep);color:var(--rose-deep);}
 .chip.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white;}
 .chip-lavande.active{background:var(--lavande-deep);border-color:var(--lavande-deep);}
-.filter-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;}
 
 /* ── CARDS ───────────────────────────────────────── */
 .cards-wrap{padding:0 1.5rem 4rem;display:grid;gap:.9rem;}
@@ -235,12 +254,14 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .btn-cv:hover{background:var(--lavande-deep);color:white;border-color:var(--lavande-deep);}
 .btn-apply{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;font-size:.75rem;font-weight:600;padding:.3rem .85rem;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;}
 .btn-apply:hover{opacity:.88;}
+
 .source-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .src-adzuna{background:#059669;}
+.src-remotive{background:#7C3AED;}
+.src-arbeitnow{background:#D97706;}
 .src-hellowork{background:#0284C7;}
-.src-francetravail{background:#EA580C;}
-.src-indeed{background:#4F46E5;}
-.src-leboncoin{background:#F97316;}
+.src-wwr{background:#EA580C;}
+.src-labonneboite{background:#DB2777;}
 .src-demo{background:var(--lavande-deep);}
 .source-lbl{font-size:.7rem;color:var(--text3);}
 
@@ -345,13 +366,15 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
     <div class="hero-petals" id="petals"></div>
     <div class="hero-greeting">Bonjour Inès 🌸</div>
     <h1 class="hero-title">Ton espace emploi<br><em>rien que pour toi</em></h1>
-    <p class="hero-sub">Des offres dans l'éducation, la jeunesse, l'administratif et la relation client — ciblées exclusivement sur l'Île-de-France.</p>
+    <p class="hero-sub">Des offres dans l'éducation, la jeunesse, l'administratif et la relation client — accessibles sans diplôme spécifique.</p>
     <div class="hero-motivation" id="heroMotivation"></div>
   </div>
 
   <div class="geo-banner" id="geoBanner">
     <span class="geo-label">📍 Zone géographique :</span>
-    <span class="geo-active-badge" id="geoBadge">Île-de-France Uniquement 🗺️</span>
+    <span class="geo-active-badge" id="geoBadge">Île-de-France 🗺️</span>
+    <button class="btn-geo btn-geo-expand" id="btnExpand" onclick="expandToFrance()">🌍 Élargir à toute la France</button>
+    <button class="btn-geo btn-geo-idf" id="btnIdf" onclick="restrictToIdf()" style="display:none;">📍 Revenir à l'Île-de-France</button>
   </div>
 
   <div class="stats-strip" id="statsStrip">
@@ -364,7 +387,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   <div class="search-section">
     <div class="search-row">
       <div class="search-wrap">
-        <input type="text" id="searchInput" placeholder="Poste, ville, mot-clé (ex: Paris, 93, Animation)…">
+        <input type="text" id="searchInput" placeholder="Poste, ville, mot-clé…">
       </div>
       <button class="btn-search" onclick="doSearch()">Chercher</button>
     </div>
@@ -391,7 +414,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 
   <div id="loader" class="loader-wrap">
     <div class="petal-loader">🌸</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Je scanne France Travail, Hellowork, Indeed, Adzuna et LeBonCoin pour toi en Île-de-France…</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Je cherche des offres sur toutes les plateformes…</p>
   </div>
   <div id="cardsGrid" class="cards-wrap"></div>
 </div>
@@ -431,8 +454,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 <div class="page" id="page-config">
   <div class="config-section">
     <div class="config-card">
-      <div class="config-title">🌍 Adzuna — Offres Île-de-France</div>
-      <div class="config-sub">API gratuite pour récupérer des offres locales ciblées. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
+      <div class="config-title">🌍 Adzuna — Offres France</div>
+      <div class="config-sub">API gratuite, très riche en offres locales. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
       <div class="config-grid">
         <div class="field"><label>App ID</label><input type="text" id="adzunaAppId" placeholder="ex: a1b2c3d4"></div>
         <div class="field"><label>App Key</label><input type="text" id="adzunaKey" placeholder="ex: xxxxxxxxxxxxxxxx"></div>
@@ -440,12 +463,12 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
     </div>
     <div class="config-card">
       <div class="config-title">🤖 Clé API Claude (coach CV)</div>
-      <div class="config-sub">Pour le coach CV personnalisé d'Inès. Créer un compte sur <a href="https://console.anthropic.com" target="_blank" style="color:var(--rose-deep)">console.anthropic.com</a></div>
+      <div class="config-sub">Pour que le coach CV fonctionne, Inès a besoin d'une clé API Anthropic. Créer un compte sur <a href="https://console.anthropic.com" target="_blank" style="color:var(--rose-deep)">console.anthropic.com</a></div>
       <div class="field"><label>Clé API Anthropic</label><input type="text" id="anthropicKey" placeholder="sk-ant-…"></div>
     </div>
     <button class="btn-save" onclick="saveKeys()">💾 Enregistrer la configuration</button>
     <div style="font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6;">
-      Sans clé Adzuna, l'application utilise l'aggrégation dynamique de France Travail, HelloWork, Indeed et LeBonCoin via RSS sécurisé pour l'Île-de-France.
+      Les sites <strong>Remotive</strong>, <strong>Arbeitnow</strong>, <strong>Hellowork</strong>, <strong>We Work Remotely</strong> et <strong>La Bonne Boîte</strong> sont chargés dynamiquement sans clé API.
     </div>
   </div>
 </div>
@@ -453,7 +476,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 </div><div class="modal-bg" id="cvModal" style="display:none;">
   <div class="modal">
     <h3 class="modal-title">✨ Coach CV d'Inès</h3>
-    <p class="modal-sub">Je vais analyser cette offre francilienne et te dire exactement comment valoriser ton profil.</p>
+    <p class="modal-sub">Je vais analyser cette offre et te dire exactement comment valoriser ton profil, même sans expérience directe dans ce domaine.</p>
     <div style="background:var(--rose-pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem .9rem;font-size:.82rem;color:var(--text);margin-bottom:.9rem;">
       <strong id="cvJobTitle" style="color:var(--rose-deep)"></strong><br>
       <span id="cvJobCompany" style="color:var(--text2)"></span>
@@ -529,26 +552,20 @@ document.getElementById('loginPwd').addEventListener('keydown', e => {
 // DATA & CONSTANTS
 // ══════════════════════════════════════════════════════════════
 const MOTIVATIONS = [
-  'Chaque candidature envoyée en Île-de-France est une graine plantée. 🌱',
-  'Ton profil humain est une vraie force — les employeurs franciliens le savent. 💪',
-  'Le bon poste à Paris ou aux alentours attend juste d\'être trouvé. Tu vas y arriver, Inès. ✨',
+  'Chaque candidature envoyée est une graine plantée. 🌱',
+  'Ton profil humain est une vraie force — les employeurs le savent. 💪',
+  'Le bon poste attend juste d\'être trouvé. Tu vas y arriver, Inès. ✨',
   'Pas besoin d\'un diplôme parfait pour faire un travail parfait. 🌸',
+  'Quelqu\'un quelque part cherche exactement quelqu\'un comme toi. 💛',
+  'Une journée de recherche de plus, c\'est une chance de plus. 🎯',
 ];
 
-// Départements Île-de-France stricts
 const IDF_DEPTS = ['75','77','78','91','92','93','94','95'];
 const IDF_CITIES = [
-  'paris','seine-et-marne','yvelines','essonne','hauts-de-seine',
-  'seine-saint-denis','val-de-marne','val-d\'oise','île-de-france',
-  'ile-de-france','boulogne','vincennes','montreuil','saint-denis',
-  'nanterre','créteil','versailles','bobigny','évry','cergy',
-  'massy','poissy','argenteuil','colombes','asnières','vitry',
-  'champigny','rueil','courbevoie','aulnay','drancy','pantin',
-  'neuilly','levallois','issy','clamart','antony','épinay',
-  'noisy','chelles','meaux','melun','pontoise','saint-germain',
-  'corbeil','gif-sur-yvette','palaiseau','longjumeau','rungis',
-  'la défense','bagneux','montrouge','gentilly','ivry','alfortville',
-  'choisy','thiais','orly','villeneuve','bagnolet','romainville'
+  'paris', 'seine-et-marne', 'yvelines', 'essonne', 'hauts-de-seine',
+  'seine-saint-denis', 'val-de-marne', 'val-d\'oise', 'île-de-france',
+  'ile-de-france', 'boulogne', 'vincennes', 'montreuil', 'saint-denis',
+  'nanterre', 'créteil', 'versailles', 'bobigny', 'évry', 'cergy'
 ];
 
 const CAT_KW = {
@@ -560,21 +577,13 @@ const CAT_KW = {
 };
 
 const PSYCHO_KW = [
-  'psycholog','psycho','clinique','thérapeutique','psychopathologie',
-  'psychothérapie','TCC','CMP','CMPP','SESSAD','IME','ITEP','HDJ',
-  'hôpital de jour','pédopsychiatrie','psychiatrie','neuropsychologie'
+  'psycholog','psycho','clinique','thérapeutique','psychopathologie','psychothérapie','TCC','CMP','CMPP','SESSAD','IME','ITEP','HDJ','pédopsychiatrie'
 ];
+const STAGE_EXCLUDE_KW = ['docteur','PhD','bac+5 requis','5 ans d\'expérience','senior confirmed','directeur'];
 
-const STAGE_EXCLUDE_KW = ['docteur','PhD','bac+5 requis','5 ans d\'expérience','senior confirmé','directeur'];
-
-// Offres de Démo 100% Île-de-France (au cas où les réseaux coupent)
 const DEMO = [
   {source:'demo',title:'Animateur·rice périscolaire',company:'Ville de Paris',location:'Paris 18e (75)',contract:'CDD',date:ago(1),url:'#',desc:'animation jeunesse enfant périscolaire BAFA sans expérience débutant accessible'},
-  {source:'demo',title:'Chargé·e d\'accueil polyvalent',company:'Mairie du 13e',location:'Paris (75)',contract:'CDI',date:ago(0),url:'#',desc:'accueil relation client administratif guichet usager sans expérience débutant'},
-  {source:'demo',title:'Volontaire Service Civique – Jeunesse',company:'Unis-Cité IDF',location:'Paris (75)',contract:'Service civique',date:ago(2),url:'#',desc:'service civique volontariat jeunesse animation sans expérience débutant ouvert à tous'},
-  {source:'demo',title:'Stage Master Psychologie Clinique',company:'CMP Paris 11e',location:'Paris (75)',contract:'Stage psychologie',date:ago(1),url:'#',desc:'stage psychologie clinique master psycho psychologue stagiaire enfant adolescent CMP sans expérience débutant'},
-  {source:'demo',title:'Éducateur·rice jeunes enfants',company:'Crèche Les Coccinelles',location:'Vincennes (94)',contract:'CDI',date:ago(3),url:'#',desc:'enfant jeunesse bébé éducation crèche maternelle débutant accepté'},
-  {source:'demo',title:'Agent·e d\'accueil – temps partiel',company:'Bibliothèque municipale',location:'Montreuil (93)',contract:'CDD temps partiel',date:ago(2),url:'#',desc:'accueil relation client administratif temps partiel mi-temps sans expérience'},
+  {source:'demo',title:'Chargé·e d\'accueil polyvalent',company:'Mairie du 13e',location:'Paris (75)',contract:'CDI',date:ago(0),url:'#',desc:'accueil relation client administratif guichet usager sans expérience débutant'}
 ];
 
 function ago(days){ return new Date(Date.now()-days*86400000).toISOString(); }
@@ -595,44 +604,49 @@ let activeCat = 'all';
 let activeContract = 'all';
 let searchQuery = '';
 let cvJobData = {};
+let idfOnly = true;
 
 // ══════════════════════════════════════════════════════════════
-// FILTRE GÉOGRAPHIQUE ULTRA-STRICT ÎLE-DE-FRANCE
+// GEO FILTER
 // ══════════════════════════════════════════════════════════════
-function isInIdfStrict(job) {
+function isInIdf(job) {
   const loc = (job.location || '').toLowerCase();
-  const title = (job.title || '').toLowerCase();
-  const desc = (job.desc || '').toLowerCase();
-
-  // Rejeter le télétravail pur sans ancrage ou l'étranger
-  if (loc.includes('remote') || loc.includes('anywhere') || loc.includes('télétravail total') || loc.includes('telework')) {
-    if (!loc.includes('paris') && !loc.includes('75') && !loc.includes('idf')) return false;
-  }
-  
-  // Vérification par départements IDF
   for (const dept of IDF_DEPTS) {
-    if (loc.includes('(' + dept + ')') || loc.includes(' ' + dept) || loc.startsWith(dept) || loc.includes('/' + dept)) return true;
+    if (loc.includes('(' + dept + ')') || loc.includes(' ' + dept) || loc.startsWith(dept)) return true;
   }
-  
-  // Vérification par villes clés d'Île-de-France
   for (const city of IDF_CITIES) {
     if (loc.includes(city)) return true;
   }
-  
-  // Mention globale de la région
-  if (loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf') || loc.includes('région parisienne') || loc.includes('paris')) return true;
-
+  if (loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf')) return true;
   return false;
+}
+
+function expandToFrance() {
+  idfOnly = false;
+  document.getElementById('geoBadge').textContent = 'Toute la France 🗺️';
+  document.getElementById('geoBadge').style.background = 'var(--rose-deep)';
+  document.getElementById('btnExpand').style.display = 'none';
+  document.getElementById('btnIdf').style.display = 'inline-flex';
+  loadJobs(searchQuery || DEFAULT_QUERY);
+}
+
+function restrictToIdf() {
+  idfOnly = true;
+  document.getElementById('geoBadge').textContent = 'Île-de-France 🗺️';
+  document.getElementById('geoBadge').style.background = 'var(--lavande-deep)';
+  document.getElementById('btnIdf').style.display = 'none';
+  document.getElementById('btnExpand').style.display = 'inline-flex';
+  loadJobs(searchQuery || DEFAULT_QUERY);
 }
 
 // ══════════════════════════════════════════════════════════════
 // CONTRACT DETECTION
 // ══════════════════════════════════════════════════════════════
 const CONTRACT_KW = {
-  civique: ['service civique','volontariat','VSC','mission civique'],
-  stage:   ['stage psychologie','stage psycho','stage en psychologie','master psycho','psychologue stagiaire'],
+  civique: ['service civique','volontariat','VSC'],
+  stage:   ['stage psychologie','stage psycho','master psycho','psychologue stagiaire'],
   benevole:['bénévole','bénévolat'],
-  partiel: ['temps partiel','mi-temps','temps non complet'],
+  partiel: ['temps partiel','mi-temps','20h','25h'],
   cdi:     ['CDI','contrat à durée indéterminée'],
   cdd:     ['CDD','contrat à durée déterminée'],
 };
@@ -648,14 +662,8 @@ function detectContract(j) {
   return 'other';
 }
 
-const CONTRACT_LABELS = {
-  cdi:'💼 CDI', cdd:'📅 CDD', partiel:'🕐 Temps partiel',
-  civique:'🌱 Service civique', stage:'🔍 Stage psycho', benevole:'💛 Bénévolat', other:''
-};
-const CONTRACT_CLS = {
-  cdi:'tag-cdi', cdd:'tag-cdd', partiel:'tag-partiel',
-  civique:'tag-civique', stage:'tag-stage', benevole:'tag-benevole', other:'tag-social'
-};
+const CONTRACT_LABELS = {cdi:'💼 CDI', cdd:'📅 CDD', partiel:'🕐 Temps partiel', civique:'🌱 Service civique', stage:'🔍 Stage psycho', benevole:'💛 Bénévolat', other:''};
+const CONTRACT_CLS = {cdi:'tag-cdi', cdd:'tag-cdd', partiel:'tag-partiel', civique:'tag-civique', stage:'tag-stage', benevole:'tag-benevole', other:'tag-social'};
 
 function isPsychoStage(job) {
   const text = (job.title + ' ' + (job.desc || '') + ' ' + (job.contract || '')).toLowerCase();
@@ -663,18 +671,16 @@ function isPsychoStage(job) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// RENDERING & INTERACTION
+// DECORATIONS & TAGS
 // ══════════════════════════════════════════════════════════════
+const PETALS = ['🌸','🌷','✿','🌺','💮'];
 function initPetals(){
-  const c = document.getElementById('petals');
-  if(!c) return;
+  const c = document.getElementById('petals'); if(!c) return;
+  c.innerHTML = '';
   for(let i=0;i<18;i++){
-    const s = document.createElement('span');
-    s.textContent = ['🌸','🌷','✿','🌺'][i%4];
-    s.className = 'petal';
-    s.style.left = Math.random()*100+'%';
-    s.style.fontSize = (0.8+Math.random()*1.2)+'rem';
-    s.style.animationDuration = (8+Math.random()*12)+'s';
+    const s = document.createElement('span'); s.textContent = PETALS[i%PETALS.length]; s.className = 'petal';
+    s.style.left = Math.random()*100+'%'; s.style.fontSize = (0.8+Math.random()*1.2)+'rem';
+    s.style.animationDuration = (8+Math.random()*12)+'s'; s.style.animationDelay = (Math.random()*10)+'s';
     c.appendChild(s);
   }
 }
@@ -686,8 +692,7 @@ function setMotivation(){
 }
 
 function getTags(title, desc){
-  const t = (title+' '+desc).toLowerCase();
-  const tags = [];
+  const t = (title+' '+desc).toLowerCase(); const tags = [];
   if(CAT_KW.edu.some(k=>t.includes(k)))    tags.push({label:'Éducation',cls:'tag-edu',cat:'edu'});
   if(CAT_KW.youth.some(k=>t.includes(k)))  tags.push({label:'Jeunesse',cls:'tag-youth',cat:'youth'});
   if(CAT_KW.admin.some(k=>t.includes(k)))  tags.push({label:'Administratif',cls:'tag-admin',cat:'admin'});
@@ -698,38 +703,46 @@ function getTags(title, desc){
 }
 function isNoxp(j){ return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k)); }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo'};
-const SRC_LABELS = {adzuna:'Adzuna',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo'};
+// ══════════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════════
+const SRC_COLORS = {adzuna:'src-adzuna',remotive:'src-remotive',arbeitnow:'src-arbeitnow',hellowork:'src-hellowork',wwr:'src-wwr',labonneboite:'src-labonneboite',demo:'src-demo'};
+const SRC_LABELS = {adzuna:'Adzuna',remotive:'Remotive',arbeitnow:'Arbeitnow',hellowork:'Hellowork',wwr:'WeWorkRemotely',labonneboite:'La Bonne Boîte (France Travail)',demo:'Démo'};
 
 function cardHTML(j, isFavPage=false){
-  const tags = getTags(j.title, j.desc||'');
-  const contractType = detectContract(j);
-  const isFav = !!favs[j.id];
+  const tags = getTags(j.title, j.desc||''); const contractType = detectContract(j); const isFav = !!favs[j.id];
   const tagsHtml = tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
   const contractTag = contractType !== 'other' ? `<span class="tag ${CONTRACT_CLS[contractType]}">${CONTRACT_LABELS[contractType]}</span>` : '';
   const noteVal = (favs[j.id] && favs[j.id].note) || '';
   const noteSection = isFavPage ? `<div class="fav-note-wrap"><textarea class="fav-note" rows="2" placeholder="Notes personnelles…" onchange="saveFavNote('${j.id}',this.value)">${noteVal}</textarea></div>` : '';
+  
+  // Différenciation bouton d'action pour La Bonne Boîte
+  const isCandidatureSpontanee = j.source === 'labonneboite';
+  const actionBtn = isCandidatureSpontanee 
+    ? `<a class="btn-apply" style="background:var(--rose-deep)" href="${j.url}" target="_blank">Spontanée ✉️</a>`
+    : `<a class="btn-apply" href="${j.url||'#'}" target="_blank">Voir →</a>`;
+
   return `
   <div class="job-card${isFav?' favorited':''}" id="card-${j.id}">
     <div class="card-header">
       <div>
         <div class="card-title">${j.title}</div>
-        <div class="card-company">${j.company||'Structure Francilienne'}</div>
+        <div class="card-company">${j.company||''}</div>
       </div>
       <button class="fav-btn" onclick="toggleFav('${j.id}')">${isFav?'❤️':'🤍'}</button>
     </div>
     <div class="card-tags">${tagsHtml}${contractTag}</div>
     <div class="card-footer">
-      <span class="card-location">📍 ${j.location||'Île-de-France'}</span>
+      <span class="card-location">📍 ${j.location||'France'}</span>
       <span class="card-date">${relDate(j.date)}</span>
     </div>
     <div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
       <span class="source-dot ${SRC_COLORS[j.source]||'src-demo'}"></span>
-      <span class="source-lbl">${SRC_LABELS[j.source]||'IDF'}</span>
+      <span class="source-lbl">${SRC_LABELS[j.source]||''}</span>
       <div style="margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;">
         <button class="btn-cv" onclick="openCvModal('${j.id}')">🤖 Coach CV</button>
         <button class="btn-tiny" onclick="addToSuivi('${j.id}')">📋 Suivre</button>
-        <a class="btn-apply" href="${j.url||'#'}" target="_blank" rel="noopener">Voir →</a>
+        ${actionBtn}
       </div>
     </div>
     ${noteSection}
@@ -739,14 +752,11 @@ function cardHTML(j, isFavPage=false){
 function renderJobs(){
   const grid = document.getElementById('cardsGrid');
   let jobs = allJobs.filter(j => {
-    // Élimination stricte de ce qui n'est pas en IDF
-    if(!isInIdfStrict(j)) return false;
+    if(idfOnly && !isInIdf(j)) return false;
     if(detectContract(j) === 'stage' && !isPsychoStage(j)) return false;
-
     if(activeCat !== 'all'){
       if(activeCat === 'noxp') return isNoxp(j);
-      const tags = getTags(j.title, j.desc||'');
-      if(!tags.some(t=>t.cat===activeCat)) return false;
+      if(!getTags(j.title, j.desc||'').some(t=>t.cat===activeCat)) return false;
     }
     if(activeContract !== 'all' && detectContract(j) !== activeContract) return false;
     if(searchQuery){
@@ -756,167 +766,53 @@ function renderJobs(){
     return true;
   });
 
-  document.getElementById('statTotal').textContent = jobs.length;
-  document.getElementById('statNoxp').textContent = jobs.filter(j=>isNoxp(j)).length;
+  document.getElementById('statTotal').textContent = allJobs.length;
+  document.getElementById('statNoxp').textContent = allJobs.filter(j=>isNoxp(j)).length;
 
   if(jobs.length===0){
-    grid.innerHTML=`<div class="empty"><div class="empty-icon">🌸</div><p style="color:var(--text2)">Aucune offre francilienne ne correspond à ces critères exacts.</p></div>`;
+    grid.innerHTML=`<div class="empty"><div class="empty-icon">🌸</div><p style="color:var(--text2)">Aucune offre trouvée.<br>Élargis tes critères de recherche !</p></div>`;
     return;
   }
   grid.innerHTML = jobs.map(j=>cardHTML(j)).join('');
 }
 
-// ══════════════════════════════════════════════════════════════
-// SCRAPERS ET FLUX MULTI-SITES (VÉROUILLÉS ÎLE-DE-FRANCE)
-// ══════════════════════════════════════════════════════════════
-function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
-
-async function fetchAdzuna(q){
-  const id  = localStorage.getItem('adzunaAppId');
-  const key = localStorage.getItem('adzunaKey');
-  if(!id||!key) return [];
-  try{
-    // Forçage du paramètre de localisation sur Paris / Île de France à la source
-    const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=40&what=${encodeURIComponent(q)}&location0=FR&location1=Paris&content-type=application/json`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if(!d.results) return [];
-    return d.results.map(j=>({
-      id: jobId(j,'az'), source: 'adzuna', title: j.title, company: j.company?.display_name||'',
-      location: j.location?.display_name||'Île-de-France', contract: j.contract_type||'', date: j.created, url: j.redirect_url, desc: j.description||''
-    }));
-  }catch{ return []; }
-}
-
-async function fetchRSS(rssUrl, sourceName){
-  try{
-    const proxy = `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`;
-    const r = await fetch(proxy);
-    const text = await r.text();
-    const xml = new DOMParser().parseFromString(text,'application/xml');
-    return [...xml.querySelectorAll('item')].map(item=>{
-      const title = item.querySelector('title')?.textContent||'';
-      const desc = (item.querySelector('description')?.textContent||'').replace(/<[^>]+>/g,' ');
-      return {
-        id: sourceName+'-'+Math.random().toString(36).slice(2),
-        source: sourceName,
-        title,
-        company: item.querySelector('company')?.textContent || item.querySelector('author')?.textContent || '',
-        location: item.querySelector('location')?.textContent || 'Île-de-France',
-        contract: '', date: item.querySelector('pubDate')?.textContent || new Date().toISOString(),
-        url: item.querySelector('link')?.textContent||'#', desc
-      };
-    });
-  }catch{ return []; }
-}
-
-// Requêtes configurées pour interroger les flux RSS régionaux et locaux d'Île-de-France
-async function fetchFranceTravail(q){
-  return fetchRSS(`https://api.emploi-store.fr/partenaire/offres/v1/rss?motCle=${encodeURIComponent(q)}&region=11`, 'francetravail');
-}
-
-async function fetchHellowork(q){
-  return fetchRSS(`https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${encodeURIComponent(q)}&l=%C3%89le-de-France&ray=0&c=RSS`, 'hellowork');
-}
-
-async function fetchIndeed(q){
-  return fetchRSS(`https://fr.indeed.com/rss?q=${encodeURIComponent(q)}&l=Île-de-France`, 'indeed');
-}
-
-async function fetchLeBonCoin(q){
-  return fetchRSS(`https://www.leboncoin.fr/offre/emloi/rss?kwd=${encodeURIComponent(q)}&r=12`, 'leboncoin');
-}
-
-function deduplicateJobs(jobs){
-  const seen = new Set();
-  return jobs.filter(j=>{
-    const key = (j.title+j.company).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,45);
-    if(seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-// MOTEUR PRINCIPAL
-// ══════════════════════════════════════════════════════════════
-const DEFAULT_QUERY = 'education jeunesse administratif relation client animation accueil';
-
-async function loadJobs(q){
-  document.getElementById('loader').style.display = 'block';
-  document.getElementById('cardsGrid').innerHTML = '';
-
-  try{
-    const [az, ft, hw, ind, lbc] = await Promise.allSettled([
-      fetchAdzuna(q),
-      fetchFranceTravail(q),
-      fetchHellowork(q),
-      fetchIndeed(q),
-      fetchLeBonCoin(q)
-    ]);
-
-    let merged = [
-      ...(az.status==='fulfilled'?az.value:[]),
-      ...(ft.status==='fulfilled'?ft.value:[]),
-      ...(hw.status==='fulfilled'?hw.value:[]),
-      ...(ind.status==='fulfilled'?ind.value:[]),
-      ...(lbc.status==='fulfilled'?lbc.value:[])
-    ];
-
-    let filtered = deduplicateJobs(merged).filter(isInIdfStrict);
-
-    if(filtered.length === 0){
-      filtered = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
-    }
-    allJobs = filtered;
-  }catch{
-    allJobs = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
-  }
-
-  document.getElementById('loader').style.display = 'none';
-  renderJobs();
-}
-
-// ══════════════════════════════════════════════════════════════
-// SECTIONS INTERNES EXISTANTES (FAVORIS, KANBAN, CONFIG)
-// ══════════════════════════════════════════════════════════════
-function doSearch(){
-  searchQuery = document.getElementById('searchInput').value.trim();
-  loadJobs(searchQuery || DEFAULT_QUERY);
+function filterContract(btn){
+  document.querySelectorAll('[data-contract]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); activeContract = btn.dataset.contract; renderJobs();
 }
 function filterCat(btn){
   document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); activeCat = btn.dataset.cat; renderJobs();
 }
-function filterContract(btn){
-  document.querySelectorAll('[data-contract]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); activeContract = btn.dataset.contract; renderJobs();
-}
+
+// ══════════════════════════════════════════════════════════════
+// FAVORIS & KANBAN
+// ══════════════════════════════════════════════════════════════
 function toggleFav(id){
   const job = allJobs.find(j=>j.id===id); if(!job) return;
   if(favs[id]){ delete favs[id]; } else { favs[id] = {title:job.title, company:job.company, note:''}; }
   localStorage.setItem('ines_favs', JSON.stringify(favs)); updateFavCount(); renderJobs();
   if(document.getElementById('page-favoris').classList.contains('active')) renderFavs();
 }
+function saveFavNote(id, val){ if(favs[id]) favs[id].note = val; localStorage.setItem('ines_favs', JSON.stringify(favs)); }
+function updateFavCount(){
+  const n = Object.keys(favs).length;
+  document.getElementById('favBadge').textContent = n; document.getElementById('statFavs').textContent = n;
+}
 function renderFavs(){
   const grid = document.getElementById('favsGrid'); const favJobs = allJobs.filter(j=>favs[j.id]); updateFavCount();
-  if(favJobs.length===0){ grid.innerHTML=`<div class="empty"><p>Pas encore de favoris.</p></div>`; return; }
+  if(favJobs.length===0){ grid.innerHTML=`<div class="empty"><div class="empty-icon">🤍</div><p style="color:var(--text2)">Pas encore de favoris.</p></div>`; return; }
   grid.innerHTML = favJobs.map(j=>cardHTML(j,true)).join('');
 }
-function updateFavCount(){
-  const n = Object.keys(favs).length; document.getElementById('favBadge').textContent = n; document.getElementById('statFavs').textContent = n;
-}
-function saveFavNote(id, val){ if(favs[id]) favs[id].note = val; localStorage.setItem('ines_favs', JSON.stringify(favs)); }
-
 function addToSuivi(id){
   const job = allJobs.find(j=>j.id===id); if(!job) return;
-  if(suivi.todo.find(s=>s.id===id)||suivi.sent.find(s=>s.id===id)||suivi.reply.find(s=>s.id===id)){ alert('Déjà suivi !'); return; }
+  if(suivi.todo.find(s=>s.id===id)||suivi.sent.find(s=>s.id===id)||suivi.reply.find(s=>s.id===id)){ alert('Déjà dans le suivi !'); return; }
   suivi.todo.push({id, title:job.title, company:job.company||''}); localStorage.setItem('ines_suivi', JSON.stringify(suivi));
-  updateSuiviCount(); alert('Ajouté au suivi local ! 🎯');
+  updateSuiviCount(); alert(`${job.title} ajouté à "À postuler" ! 🎯`);
 }
 function addManualSuivi(col){
-  const t = prompt('Poste ?'); if(!t) return;
-  suivi[col].push({id:'m-'+Date.now(), title:t, company: prompt('Entreprise ?') || ''});
+  const t = prompt('Titre du poste ?'); if(!t) return;
+  suivi[col].push({id:'m-'+Date.now(), title:t, company:prompt('Entreprise ?') || ''});
   localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi();
 }
 function moveSuivi(id, from, to){
@@ -926,15 +822,15 @@ function moveSuivi(id, from, to){
 function removeSuivi(id, col){ suivi[col] = suivi[col].filter(s=>s.id!==id); localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi(); }
 function updateSuiviCount(){ document.getElementById('statSuivi').textContent = suivi.todo.length + suivi.sent.length + suivi.reply.length; }
 function renderSuivi(){
-  const nexts = {todo:'sent', sent:'reply'}, labels = {todo:'Postulé →', sent:'Réponse →'}, cols = {todo:'col-todo', sent:'col-sent', reply:'col-reply'};
-  for(const [col, elId] of Object.entries(cols)){
+  const nexts = {todo:'sent', sent:'reply', reply:null}; const nextLabels = {todo:'Postulé →', sent:'Réponse →', reply:null};
+  for(const [col, elId] of Object.entries({todo:'col-todo', sent:'col-sent', reply:'col-reply'})){
     const el = document.getElementById(elId); if(!el) continue;
-    if(suivi[col].length===0){ el.innerHTML='<p style="font-size:.75rem;color:var(--text3);text-align:center;">Vide</p>'; continue; }
+    if(suivi[col].length===0){ el.innerHTML='<p style="font-size:.75rem;color:var(--text3);text-align:center;padding:.5rem 0">Rien ici</p>'; continue; }
     el.innerHTML = suivi[col].map(s=>`
       <div class="kanban-item">
-        <strong>${s.title}</strong><div class="kanban-item-co">${s.company}</div>
+        <div class="kanban-item-title">${s.title}</div><div class="kanban-item-co">${s.company}</div>
         <div class="kanban-item-actions">
-          ${nexts[col]?`<button class="btn-tiny" onclick="moveSuivi('${s.id}','${col}','${nexts[col]}')">${labels[col]}</button>`:''}
+          ${nexts[col]?`<button class="btn-tiny" onclick="moveSuivi('${s.id}','${col}','${nexts[col]}')">${nextLabels[col]}</button>`:''}
           <button class="btn-tiny" style="color:#C0392B" onclick="removeSuivi('${s.id}','${col}')">✕</button>
         </div>
       </div>`).join('');
@@ -942,22 +838,9 @@ function renderSuivi(){
   updateSuiviCount();
 }
 
-async function runCVCoach(){
-  const apiKey = localStorage.getItem('anthropicKey'); if(!apiKey){ alert('Ajoute ta clé Anthropic !'); return; }
-  const desc = document.getElementById('cvJobJobDesc' || 'cvJobDesc').value.trim();
-  const skills = document.getElementById('cvUserSkills').value.trim();
-  const res = document.getElementById('cvResult'); res.style.display = 'block'; res.innerHTML = 'Analyse en cours…';
-  
-  const prompt = `Tu es un coach emploi bienveillant. Inès postule en Île-de-France. Offre: ${cvJobData.title}. Description: ${desc}. Compétences: ${skills}. Produis un retour structuré et motivant.`;
-  try {
-    const r = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST', headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1000,messages:[{role:'user',content:prompt}]})
-    });
-    const d = await r.json(); res.innerHTML = `<div class="ai-result">${d.content[0].text}</div>`;
-  } catch { res.innerHTML = 'Erreur de contact avec l\'IA.'; }
-}
-
+// ══════════════════════════════════════════════════════════════
+// COACH CV VIA ANTHROPIC
+// ══════════════════════════════════════════════════════════════
 function openCvModal(id){
   const job = allJobs.find(j=>j.id===id); if(!job) return; cvJobData = job;
   document.getElementById('cvJobTitle').textContent = job.title; document.getElementById('cvJobCompany').textContent = job.company||'';
@@ -965,6 +848,141 @@ function openCvModal(id){
   document.getElementById('cvModal').style.display = 'flex';
 }
 function closeCvModal(){ document.getElementById('cvModal').style.display='none'; }
+async function runCVCoach(){
+  const apiKey = localStorage.getItem('anthropicKey'); if(!apiKey){ alert('Ajoute ta clé API Anthropic dans les paramètres ⚙️'); closeCvModal(); showPage('config',null); return; }
+  const desc = document.getElementById('cvJobDesc').value.trim(); const skills = document.getElementById('cvUserSkills').value.trim();
+  if(!desc){ alert('Colle la description !'); return; }
+  const res = document.getElementById('cvResult'); res.style.display = 'block'; res.innerHTML = '<div class="ai-thinking">🌸 J\'analyse l\'offre pour Inès…</div>';
+  const prompt = `Tu es un coach emploi bienveillant qui aide Inès (reconversion sans diplôme spécifique requis) à postuler. Offre: ${cvJobData.title} chez ${cvJobData.company}. Desc: ${desc}. Compétences: ${skills}. Fais 4 parties courtes: 1. 3 compétences recherchées. 2. Formulations CV adaptées. 3. Accroche lettre motivation. 4. Conseil entretien.`;
+  try{
+    const r = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:800,messages:[{role:'user',content:prompt}]})
+    });
+    const d = await r.json(); res.innerHTML = `<div class="ai-result">${d.content[0].text}</div>`;
+  }catch{ res.innerHTML=`<div class="ai-result" style="color:#C0392B">Erreur de connexion.</div>`; }
+}
+
+// ══════════════════════════════════════════════════════════════
+// NEW SCRAPERS & CONNECTOR IMPLEMENTATIONS
+// ══════════════════════════════════════════════════════════════
+function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
+
+async function fetchRSS(rssUrl, sourceName){
+  try{
+    const proxy = `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`;
+    const r = await fetch(proxy); const text = await r.text();
+    const xml = new DOMParser().parseFromString(text,'application/xml');
+    return [...xml.querySelectorAll('item')].slice(0,10).map(item=>({
+      id:      sourceName+'-'+Math.random().toString(36).slice(2),
+      source:  sourceName,
+      title:   item.querySelector('title')?.textContent||'',
+      company: item.querySelector('company')?.textContent || item.querySelector('author')?.textContent || 'Structure',
+      location:item.querySelector('location')?.textContent || (idfOnly?'Île-de-France':'France'),
+      contract:'', date: item.querySelector('pubDate')?.textContent||new Date().toISOString(),
+      url:     item.querySelector('link')?.textContent||'#',
+      desc:    (item.querySelector('description')?.textContent||'').replace(/<[^>]+>/g,' ')
+    }));
+  }catch{ return []; }
+}
+
+// 1. France Travail - La Bonne Boîte (Trouve des structures à fort potentiel d'embauche)
+async function fetchLaBonneBoite(q) {
+  try {
+    // Liste de ROME standard adaptés au profil d'Inès (Animation G1203, Secrétariat M1607, Accueil M1601)
+    const romes = ['G1203', 'M1607', 'M1601'];
+    const rome = romes[Math.floor(Math.random() * romes.length)];
+    const lat = idfOnly ? '48.8566' : '46.2276';
+    const lon = idfOnly ? '2.3522' : '2.2137';
+    
+    const r = await fetch(`https://labonneboite.pole-emploi.fr/api/v1/company/?distance=30&latitude=${lat}&longitude=${lon}&rome_codes=${rome}`);
+    const d = await r.json();
+    if(!d.results) return [];
+    return d.results.slice(0,12).map(c => ({
+      id: jobId(c, 'lbb'),
+      source: 'labonneboite',
+      title: `Candidature Spontanée Recommandée (Secteur ${c.matched_rome_label})`,
+      company: c.name,
+      location: `${c.city} (${c. some_dept || 'IDF'})`,
+      contract: 'Opportunités Embauche',
+      date: new Date().toISOString(),
+      url: `https://labonneboite.francetravail.fr/entreprise/${c.siret}`,
+      desc: `Cette entreprise a été identifiée par France Travail comme ayant une très forte probabilité d'embaucher prochainement sans déposer d'offre classique.`
+    }));
+  } catch { return []; }
+}
+
+// 2. We Work Remotely (WWR) - Focus Client Support & Administration
+async function fetchWeWorkRemotely() {
+  return fetchRSS('https://weworkremotely.com/categories/customer-support/jobs.rss', 'wwr');
+}
+
+// Sources d'origine conservées et optimisées
+async function fetchAdzuna(q){
+  const id = localStorage.getItem('adzunaAppId'); const key = localStorage.getItem('adzunaKey'); if(!id||!key) return [];
+  try{
+    const loc = idfOnly ? '&location0=FR&location1=Paris' : '';
+    const r = await fetch(`https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=20&what=${encodeURIComponent(q)}${loc}&content-type=application/json`);
+    const d = await r.json();
+    return d.results.map(j=>({ id:jobId(j,'az'), source:'adzuna', title:j.title, company:j.company?.display_name, location:j.location?.display_name, contract:j.contract_type, date:j.created, url:j.redirect_url, desc:j.description }));
+  }catch{ return []; }
+}
+
+async function fetchRemotive(){
+  try{
+    const r = await fetch('https://remotive.com/api/remote-jobs?category=customer-support&limit=8'); const d = await r.json();
+    return d.jobs.map(j=>({ id:jobId(j,'rm'), source:'remotive', title:j.title, company:j.company_name, location:j.candidate_required_location, contract:j.job_type, date:j.publication_date, url:j.url, desc:j.description.replace(/<[^>]+>/g,' ') }));
+  }catch{ return []; }
+}
+
+async function fetchArbeitnow(){
+  try{
+    const r = await fetch('https://www.arbeitnow.com/api/job-board-api?page=1'); const d = await r.json();
+    return d.data.slice(0,8).map(j=>({ id:jobId(j,'ab'), source:'arbeitnow', title:j.title, company:j.company_name, location:j.location, contract:j.job_types?.[0], date:new Date(j.created_at*1000).toISOString(), url:j.url, desc:j.description.replace(/<[^>]+>/g,' ') }));
+  }catch{ return []; }
+}
+
+async function fetchHellowork(q){
+  return fetchRSS(`https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${encodeURIComponent(q)}&l=${idfOnly?'Île-de-France':''}&c=RSS`, 'hellowork');
+}
+
+function deduplicateJobs(jobs){
+  const seen = new Set();
+  return jobs.filter(j=>{
+    const key = (j.title+j.company).toLowerCase().replace(/[^a-z]/g,'').slice(0,35);
+    if(seen.has(key)) return false; seen.add(key); return true;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// EXECUTION CENTRALISÉE
+// ══════════════════════════════════════════════════════════════
+const DEFAULT_QUERY = 'education jeunesse administratif animation accueil';
+
+async function loadJobs(q){
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('cardsGrid').innerHTML = '';
+
+  const list = await Promise.allSettled([
+    fetchAdzuna(q),
+    fetchRemotive(),
+    fetchArbeitnow(),
+    fetchHellowork(q),
+    fetchWeWorkRemotely(),
+    fetchLaBonneBoite(q)
+  ]);
+
+  let jobs = [];
+  list.forEach(r => { if(r.status==='fulfilled') jobs.push(...r.value); });
+  jobs = deduplicateJobs(jobs);
+
+  if(jobs.length === 0) jobs = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
+  allJobs = jobs;
+  document.getElementById('loader').style.display = 'none';
+  renderJobs();
+}
+
+function doSearch(){ searchQuery = document.getElementById('searchInput').value.trim(); loadJobs(searchQuery || DEFAULT_QUERY); }
 function saveKeys(){
   localStorage.setItem('adzunaAppId', document.getElementById('adzunaAppId').value.trim());
   localStorage.setItem('adzunaKey', document.getElementById('adzunaKey').value.trim());
@@ -979,16 +997,16 @@ function loadConfigUI(){
 function showPage(name, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
+  document.getElementById('page-'+name).classList.add('active'); if(btn) btn.classList.add('active');
   if(name==='favoris') renderFavs(); if(name==='suivi') renderSuivi(); if(name==='config') loadConfigUI();
 }
-
 function initApp(){
   initPetals(); setMotivation(); updateFavCount(); renderSuivi();
   document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+  document.getElementById('cvModal').addEventListener('click', e=>{ if(e.target===document.getElementById('cvModal')) closeCvModal(); });
   loadJobs(DEFAULT_QUERY);
 }
+
 checkAuth();
 </script>
 </body>
