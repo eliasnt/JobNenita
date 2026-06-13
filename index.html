@@ -657,22 +657,33 @@ let searchQuery = '';
 let cvJobData = {};
 
 function isInIdfStrict(job) {
-  // Jobs marqués à la source depuis une requête IDF ciblée → on fait confiance à l'API
+  // Jobs depuis l'endpoint /fr/ d'Adzuna avec where=Paris → fiables
   if (job._fromIDF) return true;
   const loc = (job.location || '').toLowerCase();
-  // Pas de localisation → inclure par défaut si la source est connue IDF
   if (!loc || loc === 'france') return false;
-  // Rejeter le full-remote sans mention IDF
-  if ((loc.includes('remote') || loc.includes('anywhere') || loc.includes('télétravail total')) &&
-      !loc.includes('paris') && !loc.includes('75') && !loc.includes('idf')) return false;
-  // Codes département IDF
+
+  // ── 1. REJETER en priorité tout ce qui est clairement non-France ──
+  const NON_FR = [
+    'united states','texas','new york','california','canada',
+    'england','australia','deutschland','nederland','united kingdom',
+    'belgique','suisse','schweiz','españa','italia','poland','polska',
+    // abréviations US : " tx", " ca ", " ny," etc.
+    ' tx',' al ',' ak ',' az ',' ar ',' ca ',' co ',' ct ',' de ',' fl ',
+    ' ga ',' hi ',' id ',' il ',' in ',' ia ',' ks ',' ky ',' la ',' me ',
+    ' md ',' ma ',' mi ',' mn ',' ms ',' mo ',' mt ',' ne ',' nv ',' nh ',
+    ' nj ',' nm ',' nc ',' nd ',' oh ',' ok ',' or ',' pa ',' ri ',' sc ',
+    ' sd ',' tn ',' ut ',' vt ',' va ',' wa ',' wv ',' wi ',' wy ',
+  ];
+  if (NON_FR.some(k => loc.includes(k))) return false;
+  // "Paris, TX" / "Paris, TN" — pattern : paris suivi d'une virgule + 2 lettres sans "france"
+  if (/paris,?\s+[a-z]{2}(\s|$)/.test(loc) && !loc.includes('france') && !loc.includes('île') && !loc.includes('grand')) return false;
+
+  // ── 2. ACCEPTER si c'est clairement IDF/France ──
+  if (loc.includes('paris') || loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf') || loc.includes('région parisienne')) return true;
   for (const dept of IDF_DEPTS) {
-    if (loc.includes('(' + dept + ')') || loc.includes(' ' + dept) || loc.startsWith(dept) || loc.includes('/' + dept)) return true;
+    if (loc.includes('('+dept+')') || loc.includes(' '+dept) || loc.startsWith(dept) || loc.includes('/'+dept)) return true;
   }
-  // Villes IDF
   for (const city of IDF_CITIES) { if (loc.includes(city)) return true; }
-  // Mentions génériques
-  if (loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf') || loc.includes('région parisienne') || loc.includes('paris')) return true;
   return false;
 }
 
@@ -1148,8 +1159,12 @@ async function loadDataSpain() {
   const loaderEs = document.getElementById('loader-es');
   const gridEs = document.getElementById('aupairGrid');
   if(!loaderEs || !gridEs) return;
+
+  // Afficher immédiatement les cartes statiques sans attendre l'API
+  auPairJobs = [];
+  renderSpainList();
+
   loaderEs.style.display = 'block';
-  gridEs.innerHTML = '';
   try{
     const [az, jbes, indES, infojs, jtme] = await Promise.all([
       fetchAdzunaSpain(),
