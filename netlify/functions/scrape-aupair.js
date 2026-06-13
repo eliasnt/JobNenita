@@ -96,7 +96,12 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    headers: { ...cors, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=900' },
+    headers: {
+      ...cors,
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
+      'Netlify-CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+    },
     body: JSON.stringify(jobs),
   };
 };

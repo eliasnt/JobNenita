@@ -724,8 +724,8 @@ function isNoxp(j){
   return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k));
 }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo',infojobs:'src-infojobs',jobtome:'src-jobtome',indeed_es:'src-indeed',talent:'src-adzuna',jobisjob:'src-hellowork',trovit:'src-hellowork',milanuncios:'src-leboncoin',cuidado:'src-infojobs'};
-const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed RSS',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios',infojobs:'InfoJobs ES',jobtome:'Jobtome ES',indeed_es:'Indeed ES',talent:'Talent.com',jobisjob:'JobisJob',trovit:'Trovit',milanuncios:'Milanuncios',cuidado:'Cuidado.es'};
+const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo',infojobs:'src-infojobs',jobtome:'src-jobtome',indeed_es:'src-indeed',indeed_fr:'src-indeed',talent:'src-adzuna',talent_fr:'src-adzuna',jobisjob:'src-hellowork',jobisjob_fr:'src-hellowork',trovit:'src-hellowork',trovit_fr:'src-hellowork',milanuncios:'src-leboncoin',cuidado:'src-infojobs',jobtome_fr:'src-jobtome'};
+const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed RSS',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios',infojobs:'InfoJobs ES',jobtome:'Jobtome ES',indeed_es:'Indeed ES',indeed_fr:'Indeed FR',talent:'Talent.com',talent_fr:'Talent.com',jobisjob:'JobisJob',jobisjob_fr:'JobisJob FR',trovit:'Trovit',trovit_fr:'Trovit FR',milanuncios:'Milanuncios',cuidado:'Cuidado.es',jobtome_fr:'Jobtome FR'};
 
 function cardHTML(j, isFavPage=false, isSpainCard=false){
   const isFav = !!favs[j.id];
@@ -1153,12 +1153,20 @@ async function loadJobs(q){
   document.getElementById('loader').style.display = 'block';
   document.getElementById('cardsGrid').innerHTML = '';
   try{
-    const [az, jb, ind] = await Promise.all([fetchAdzuna(q), fetchJooble(), fetchIndeedRSS()]);
-    const stats = {adzuna: az.length};
-    if(localStorage.getItem('joobleKey')) stats.jooble = jb.length;
+    // Scraper Netlify (RSS côté serveur) + Adzuna API en parallèle
+    let scraped = [];
+    try {
+      const r = await withTimeout(fetch('/.netlify/functions/scrape-idf'), 20000);
+      if (r.ok) scraped = await r.json();
+    } catch {}
+
+    const [az, jb] = await Promise.all([fetchAdzuna(q), fetchJooble()]);
+    const stats = { adzuna: az.length, scrape_idf: scraped.length };
+    if (localStorage.getItem('joobleKey')) stats.jooble = jb.length;
     renderSourceStatus(stats, 'idfSourceStatus');
+
     const seen = new Set();
-    allJobs = [...az,...jb,...ind].filter(j=>{
+    allJobs = [...scraped, ...az, ...jb].filter(j => {
       if(seen.has(j.id)) return false; seen.add(j.id);
       return isInIdfStrict(j) && !isDefinitelyNonFrance(j);
     });
