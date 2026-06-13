@@ -252,6 +252,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .src-francetravail{background:#EA580C;}
 .src-indeed{background:#4F46E5;}
 .src-leboncoin{background:#F97316;}
+.src-tablon{background:#8B5CF6;} /* Nouvelle couleur pour ton scraper */
 .src-demo{background:var(--lavande-deep);}
 .source-lbl{font-size:.7rem;color:var(--text3);}
 
@@ -277,7 +278,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .field label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.3rem;}
 .field input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.45rem .75rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;color:var(--text);}
 .field input:focus{border-color:var(--rose-deep);}
-.btn-save{margin-top:.8rem;background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;padding:.5rem 1.4rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;}
+.btn-save{margin-top:.8rem;background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;padding:.55rem 1.4rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;}
 .btn-save:hover{opacity:.9;}
 
 /* ── CV COACH MODAL ───────────────────────────────── */
@@ -438,7 +439,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 
   <div id="loader-es" class="loader-wrap" style="display:none;">
     <div class="petal-loader">💃🏽</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Recherche active de familles espagnoles via le réseau Adzuna España...</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Lecture du fichier d'aggrégation d'annonces locales...</p>
   </div>
   <div id="aupairGrid" class="cards-wrap"></div>
 </div>
@@ -479,7 +480,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   <div class="config-section">
     <div class="config-card">
       <div class="config-title">🌍 Adzuna — Connexion Multi-pays</div>
-      <div class="config-sub">Nécessaire pour les offres Île-de-France ET l'accès Au Pair en Espagne. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
+      <div class="config-sub">Nécessaire pour les offres Île-de-France. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
       <div class="config-grid">
         <div class="field"><label>App ID</label><input type="text" id="adzunaAppId" placeholder="ex: a1b2c3d4"></div>
         <div class="field"><label>App Key</label><input type="text" id="adzunaKey" placeholder="ex: xxxxxxxxxxxxxxxx"></div>
@@ -492,7 +493,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
     </div>
     <button class="btn-save" onclick="saveKeys()">💾 Enregistrer la configuration</button>
     <div style="font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6;">
-      Sans clé Adzuna, l'application se rabattra sur l'aggrégation RSS dynamique pour l'Île-de-France, mais la recherche en Espagne requiert l'activation de ces clés.
+      Sans clé Adzuna, l'application se rabattra sur l'aggrégation RSS dynamique pour l'Île-de-France. Les offres Au Pair quant à elles lisent directement le fichier JSON généré en local par Python.
     </div>
   </div>
 </div>
@@ -737,54 +738,67 @@ function getTags(title, desc){
 }
 function isNoxp(j){ return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k)); }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna'};
-const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES'};
+const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',TablonDeAnuncios:'src-tablon',Milanuncios:'src-leboncoin'};
+const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo',TablonDeAnuncios:'Tablon Anuncios',Milanuncios:'Milanuncios'};
 
 function cardHTML(j, isFavPage=false, isSpainCard=false){
   const isFav = !!favs[j.id];
-  const noteVal = (favs[j.id] && favs[j.id].note) || '';
-  const noteSection = isFavPage ? `<div class="fav-note-wrap"><textarea class="fav-note" rows="2" placeholder="Notes personnelles…" onchange="saveFavNote('${j.id}',this.value)">${noteVal}</textarea></div>` : '';
-  
-  let tagsHtml = '';
-  let contractTag = '';
-
-  if (isSpainCard || j.id.startsWith('azes')) {
-    tagsHtml = `<span class="tag tag-es-aupair">🍼 Au Pair España</span>`;
-    contractTag = `<span class="tag tag-housing">🏡 Logée & Nourrie</span>`;
-  } else {
-    const tags = getTags(j.title, j.desc||'');
-    const contractType = detectContract(j);
-    tagsHtml = tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
-    contractTag = contractType !== 'other' ? `<span class="tag ${CONTRACT_CLS[contractType]}">${CONTRACT_LABELS[contractType]}</span>` : '';
-  }
+  const note = favs[j.id]?.note || '';
+  const tags = getTagsForJob(j, isSpainCard);
+  const timeStr = formatJobDate(j.date);
+  const srcClass = SRC_COLORS[j.source] || 'src-demo';
+  const srcLabel = SRC_LABELS[j.source] || j.source || 'Annonce';
 
   return `
-  <div class="job-card${isFav?' favorited':''}" id="card-${j.id}">
-    <div class="card-header">
-      <div>
-        <div class="card-title">${j.title}</div>
-        <div class="card-company">${j.company||'Structure d\'accueil'}</div>
+    <div class="job-card ${isFav ? 'favorited' : ''}" id="card-${j.id}">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">${escapeHTML(j.title)}</h3>
+          <div class="card-company">${escapeHTML(j.company || 'Famille / Recruteur Direct')}</div>
+        </div>
+        <button class="fav-btn" onclick="toggleFav('${j.id.replace(/'/g, "\\'")}')">
+          ${isFav ? '❤️' : '🤍'}
+        </button>
       </div>
-      <button class="fav-btn" onclick="toggleFav('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">${isFav?'❤️':'🤍'}</button>
-    </div>
-    <div class="card-tags">${tagsHtml}${contractTag}</div>
-    <div class="card-footer">
-      <span class="card-location">📍 ${j.location||'Espagne'}</span>
-      <span class="card-date">${relDate(j.date)}</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
-      <span class="source-dot ${SRC_COLORS[j.source]||'src-demo'}"></span>
-      <span class="source-lbl">${SRC_LABELS[j.source]||'Adzuna'}</span>
-      <div style="margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="btn-cv" onclick="openCvModal('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">🤖 Coach CV</button>
-        <button class="btn-tiny" onclick="addToSuivi('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">📋 Suivre</button>
-        <a class="btn-apply" href="${j.url||'#'}" target="_blank" rel="noopener">Voir →</a>
+
+      <div class="card-tags">
+        ${tags.map(t => `<span class="tag ${t.cls}">${t.label}</span>`).join('')}
+        ${j.contract ? `<span class="tag ${getContractClass(j.contract)}">${j.contract.toUpperCase()}</span>` : ''}
       </div>
+
+      <p style="font-size:0.83rem; color:var(--text2); line-height:1.5; margin:0.5rem 0;">
+        ${escapeHTML(j.desc || j.description || 'Cliquez sur postuler pour voir les détails de cette offre.')}
+      </p>
+
+      <div class="card-footer">
+        <span class="source-dot ${srcClass}"></span>
+        <span class="source-lbl">${srcLabel}</span>
+        <span class="card-location">📍 ${escapeHTML(j.location || j.city || 'Île-de-France')}</span>
+        ${timeStr ? `<span class="card-date">🕒 ${timeStr}</span>` : ''}
+        
+        <div class="card-actions">
+          <button class="btn-cv" onclick="openCvModal('${j.id.replace(/'/g, "\\'")}')">📝 IA CV</button>
+          <a class="btn-apply" href="${j.url}" target="_blank" rel="noopener noreferrer">🚀 Postuler</a>
+        </div>
+      </div>
+
+      ${isFavPage ? `
+        <div class="fav-note-wrap">
+          <textarea class="fav-note" placeholder="Ajouter une note personnelle sur cette offre (ex: relancé le...)" 
+            oninput="saveFavNote('${j.id.replace(/'/g, "\\'")}', this.value)">${escapeHTML(note)}</textarea>
+        </div>
+      ` : ''}
     </div>
-    ${noteSection}
-  </div>`;
+  `;
 }
 
+// Fonction de secours pour éviter que l'HTML casse si du texte a des guillemets
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
+}
 function renderJobs(){
   const grid = document.getElementById('cardsGrid');
   let jobs = allJobs.filter(j => {
@@ -819,21 +833,21 @@ function renderSpainList() {
   if(!grid) return;
 
   const filtered = auPairJobs.filter(j => {
-    const text = (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase();
+    const text = (j.location + ' ' + j.title + ' ' + (j.desc || '')).toLowerCase();
     if (currentSpainCityFilter === 'barcelona') return text.includes('barcelona');
     if (currentSpainCityFilter === 'palma') return text.includes('palma') || text.includes('mallorca') || text.includes('baleares');
     return true;
   });
 
   document.getElementById('statTotalEs').textContent = auPairJobs.length;
-  document.getElementById('statBarcelona').textContent = auPairJobs.filter(j => (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase().includes('barcelona')).length;
+  document.getElementById('statBarcelona').textContent = auPairJobs.filter(j => (j.location + ' ' + j.title + ' ' + (j.desc || '')).toLowerCase().includes('barcelona')).length;
   document.getElementById('statPalma').textContent = auPairJobs.filter(j => {
-    const txt = (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase();
+    const txt = (j.location + ' ' + j.title + ' ' + (j.desc || '')).toLowerCase();
     return txt.includes('palma') || txt.includes('mallorca') || txt.includes('baleares');
   }).length;
 
   if (!filtered.length) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖️</div><p style="color:var(--text2);">Aucune offre Au Pair trouvée sur ces destinations. Pense à configurer tes clés Adzuna.</p></div>`;
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖️</div><p style="color:var(--text2);">Aucune offre Au Pair trouvée. Relance le script Python \`scraper.py\` pour générer le fichier.</p></div>`;
     return;
   }
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
@@ -860,27 +874,28 @@ async function fetchAdzuna(q){
   }catch{ return []; }
 }
 
-async function fetchAdzunaSpainAuPair() {
-  const id = localStorage.getItem('adzunaAppId');
-  const key = localStorage.getItem('adzunaKey');
-  if (!id || !key) return [];
+// LECTURE DIRECTE DU FICHIER JSON SCRAPÉ PAR PYTHON
+async function fetchScrapedAuPairJSON() {
   try {
-    const url = `https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=au%20pair&content-type=application/json`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if (!d.results) return [];
-    return d.results.map(j => ({
-      id: 'azes-' + j.id,
-      source: 'adzuna_es',
+    const response = await fetch('offres.json');
+    if (!response.ok) throw new Error();
+    const data = await response.json();
+    
+    return data.map((j, index) => ({
+      id: 'scraped-' + index,
+      source: j.source || 'Scraper Local',
       title: j.title,
-      company: j.company?.display_name || "Famille d'accueil",
-      location: j.location?.display_name || "España",
+      company: j.company || "Famille d'accueil",
+      location: j.city || "Espagne",
       desc: j.description || "",
-      url: j.redirect_url,
-      date: j.created,
-      contract: 'Au Pair'
+      url: j.url || "#",
+      date: new Date().toISOString(),
+      isAuPair: true
     }));
-  } catch (e) { return []; }
+  } catch (e) {
+    console.log("Fichier offres.json introuvable ou vide. Mode démo actif.");
+    return [];
+  }
 }
 
 async function fetchRSS(rssUrl, sourceName){
@@ -974,18 +989,8 @@ async function loadDataSpain() {
   loaderEs.style.display = 'block';
   gridEs.innerHTML = '';
 
-  const rawJobs = await fetchAdzunaSpainAuPair();
-  
-  auPairJobs = rawJobs.filter(j => {
-    const loc = j.location.toLowerCase();
-    const title = j.title.toLowerCase();
-    const desc = j.desc.toLowerCase();
-    
-    const isBarcelona = loc.includes('barcelona') || title.includes('barcelona') || desc.includes('barcelona');
-    const isPalma = loc.includes('palma') || loc.includes('mallorca') || loc.includes('baleares') || title.includes('palma') || desc.includes('palma');
-    
-    return isBarcelona || isPalma;
-  });
+  // Récupération des offres à partir de ton fichier JSON de scraping local
+  auPairJobs = await fetchScrapedAuPairJSON();
 
   loaderEs.style.display = 'none';
   renderSpainList();
@@ -1021,7 +1026,7 @@ function toggleFav(id, isSpain = false){
   if(favs[id]){ 
     delete favs[id]; 
   } else { 
-    favs[id] = {id: job.id, title:job.title, company:job.company, note:'', location: job.location, source: job.source, url: job.url, desc: job.desc || ''}; 
+    favs[id] = {id: job.id, title:job.title, company:job.company, note:'', location: job.location, source: job.source, url: job.url, desc: job.desc || '', isAuPair: job.isAuPair || false}; 
   }
   localStorage.setItem('ines_favs', JSON.stringify(favs)); updateFavCount(); 
   
@@ -1034,7 +1039,7 @@ function renderFavs(){
   const grid = document.getElementById('favsGrid'); updateFavCount();
   const favItems = Object.values(favs);
   if(favItems.length===0){ grid.innerHTML=`<div class="empty"><p>Pas encore de favoris.</p></div>`; return; }
-  grid.innerHTML = favItems.map(j=>cardHTML(j,true, j.id.startsWith('azes'))).join('');
+  grid.innerHTML = favItems.map(j=>cardHTML(j,true, j.isAuPair)).join('');
 }
 function updateFavCount(){
   const n = Object.keys(favs).length; document.getElementById('favBadge').textContent = n; document.getElementById('statFavs').textContent = n;
@@ -1127,7 +1132,7 @@ function showPage(name, btn){
   if(name==='favoris') renderFavs(); 
   if(name==='suivi') renderSuivi(); 
   if(name==='config') loadConfigUI();
-  if(name==='aupair' && auPairJobs.length === 0) loadDataSpain();
+  if(name==='aupair') loadDataSpain(); // Recharge à chaque clic pour avoir les dernières données scrapées
 }
 
 function initApp(){
