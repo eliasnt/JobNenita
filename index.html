@@ -218,6 +218,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .job-card{background:white;border:1.5px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem;transition:border-color .2s,box-shadow .2s;position:relative;}
 .job-card:hover{border-color:var(--rose);box-shadow:0 4px 20px rgba(242,167,187,.18);}
 .job-card.favorited{border-color:var(--rose-deep);}
+.direct-link-btn{display:block;padding:.6rem 1rem;background:white;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.83rem;font-weight:600;text-decoration:none;transition:border-color .2s,background .2s;}
+.direct-link-btn:hover{border-color:var(--rose);background:var(--rose-pale);}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.5rem;}
 .card-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);line-height:1.3;}
 .card-company{font-size:.82rem;color:var(--text2);margin-top:.15rem;}
@@ -1170,27 +1172,32 @@ async function loadDataSpain() {
   const gridEs = document.getElementById('aupairGrid');
   if(!loaderEs || !gridEs) return;
 
-  // Afficher immédiatement les cartes statiques sans attendre l'API
   auPairJobs = [];
   renderSpainList();
-
   loaderEs.style.display = 'block';
-  try{
-    const [az, jbes, indES, infojs, jtme] = await Promise.all([
-      fetchAdzunaSpain(),
-      fetchJoobleSpain(),
-      fetchIndeedRSS_ES(),
-      fetchInfoJobsRSS(),
-      fetchJobtomeES(),
-    ]);
-    const stats = {adzuna_es: az.length};
-    if(localStorage.getItem('joobleKey')) stats.jooble_es = jbes.length;
-    renderSourceStatus(stats, 'esSourceStatus');
+
+  try {
+    // 1. Fonction Netlify de scraping — InfoJobs + Indeed ES + Jobtome côté serveur
+    let scraped = [];
+    try {
+      const r = await withTimeout(fetch('/.netlify/functions/scrape-aupair'), 20000);
+      if (r.ok) scraped = await r.json();
+    } catch {}
+
+    // 2. Adzuna ES (API REST, fonctionne partout si clés configurées)
+    const [az, jbes] = await Promise.all([fetchAdzunaSpain(), fetchJoobleSpain()]);
+
     const seen = new Set();
-    auPairJobs = [...az,...jbes,...indES,...infojs,...jtme].filter(j=>{
-      if(seen.has(j.id)) return false; seen.add(j.id); return true;
+    auPairJobs = [...scraped, ...az, ...jbes].filter(j => {
+      if (!j || seen.has(j.id)) return false;
+      seen.add(j.id);
+      return true;
     });
-  }catch{ auPairJobs = []; }
+
+    const stats = { adzuna_es: az.length, scrape: scraped.length };
+    renderSourceStatus(stats, 'esSourceStatus');
+  } catch { auPairJobs = []; }
+
   loaderEs.style.display = 'none';
   renderSpainList();
 }
