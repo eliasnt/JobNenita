@@ -861,14 +861,21 @@ function withTimeout(promise, ms) {
   return Promise.race([promise, new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), ms))]);
 }
 
-// ── PROXY CORS MULTI-FALLBACK ──
+// ── PROXY CORS ──
+// Sur Netlify : utilise la fonction serverless /proxy (aucun blocage CORS)
+// Sur GitHub Pages / local : tente les proxies publics en fallback
 async function proxyFetch(url) {
-  const proxies = [
+  // 1. Fonction Netlify (fonctionne uniquement si déployé sur Netlify)
+  try {
+    const r = await withTimeout(fetch(`/.netlify/functions/proxy?url=${encodeURIComponent(url)}`), 10000);
+    if (r.ok) { const t = await r.text(); if(t && t.length > 100) return t; }
+  } catch {}
+  // 2. Proxies publics en fallback (moins fiables)
+  const fallbacks = [
     async u => { const r = await withTimeout(fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`),8000); const d = await r.json(); return d.contents||''; },
     async u => { const r = await withTimeout(fetch(`https://corsproxy.io/?${encodeURIComponent(u)}`),8000); return await r.text(); },
-    async u => { const r = await withTimeout(fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`),8000); return await r.text(); },
   ];
-  for (const fn of proxies) {
+  for (const fn of fallbacks) {
     try { const t = await fn(url); if(t && typeof t==='string' && t.length > 100) return t; } catch {}
   }
   return null;
