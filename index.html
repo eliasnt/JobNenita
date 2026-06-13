@@ -724,8 +724,8 @@ function isNoxp(j){
   return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k));
 }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo',infojobs:'src-infojobs',jobtome:'src-jobtome'};
-const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed RSS',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios',infojobs:'InfoJobs ES',jobtome:'Jobtome ES'};
+const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo',infojobs:'src-infojobs',jobtome:'src-jobtome',indeed_es:'src-indeed',talent:'src-adzuna',jobisjob:'src-hellowork',trovit:'src-hellowork',milanuncios:'src-leboncoin',cuidado:'src-infojobs'};
+const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed RSS',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios',infojobs:'InfoJobs ES',jobtome:'Jobtome ES',indeed_es:'Indeed ES',talent:'Talent.com',jobisjob:'JobisJob',trovit:'Trovit',milanuncios:'Milanuncios',cuidado:'Cuidado.es'};
 
 function cardHTML(j, isFavPage=false, isSpainCard=false){
   const isFav = !!favs[j.id];
