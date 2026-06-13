@@ -254,6 +254,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .src-indeed{background:#4F46E5;}
 .src-leboncoin{background:#F97316;}
 .src-demo{background:var(--lavande-deep);}
+.src-infojobs{background:#FF6B35;}
+.src-jobtome{background:#7C3AED;}
 .source-lbl{font-size:.7rem;color:var(--text3);}
 
 /* ── FAV NOTE ─────────────────────────────────────── */
@@ -648,16 +650,21 @@ let searchQuery = '';
 let cvJobData = {};
 
 function isInIdfStrict(job) {
+  // Jobs marqués à la source depuis une requête IDF ciblée → on fait confiance à l'API
+  if (job._fromIDF) return true;
   const loc = (job.location || '').toLowerCase();
-  if (loc.includes('remote') || loc.includes('anywhere') || loc.includes('télétravail total') || loc.includes('telework')) {
-    if (!loc.includes('paris') && !loc.includes('75') && !loc.includes('idf')) return false;
-  }
+  // Pas de localisation → inclure par défaut si la source est connue IDF
+  if (!loc || loc === 'france') return false;
+  // Rejeter le full-remote sans mention IDF
+  if ((loc.includes('remote') || loc.includes('anywhere') || loc.includes('télétravail total')) &&
+      !loc.includes('paris') && !loc.includes('75') && !loc.includes('idf')) return false;
+  // Codes département IDF
   for (const dept of IDF_DEPTS) {
     if (loc.includes('(' + dept + ')') || loc.includes(' ' + dept) || loc.startsWith(dept) || loc.includes('/' + dept)) return true;
   }
-  for (const city of IDF_CITIES) {
-    if (loc.includes(city)) return true;
-  }
+  // Villes IDF
+  for (const city of IDF_CITIES) { if (loc.includes(city)) return true; }
+  // Mentions génériques
   if (loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf') || loc.includes('région parisienne') || loc.includes('paris')) return true;
   return false;
 }
@@ -699,8 +706,8 @@ function isNoxp(j){
   return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k));
 }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo'};
-const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios'};
+const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo',infojobs:'src-infojobs',jobtome:'src-jobtome'};
+const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed RSS',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios',infojobs:'InfoJobs ES',jobtome:'Jobtome ES'};
 
 function cardHTML(j, isFavPage=false, isSpainCard=false){
   const isFav = !!favs[j.id];
@@ -783,31 +790,42 @@ function renderJobs(){
   grid.innerHTML = filtered.map(j=>cardHTML(j, false, false)).join('');
 }
 
-const SPAIN_CITIES = {
-  barcelona: t => t.includes('barcelona'),
-  palma: t => t.includes('palma') || t.includes('mallorca') || t.includes('baleares'),
-  madrid: t => t.includes('madrid'),
-  valencia: t => t.includes('valencia') || t.includes('valència'),
-  ibiza: t => t.includes('ibiza') || t.includes('eivissa'),
-  sevilla: t => t.includes('sevilla') || t.includes('séville'),
+// Matching par _sourceCity (fiable, issu de la requête) puis par texte (fallback)
+const CITY_PATTERNS = {
+  barcelona: ['barcelona'],
+  palma:     ['palma','mallorca','baleares','balear'],
+  madrid:    ['madrid'],
+  valencia:  ['valencia','valència'],
+  ibiza:     ['ibiza','eivissa'],
+  sevilla:   ['sevilla','séville','seville'],
 };
+
+function cityMatch(j, key) {
+  const patterns = CITY_PATTERNS[key];
+  if (!patterns) return true;
+  // 1. Source taggée à la requête → fiable
+  const sc = (j._sourceCity || '').toLowerCase();
+  if (sc && patterns.some(p => sc.includes(p))) return true;
+  // 2. Champ location
+  const loc = (j.location || '').toLowerCase();
+  if (loc && patterns.some(p => loc.includes(p))) return true;
+  // 3. Titre (dernier recours)
+  const title = (j.title || '').toLowerCase();
+  return patterns.some(p => title.includes(p));
+}
 
 function renderSpainList() {
   const grid = document.getElementById('aupairGrid');
   if (!grid) return;
 
-  const cityTxt = j => ((j.location||'')+' '+(j.title||'')+' '+(j.desc||'')).toLowerCase();
-
-  let filtered = auPairJobs.filter(j => {
-    if (currentSpainCityFilter === 'all') return true;
-    const fn = SPAIN_CITIES[currentSpainCityFilter];
-    return fn ? fn(cityTxt(j)) : true;
-  });
+  const filtered = currentSpainCityFilter === 'all'
+    ? auPairJobs
+    : auPairJobs.filter(j => cityMatch(j, currentSpainCityFilter));
 
   document.getElementById('statTotalEs').innerText = auPairJobs.length;
-  document.getElementById('statBarcelona').innerText = auPairJobs.filter(j => SPAIN_CITIES.barcelona(cityTxt(j))).length;
-  document.getElementById('statPalma').innerText = auPairJobs.filter(j => SPAIN_CITIES.palma(cityTxt(j))).length;
-  document.getElementById('statMadrid').innerText = auPairJobs.filter(j => SPAIN_CITIES.madrid(cityTxt(j))).length;
+  document.getElementById('statBarcelona').innerText = auPairJobs.filter(j => cityMatch(j,'barcelona')).length;
+  document.getElementById('statPalma').innerText = auPairJobs.filter(j => cityMatch(j,'palma')).length;
+  document.getElementById('statMadrid').innerText = auPairJobs.filter(j => cityMatch(j,'madrid')).length;
 
   if (!filtered.length) {
     grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖</div><p style="color:var(--text2);">Aucune offre d'Au Pair trouvée pour cette ville. Essaie "Toutes les villes".</p></div>`;
@@ -816,9 +834,58 @@ function renderSpainList() {
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
 }
 
-// ── FETCHERS VIA API ADZUNA (CORRIGÉS ET SÉCURISÉS) ──
+// ── PROXY CORS MULTI-FALLBACK ──
 function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
 
+async function proxyFetch(url) {
+  const proxies = [
+    async u => { const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,{signal:AbortSignal.timeout(7000)}); const d = await r.json(); return d.contents||''; },
+    async u => { const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(u)}`,{signal:AbortSignal.timeout(7000)}); return await r.text(); },
+    async u => { const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,{signal:AbortSignal.timeout(7000)}); return await r.text(); },
+  ];
+  for (const fn of proxies) {
+    try { const t = await fn(url); if(t && t.length > 100) return t; } catch {}
+  }
+  return null;
+}
+
+// ── PARSEUR RSS UNIVERSEL ──
+function parseRSS(xml, source, idPrefix, opts={}) {
+  if(!xml || xml.length < 50) return [];
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'text/xml');
+    if(doc.querySelector('parsererror')) return [];
+    const items = doc.querySelectorAll('item');
+    const seen = new Set();
+    return Array.from(items).map(item => {
+      const get = tag => item.querySelector(tag)?.textContent?.trim() || '';
+      const link = get('link') || get('guid');
+      if(!link || seen.has(link)) return null;
+      seen.add(link);
+      const rawDesc = get('description').replace(/<[^>]*>/g,'').substring(0,400);
+      const loc = get('location') || '';
+      let safeId;
+      try { safeId = idPrefix+'-'+btoa(unescape(encodeURIComponent(link))).substring(0,20).replace(/[^a-z0-9]/gi,''); }
+      catch { safeId = idPrefix+'-'+Math.random().toString(36).slice(2); }
+      return {
+        id: safeId,
+        source,
+        title: get('title') || 'Offre emploi',
+        company: get('source') || get('author') || opts.company || '',
+        location: loc || opts.fallbackCity || '',
+        contract: '',
+        date: get('pubDate'),
+        url: link,
+        desc: rawDesc,
+        _fromIDF: opts.fromIDF || false,
+        _sourceCity: opts.sourceCity || '',
+      };
+    }).filter(Boolean);
+  } catch { return []; }
+}
+
+// ── ADZUNA IDF (multi-requêtes + pages) ──
 async function fetchAdzuna(q){
   const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
@@ -838,134 +905,143 @@ async function fetchAdzuna(q){
       const jid = jobId(j,'az');
       if(seen.has(jid)) return null;
       seen.add(jid);
-      return {id:jid,source:'adzuna',title:j.title,company:j.company?.display_name||'',location:j.location?.display_name||'Île-de-France',contract:j.contract_type||'',date:j.created,url:j.redirect_url,desc:j.description||''};
+      return {id:jid,source:'adzuna',_fromIDF:true,title:j.title,company:j.company?.display_name||'',location:j.location?.display_name||'Île-de-France',contract:j.contract_type||'',date:j.created,url:j.redirect_url,desc:j.description||''};
     }).filter(Boolean));
   }catch{ return []; }
 }
 
-function parseRSS(xml, source, idPrefix){
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(xml, 'text/xml');
-  const items = doc.querySelectorAll('item');
-  const seen = new Set();
-  return Array.from(items).map(item => {
-    const get = tag => item.querySelector(tag)?.textContent?.trim() || '';
-    const link = get('link') || get('guid');
-    if(seen.has(link)) return null;
-    seen.add(link);
-    const rawDesc = get('description').replace(/<[^>]*>/g,'').substring(0,300);
-    const location = get('location') || get('georss\\:point') || '';
-    return {
-      id: idPrefix + '-' + btoa(link).substring(0,16).replace(/[^a-z0-9]/gi,''),
-      source,
-      title: get('title'),
-      company: get('source') || '',
-      location: location || 'Île-de-France',
-      contract: '',
-      date: get('pubDate'),
-      url: link,
-      desc: rawDesc
-    };
-  }).filter(Boolean);
-}
-
-const PROXY = 'https://api.allorigins.win/get?url=';
-
+// ── INDEED IDF RSS ──
 async function fetchIndeedRSS(){
   const queries = [
-    { q:'animation+éducation+jeunesse', l:'Île-de-France' },
-    { q:'administratif+secrétaire+accueil', l:'Paris' },
-    { q:'animateur+enfant+bafa', l:'Île-de-France' },
-    { q:'assistant+social+aide', l:'Paris' },
-    { q:'éducateur+formation+sans+expérience', l:'Île-de-France' },
+    {q:'animation+%C3%A9ducation+jeunesse', l:'%C3%8Ele-de-France'},
+    {q:'administratif+secr%C3%A9taire+accueil', l:'Paris'},
+    {q:'animateur+enfant+bafa', l:'%C3%8Ele-de-France'},
+    {q:'assistant+social+aide', l:'Paris'},
+    {q:'%C3%A9ducateur+formation+sans+exp%C3%A9rience', l:'%C3%8Ele-de-France'},
   ];
   try {
     const all = await Promise.all(queries.map(({q,l}) => {
-      const rss = `https://fr.indeed.com/rss?q=${q}&l=${encodeURIComponent(l)}&sort=date`;
-      return fetch(PROXY + encodeURIComponent(rss))
-        .then(r=>r.json()).then(d=>parseRSS(d.contents||'','indeed','ind'))
-        .catch(()=>[]);
+      const rss = `https://fr.indeed.com/rss?q=${q}&l=${l}&sort=date`;
+      return proxyFetch(rss).then(xml=>parseRSS(xml,'indeed','ind',{fromIDF:true,fallbackCity:'Île-de-France'})).catch(()=>[]);
     }));
     const seen = new Set();
     return all.flat().filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; });
   } catch { return []; }
 }
 
+// ── JOOBLE IDF ──
 async function fetchJooble(){
   const key = localStorage.getItem('joobleKey');
   if(!key) return [];
   const queries = [
-    {keywords:'animation éducation', location:'Île-de-France'},
+    {keywords:'animation éducation jeunesse', location:'Île-de-France'},
     {keywords:'administratif accueil secrétaire', location:'Paris'},
     {keywords:'animateur enfant bafa', location:'Île-de-France'},
     {keywords:'assistant social psychologie', location:'Paris'},
   ];
   try {
     const all = await Promise.all(queries.map(body =>
-      fetch(`https://jooble.org/api/${key}`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({...body, resultonpage:20})
-      }).then(r=>r.json()).catch(()=>({jobs:[]}))
+      fetch(`https://jooble.org/api/${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,resultonpage:20})})
+        .then(r=>r.json()).catch(()=>({jobs:[]}))
     ));
     const seen = new Set();
     return all.flatMap(d=>(d.jobs||[]).map(j=>{
       if(seen.has(j.id)) return null; seen.add(j.id);
-      return {
-        id:'jb-'+j.id,source:'indeed',
-        title:j.title,
-        company:j.company||'',
-        location:j.location||'Île-de-France',
-        contract:j.type||'',
-        date:j.updated,
-        url:j.link,
-        desc:(j.snippet||'').replace(/<[^>]*>/g,'')
-      };
+      return {id:'jb-'+j.id,source:'indeed',_fromIDF:true,title:j.title,company:j.company||'',location:j.location||'Île-de-France',contract:j.type||'',date:j.updated,url:j.link,desc:(j.snippet||'').replace(/<[^>]*>/g,'')};
     }).filter(Boolean));
   } catch { return []; }
 }
 
-async function fetchIndeedRSS_ES(){
-  const queries = [
-    { q:'au+pair+niñera', l:'Barcelona' },
-    { q:'au+pair+niñera', l:'Palma+de+Mallorca' },
-    { q:'canguro+babysitter', l:'Barcelona' },
-    { q:'cuidadora+niños', l:'Palma+de+Mallorca' },
-  ];
-  try {
-    const all = await Promise.all(queries.map(({q,l}) => {
-      const rss = `https://es.indeed.com/rss?q=${q}&l=${encodeURIComponent(l)}&sort=date`;
-      return fetch(PROXY + encodeURIComponent(rss))
-        .then(r=>r.json()).then(d=>parseRSS(d.contents||'','indeed','ines'))
-        .catch(()=>[]);
-    }));
-    const seen = new Set();
-    return all.flat().filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; })
-      .map(j=>({...j, source:'adzuna_es', contract:'Au Pair',
-        location: j.location || 'España',
-        company: j.company || "Famille d'accueil"
-      }));
-  } catch { return []; }
-}
-
+// ── ADZUNA ES — PAR VILLE CIBLÉE ──
 async function fetchAdzunaSpain(){
   const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
-  const terms = ['au pair nanny niñera','canguro babysitter familia','cuidadora niños au pair','au pair familia española','baby sitter niños'];
+  const citySearches = [
+    {where:'Barcelona', city:'Barcelona'},
+    {where:'Palma+de+Mallorca', city:'Palma de Mallorca'},
+    {where:'Madrid', city:'Madrid'},
+    {where:'Valencia', city:'Valencia'},
+    {where:'Ibiza', city:'Ibiza'},
+  ];
+  const terms = ['au pair ni%C3%B1era','canguro babysitter','cuidadora ni%C3%B1os'];
   try{
-    const all = await Promise.all(terms.map(t=>
-      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(t)}&content-type=application/json`)
-        .then(r=>r.json()).catch(()=>({results:[]}))
+    const combos = citySearches.flatMap(c=>terms.map(t=>({...c,term:t})));
+    const all = await Promise.all(combos.map(({where,city,term})=>
+      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=30&what=${term}&where=${where}&content-type=application/json`)
+        .then(r=>r.json()).then(d=>({d,city})).catch(()=>({d:{results:[]},city}))
     ));
     const seen = new Set();
-    return all.flatMap(d=>(d.results||[]).map(j=>{
+    return all.flatMap(({d,city})=>(d.results||[]).map(j=>{
       const jid = jobId(j,'azes');
       if(seen.has(jid)) return null;
       seen.add(jid);
-      return {id:jid,source:'adzuna_es',title:j.title,company:j.company?.display_name||"Famille d'accueil",location:j.location?.display_name||'España',contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
+      return {id:jid,source:'adzuna_es',_sourceCity:city,title:j.title,company:j.company?.display_name||"Famille d'accueil",location:j.location?.display_name||city,contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
     }).filter(Boolean));
   }catch{ return []; }
+}
+
+// ── INDEED ES RSS — PAR VILLE + TERME CIBLÉS ──
+async function fetchIndeedRSS_ES(){
+  const queries = [
+    {q:'au+pair+ni%C3%B1era', l:'Barcelona', city:'Barcelona'},
+    {q:'au+pair+ni%C3%B1era', l:'Palma+de+Mallorca', city:'Palma de Mallorca'},
+    {q:'canguro+babysitter', l:'Barcelona', city:'Barcelona'},
+    {q:'canguro+cuidadora', l:'Palma+de+Mallorca', city:'Palma de Mallorca'},
+    {q:'au+pair+familia', l:'Ibiza', city:'Ibiza'},
+  ];
+  try {
+    const all = await Promise.all(queries.map(({q,l,city}) => {
+      const rss = `https://es.indeed.com/rss?q=${q}&l=${l}&sort=date`;
+      return proxyFetch(rss).then(xml=>parseRSS(xml,'indeed','ines',{sourceCity:city,fallbackCity:city,company:"Famille d'accueil"})).catch(()=>[]);
+    }));
+    const seen = new Set();
+    return all.flat()
+      .filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; })
+      .map(j=>({...j,source:'adzuna_es',contract:'Au Pair',company:j.company||"Famille d'accueil"}));
+  } catch { return []; }
+}
+
+// ── INFOJOBS ES RSS — 1er site d'emploi espagnol ──
+// Province: 8=Barcelona, 7=Illes Balears (Palma), 28=Madrid
+async function fetchInfoJobsRSS(){
+  const searches = [
+    {kw:'au+pair+ni%C3%B1era', province:8, city:'Barcelona'},
+    {kw:'canguro+au+pair', province:8, city:'Barcelona'},
+    {kw:'au+pair+ni%C3%B1era', province:7, city:'Palma de Mallorca'},
+    {kw:'canguro+cuidadora', province:7, city:'Palma de Mallorca'},
+    {kw:'au+pair', province:28, city:'Madrid'},
+  ];
+  try {
+    const all = await Promise.all(searches.map(({kw,province,city}) => {
+      const rss = `https://www.infojobs.net/rss/ofertas.xhtml?keyword=${kw}&province=${province}`;
+      return proxyFetch(rss).then(xml=>parseRSS(xml,'infojobs','infojs',{sourceCity:city,fallbackCity:city})).catch(()=>[]);
+    }));
+    const seen = new Set();
+    return all.flat()
+      .filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; })
+      .map(j=>({...j,contract:j.contract||'Au Pair',company:j.company||"Famille d'accueil"}));
+  } catch { return []; }
+}
+
+// ── JOBTOME ES RSS — agrégateur espagnol ──
+async function fetchJobtomeES(){
+  const searches = [
+    {q:'au-pair', l:'barcelona', city:'Barcelona'},
+    {q:'au-pair', l:'palma-de-mallorca', city:'Palma de Mallorca'},
+    {q:'ni%C3%B1era-canguro', l:'barcelona', city:'Barcelona'},
+    {q:'cuidadora-ni%C3%B1os', l:'palma', city:'Palma de Mallorca'},
+  ];
+  try {
+    const all = await Promise.all(searches.map(({q,l,city}) => {
+      const rss = `https://es.jobtome.com/rss.xml?q=${q}&l=${l}`;
+      return proxyFetch(rss).then(xml=>parseRSS(xml,'jobtome','jtme',{sourceCity:city,fallbackCity:city})).catch(()=>[]);
+    }));
+    const seen = new Set();
+    return all.flat()
+      .filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; })
+      .map(j=>({...j,contract:j.contract||'Au Pair',company:j.company||"Famille d'accueil"}));
+  } catch { return []; }
 }
 
 async function loadJobs(q){
@@ -990,9 +1066,9 @@ async function loadDataSpain() {
   loaderEs.style.display = 'block';
   gridEs.innerHTML = '';
   try{
-    const [az, rss] = await Promise.all([fetchAdzunaSpain(), fetchIndeedRSS_ES()]);
+    const [az, rss, ij, jt] = await Promise.all([fetchAdzunaSpain(), fetchIndeedRSS_ES(), fetchInfoJobsRSS(), fetchJobtomeES()]);
     const seen = new Set();
-    auPairJobs = [...az,...rss].filter(j=>{
+    auPairJobs = [...az,...rss,...ij,...jt].filter(j=>{
       if(seen.has(j.id)) return false; seen.add(j.id); return true;
     });
   }catch{ auPairJobs = []; }
