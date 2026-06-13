@@ -662,24 +662,22 @@ function isInIdfStrict(job) {
   const loc = (job.location || '').toLowerCase();
   if (!loc || loc === 'france') return false;
 
-  // ── 1. REJETER en priorité tout ce qui est clairement non-France ──
-  const NON_FR = [
-    'united states','texas','new york','california','canada',
-    'england','australia','deutschland','nederland','united kingdom',
-    'belgique','suisse','schweiz','españa','italia','poland','polska',
-    // abréviations US : " tx", " ca ", " ny," etc.
-    ' tx',' al ',' ak ',' az ',' ar ',' ca ',' co ',' ct ',' de ',' fl ',
-    ' ga ',' hi ',' id ',' il ',' in ',' ia ',' ks ',' ky ',' la ',' me ',
-    ' md ',' ma ',' mi ',' mn ',' ms ',' mo ',' mt ',' ne ',' nv ',' nh ',
-    ' nj ',' nm ',' nc ',' nd ',' oh ',' ok ',' or ',' pa ',' ri ',' sc ',
-    ' sd ',' tn ',' ut ',' vt ',' va ',' wa ',' wv ',' wi ',' wy ',
+  // ── 1. REJETER les pays/régions étrangers connus (mots complets, sans abréviations 2 lettres) ──
+  const FOREIGN = [
+    'united states','texas','tennessee','new york','california','florida','georgia',
+    'canada','england','australia','deutschland','nederland','united kingdom',
+    'belgique','suisse','schweiz','españa','italia','poland','brasil','mexico',
+    'louisiana','indiana','virginia','kentucky','ohio','michigan','oregon',
+    'colorado','arizona','nevada','minnesota','illinois','wisconsin','alabama',
   ];
-  if (NON_FR.some(k => loc.includes(k))) return false;
-  // "Paris, TX" / "Paris, TN" — pattern : paris suivi d'une virgule + 2 lettres sans "france"
-  if (/paris,?\s+[a-z]{2}(\s|$)/.test(loc) && !loc.includes('france') && !loc.includes('île') && !loc.includes('grand')) return false;
+  if (FOREIGN.some(k => loc.includes(k))) return false;
+  // Rejeter "Paris, TX" ou "Paris, TN" : "paris" + virgule + exactement 2 lettres ASCII en fin de chaîne
+  // (les noms français après virgule ont au moins 3 lettres ou contiennent des accents non-ASCII)
+  if (/paris,\s+[a-z]{2}$/.test(loc)) return false;
 
   // ── 2. ACCEPTER si c'est clairement IDF/France ──
-  if (loc.includes('paris') || loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf') || loc.includes('région parisienne')) return true;
+  if (loc.includes('paris') || loc.includes('île-de-france') || loc.includes('ile-de-france') ||
+      loc.includes('idf') || loc.includes('région parisienne') || loc.includes('grand paris')) return true;
   for (const dept of IDF_DEPTS) {
     if (loc.includes('('+dept+')') || loc.includes(' '+dept) || loc.startsWith(dept) || loc.includes('/'+dept)) return true;
   }
@@ -832,36 +830,37 @@ function cityMatch(j, key) {
   return patterns.some(p => title.includes(p));
 }
 
-// Offres statiques "partenaires" — toujours visibles même si les API renvoient 0
-const STATIC_AUPAIR = [
-  {id:'static-apw-bcn', source:'adzuna_es', _sourceCity:'Barcelona', title:'Au Pair à Barcelone — Chercher sur AuPairWorld', company:'AuPairWorld', location:'Barcelona, España', contract:'Au Pair', url:'https://www.aupairworld.com/fr/au_pair_jobs?country_id=60&city_id=1755&category=1', desc:'Plateforme leader mondial pour trouver une famille d\'accueil. Des dizaines de familles à Barcelone recherchent une jeune fille au pair logée et nourrie. Clique pour voir les annonces en direct.'},
-  {id:'static-apw-palma', source:'adzuna_es', _sourceCity:'Palma de Mallorca', title:'Au Pair à Palma de Majorque — AuPairWorld', company:'AuPairWorld', location:'Palma de Mallorca, Illes Balears', contract:'Au Pair', url:'https://www.aupairworld.com/fr/au_pair_jobs?country_id=60&city_id=2519&category=1', desc:'Familles à Palma de Majorque qui cherchent une au pair. Logée, nourrie, argent de poche et cours d\'espagnol inclus. Voir les offres actuelles sur AuPairWorld.'},
-  {id:'static-apc-bcn', source:'adzuna_es', _sourceCity:'Barcelona', title:'Famille d\'accueil au pair à Barcelone — AuPair.com', company:'AuPair.com', location:'Barcelona, España', contract:'Au Pair', url:'https://www.aupair.com/fr/recherche-de-famille.html?country=ES&city=Barcelona', desc:'AuPair.com liste des centaines de familles espagnoles. Recherche filtrée sur Barcelone — logement, repas et rémunération garantis. Crée ton profil gratuitement pour postuler.'},
-  {id:'static-infojobs-bcn', source:'infojobs', _sourceCity:'Barcelona', title:'Offres niñera / Au Pair à Barcelone — InfoJobs', company:'InfoJobs', location:'Barcelona, España', contract:'Au Pair', url:'https://www.infojobs.net/ofertas-trabajo/au-pair/en-barcelona.xhtml', desc:'InfoJobs est le 1er site d\'emploi espagnol. Annonces de familles à Barcelone cherchant une jeune fille au pair ou nourrice. Candidature directe en ligne.'},
-  {id:'static-infojobs-palma', source:'infojobs', _sourceCity:'Palma de Mallorca', title:'Offres niñera / Au Pair à Palma — InfoJobs', company:'InfoJobs', location:'Palma de Mallorca, Illes Balears', contract:'Au Pair', url:'https://www.infojobs.net/ofertas-trabajo/au-pair/en-palma-de-mallorca.xhtml', desc:'Annonces de familles à Palma de Majorque et dans les Baléares cherchant une jeune fille au pair. Postuler directement sur InfoJobs.'},
-  {id:'static-indeed-bcn', source:'adzuna_es', _sourceCity:'Barcelona', title:'Au pair / Niñera Barcelona — Indeed Espagne', company:'Indeed ES', location:'Barcelona, España', contract:'Au Pair', url:'https://es.indeed.com/jobs?q=au+pair+ni%C3%B1era&l=Barcelona', desc:'Recherche Indeed Espagne filtrée sur Barcelone. Offres de familles cherchant une nourrice, baby-sitter ou fille au pair. Nouvelles annonces chaque jour.'},
-  {id:'static-indeed-palma', source:'adzuna_es', _sourceCity:'Palma de Mallorca', title:'Au pair / Niñera Palma — Indeed Espagne', company:'Indeed ES', location:'Palma de Mallorca, Illes Balears', contract:'Au Pair', url:'https://es.indeed.com/jobs?q=au+pair+ni%C3%B1era&l=Palma+de+Mallorca', desc:'Recherche Indeed Espagne filtrée sur Palma de Majorque. Annonces de familles baléares cherchant une fille au pair logée et nourrie.'},
-  {id:'static-workaway-es', source:'adzuna_es', _sourceCity:'Barcelona', title:'Au Pair / Workaway en Espagne — Workaway.info', company:'Workaway', location:'España', contract:'Au Pair', url:'https://www.workaway.info/en/hostlist?country_1=ES&what=au+pair+child+care', desc:'Workaway est une alternative à l\'au pair traditionnel. Travail avec des enfants en échange du logement et des repas. Beaucoup d\'offres à Barcelone, Palma et dans toute l\'Espagne.'},
-];
-
 function renderSpainList() {
   const grid = document.getElementById('aupairGrid');
   if (!grid) return;
 
-  // Fusionner offres API + offres statiques (dédoublonner par id)
-  const combined = [...auPairJobs];
-  const existingIds = new Set(auPairJobs.map(j => j.id));
-  STATIC_AUPAIR.forEach(j => { if(!existingIds.has(j.id)) combined.push(j); });
-
   const filtered = currentSpainCityFilter === 'all'
-    ? combined
-    : combined.filter(j => cityMatch(j, currentSpainCityFilter));
+    ? auPairJobs
+    : auPairJobs.filter(j => cityMatch(j, currentSpainCityFilter));
 
-  document.getElementById('statTotalEs').innerText = combined.length;
-  document.getElementById('statBarcelona').innerText = combined.filter(j => cityMatch(j,'barcelona')).length;
-  document.getElementById('statPalma').innerText = combined.filter(j => cityMatch(j,'palma')).length;
-  document.getElementById('statMadrid').innerText = combined.filter(j => cityMatch(j,'madrid')).length;
+  document.getElementById('statTotalEs').innerText = auPairJobs.length;
+  document.getElementById('statBarcelona').innerText = auPairJobs.filter(j => cityMatch(j,'barcelona')).length;
+  document.getElementById('statPalma').innerText = auPairJobs.filter(j => cityMatch(j,'palma')).length;
+  document.getElementById('statMadrid').innerText = auPairJobs.filter(j => cityMatch(j,'madrid')).length;
 
+  if (!filtered.length) {
+    const cityLabel = currentSpainCityFilter === 'barcelona' ? 'Barcelone' : currentSpainCityFilter === 'palma' ? 'Palma' : 'Barcelone et Palma';
+    grid.innerHTML = `
+      <div style="padding:1.5rem;background:var(--rose-pale);border-radius:16px;margin:.5rem 0 1rem;">
+        <p style="font-weight:700;color:var(--rose-deep);margin-bottom:.8rem;">🔍 Aucune offre récupérée automatiquement</p>
+        <p style="font-size:.83rem;color:var(--text2);margin-bottom:1rem;">Les plateformes Au Pair n'ont pas d'API publique. Pour les offres en direct à ${cityLabel}, consulte ces sites :</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+          <a href="https://www.aupairworld.com/fr/au_pair_jobs?country_id=60" target="_blank" rel="noopener" class="direct-link-btn">🌍 AuPairWorld — Leader mondial, centaines de familles espagnoles</a>
+          <a href="https://www.aupair.com/fr/recherche-de-famille.html?country=ES&city=Barcelona" target="_blank" rel="noopener" class="direct-link-btn">👶 AuPair.com — Filtré Barcelone</a>
+          <a href="https://www.infojobs.net/ofertas-trabajo/au-pair/en-barcelona.xhtml" target="_blank" rel="noopener" class="direct-link-btn">💼 InfoJobs — Au pair Barcelone</a>
+          <a href="https://www.infojobs.net/ofertas-trabajo/au-pair/en-palma-de-mallorca.xhtml" target="_blank" rel="noopener" class="direct-link-btn">☀️ InfoJobs — Au pair Palma</a>
+          <a href="https://es.indeed.com/jobs?q=au+pair+ni%C3%B1era&l=Barcelona" target="_blank" rel="noopener" class="direct-link-btn">🔍 Indeed ES — Niñera Barcelona</a>
+          <a href="https://es.indeed.com/jobs?q=au+pair+ni%C3%B1era&l=Palma+de+Mallorca" target="_blank" rel="noopener" class="direct-link-btn">🔍 Indeed ES — Niñera Palma</a>
+        </div>
+        <p style="font-size:.75rem;color:var(--text3);margin-top:1rem;">💡 Pour récupérer automatiquement ces offres, déploie le site sur <strong>Netlify</strong> (la fonction proxy est déjà prête).</p>
+      </div>`;
+    return;
+  }
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
 }
 
@@ -1039,26 +1038,37 @@ function inferSpainCity(location) {
   return '';
 }
 
-// ── ADZUNA ES — Toute l'Espagne + filtre client-side (meilleurs résultats) ──
+// ── ADZUNA ES — Requêtes ciblées par ville ──
 async function fetchAdzunaSpain(){
   const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
-  // Termes simples séparés : Adzuna ES a peu de listings "au pair" → on élargit au max
-  const terms = ['niñera', 'nanny', 'babysitter', 'au pair', 'canguro', 'cuidadora niños', 'familia au pair'];
-  const pages = [1, 2];
+  // Requêtes croisées : terme × ville. "where" sur Adzuna ES accepte le nom de ville.
+  const queries = [
+    {what:'niñera',        where:'Barcelona',      city:'Barcelona'},
+    {what:'au pair',       where:'Barcelona',      city:'Barcelona'},
+    {what:'canguro',       where:'Barcelona',      city:'Barcelona'},
+    {what:'babysitter',    where:'Barcelona',      city:'Barcelona'},
+    {what:'niñera',        where:'Palma',          city:'Palma de Mallorca'},
+    {what:'au pair',       where:'Palma',          city:'Palma de Mallorca'},
+    {what:'canguro',       where:'Palma',          city:'Palma de Mallorca'},
+    {what:'nanny',         where:'Palma',          city:'Palma de Mallorca'},
+    {what:'niñera',        where:'Mallorca',       city:'Palma de Mallorca'},
+    {what:'cuidadora',     where:'Barcelona',      city:'Barcelona'},
+    {what:'cuidadora',     where:'Palma',          city:'Palma de Mallorca'},
+  ];
   try{
-    const all = await Promise.all(terms.flatMap(t => pages.map(pg =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/${pg}?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(t)}&content-type=application/json`)
-        .then(r=>r.json()).catch(()=>({results:[]}))
-    )));
+    const all = await Promise.all(queries.map(({what,where,city}) =>
+      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=20&what=${encodeURIComponent(what)}&where=${encodeURIComponent(where)}&content-type=application/json`)
+        .then(r=>r.json()).then(d=>({d,city})).catch(()=>({d:{results:[]},city}))
+    ));
     const seen = new Set();
-    return all.flatMap(d=>(d.results||[]).map(j=>{
+    return all.flatMap(({d,city})=>(d.results||[]).map(j=>{
       const jid = jobId(j,'azes');
       if(seen.has(jid)) return null;
       seen.add(jid);
-      const loc = j.location?.display_name || '';
-      return {id:jid,source:'adzuna_es',_sourceCity:inferSpainCity(loc),title:j.title,company:j.company?.display_name||"Famille d'accueil",location:loc||'España',contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
+      const loc = j.location?.display_name || city;
+      return {id:jid,source:'adzuna_es',_sourceCity:city,title:j.title,company:j.company?.display_name||"Famille d'accueil",location:loc,contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
     }).filter(Boolean));
   }catch{ return []; }
 }
