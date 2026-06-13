@@ -244,7 +244,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .card-actions{display:flex;gap:.5rem;align-items:center;margin-left:auto;}
 .btn-cv{background:var(--lavande-light);color:var(--lavande-deep);border:1px solid var(--lavande);border-radius:50px;font-size:.75rem;font-weight:600;padding:.3rem .85rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
 .btn-cv:hover{background:var(--lavande-deep);color:white;border-color:var(--lavande-deep);}
-.btn-apply{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;font-size:.75rem;font-weight:600;padding:.3rem .85rem;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;}
+.btn-apply{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;font-size:.75rem;font-weight:600;padding:.4rem 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:opacity 0.2s;}
 .btn-apply:hover{opacity:.88;}
 .source-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .src-adzuna{background:#059669;}
@@ -438,7 +438,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 
   <div id="loader-es" class="loader-wrap" style="display:none;">
     <div class="petal-loader">💃🏽</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Recherche active de familles espagnoles via le réseau Adzuna España...</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Recherche active de familles espagnoles via votre flux localisé...</p>
   </div>
   <div id="aupairGrid" class="cards-wrap"></div>
 </div>
@@ -492,47 +492,40 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
     </div>
     <button class="btn-save" onclick="saveKeys()">💾 Enregistrer la configuration</button>
     <div style="font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6;">
-      Sans clé Adzuna, l'application se rabattra sur l'aggrégation RSS dynamique pour l'Île-de-France, mais la recherche en Espagne requiert l'activation de ces clés.
+      Sans clé Adzuna, l'application se rabattra sur l'aggrégation RSS dynamique pour l'Île-de-France, mais la recherche en Espagne requiert l'activation de ces clés ou la lecture du fichier offres.json mis à jour.
     </div>
   </div>
 </div>
 
 </div>
 
-<div class="modal-bg" id="cvModal" style="display:none;">
+<div id="cvModal" class="modal-bg" style="display:none;">
   <div class="modal">
-    <h3 class="modal-title">✨ Coach CV d'Inès</h3>
-    <p class="modal-sub">Je vais analyser cette offre et te donner la meilleure stratégie pour ton profil.</p>
-    <div style="background:var(--rose-pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem .9rem;font-size:.82rem;color:var(--text);margin-bottom:.9rem;">
-      <strong id="cvJobTitle" style="color:var(--rose-deep)"></strong><br>
-      <span id="cvJobCompany" style="color:var(--text2)"></span>
+    <h2 class="modal-title">📝 Coach de Candidature Intelligent</h2>
+    <p class="modal-sub" id="cvModalSub">Génère des arguments d'impact personnalisés par rapport à cette offre d'emploi.</p>
+    <div class="field" style="margin-bottom:1rem;">
+      <label>Colle le texte actuel de ton CV (ou un résumé de ton parcours)</label>
+      <textarea id="cvUserText" placeholder="Ex: Inès, étudiante en psychologie, expérience de garde d'enfants de 2 ans, dynamique..."></textarea>
     </div>
-    <label style="font-size:.78rem;font-weight:600;color:var(--text2);display:block;margin-bottom:.3rem;">Colle ici la description complète de l'offre :</label>
-    <textarea id="cvJobDesc" placeholder="Description, missions, profil recherché…"></textarea>
-    <label style="font-size:.78rem;font-weight:600;color:var(--text2);display:block;margin-top:.8rem;margin-bottom:.3rem;">Ce qu'Inès sait faire (optionnel) :</label>
-    <textarea id="cvUserSkills" placeholder="Ex : animation, écoute, sens du service, bureautique, BAFA en cours, stages lycée…" style="min-height:70px;"></textarea>
     <div class="modal-actions">
-      <button class="btn-primary" onclick="runCVCoach()">🌸 Analyser et conseiller</button>
+      <button class="btn-primary" onclick="generateAiTips()">✨ Analyser & Créer mes arguments</button>
       <button class="btn-secondary" onclick="closeCvModal()">Fermer</button>
     </div>
-    <div id="cvResult" style="display:none;"></div>
+    <div id="cvAiResult" class="ai-result" style="display:none;"></div>
   </div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// AUTH — SHA-256 du mot de passe "OleTropBien12!"
+// SECURITY & AUTHENTICATION
 // ══════════════════════════════════════════════════════════════
-const STORED_HASH = 'b3cb7f4b2e3a9d1e6f8c0a4d5e2b7f9c1a3e8d0b6f4c2a9e7d5b3f1c8a6e4d2';
-const SESSION_TOKEN = 'ines_session_v1';
-
+const SESSION_TOKEN = "ines_session_active";
 async function sha256(message) {
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
-
 const REAL_HASH = (async () => await sha256('OleTropBien12!'))();
 
 async function doLogin() {
@@ -570,9 +563,7 @@ function checkAuth() {
   }
 }
 
-document.getElementById('loginPwd').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
+document.getElementById('loginPwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 // ══════════════════════════════════════════════════════════════
 // DATA & CONSTANTS
@@ -583,11 +574,10 @@ const MOTIVATIONS = [
   'Le bon poste à Paris ou aux alentours attend juste d\'être trouvé. Tu vas y arriver, Inès. ✨',
   'Pas besoin d\'un diplôme parfait pour faire un travail parfait. 🌸',
 ];
-
 const IDF_DEPTS = ['75','77','78','91','92','93','94','95'];
 const IDF_CITIES = [
   'paris','seine-et-marne','yvelines','essonne','hauts-de-seine',
-  'seine-saint-denis','val-de-marne','val-d\'oise','île-de-france',
+  'seine-saint-denis','val-de-marne','val-doise','île-de-france',
   'ile-de-france','boulogne','vincennes','montreuil','saint-denis',
   'nanterre','créteil','versailles','bobigny','évry','cergy',
   'massy','poissy','argenteuil','colombes','asnières','vitry',
@@ -598,37 +588,21 @@ const IDF_CITIES = [
   'la défense','bagneux','montrouge','gentilly','ivry','alfortville',
   'choisy','thiais','orly','villeneuve','bagnolet','romainville'
 ];
-
 const CAT_KW = {
   edu:['enseignant','éducateur','formateur','pédagogie','scolaire','école','lycée','collège','formation','enseignement','moniteur','professeur','instit','éducation'],
   youth:['jeunesse','enfant','animation','animateur','BAFA','centre de loisirs','ALSH','périscolaire','adolescent','bébé','crèche','maternelle','EVS'],
-  admin:['administratif','secrétaire','assistant','gestion','bureau','coordinateur','chargé de mission','gestionnaire','ressources humaines','accueil administratif'],
-  client:['relation client','accueil','réceptionniste','conseiller','service client','guichet','usager','front office','standard','téléphonique'],
-  noxp:['sans expérience','débutant','profil débutant','première expérience','junior','niveau bac','sans diplôme requis','accessible','ouvert à tous','formations assurées','débutant accepté'],
+  admin:['administratif','secrétaire','assistant','gestion','bureau','coordinateur','chargé de mission','gestionnaire','accueil','standardiste','rh','facturation'],
+  client:['client','vente','commercial','vendeur','conseiller clientèle','téléconseiller','support','boutique','magasin','hote','hôtesse','relation client'],
+  noxp:['débutant','sans expérience','formation assurée','pas d\'expérience','débutante','ouvert aux débutants']
 };
 
-const PSYCHO_KW = [
-  'psycholog','psycho','clinique','thérapeutique','psychopathologie',
-  'psychothérapie','TCC','CMP','CMPP','SESSAD','IME','ITEP','HDJ',
-  'hôpital de jour','pédopsychiatrie','psychiatrie','neuropsychologie'
-];
+const DEFAULT_QUERY = 'education animation administratif';
 
-const STAGE_EXCLUDE_KW = ['docteur','PhD','bac+5 requis','5 ans d\'expérience','senior confirmé','directeur'];
-
-const DEMO = [
-  {source:'demo',title:'Animateur·rice périscolaire',company:'Ville de Paris',location:'Paris 18e (75)',contract:'CDD',date:ago(1),url:'#',desc:'animation jeunesse enfant périscolaire BAFA sans expérience débutant accessible'},
-  {source:'demo',title:'Chargé·e d\'accueil polyvalent',company:'Mairie du 13e',location:'Paris (75)',contract:'CDI',date:ago(0),url:'#',desc:'accueil relation client administratif guichet usager sans expérience débutant'},
-  {source:'demo',title:'Volontaire Service Civique – Jeunesse',company:'Unis-Cité IDF',location:'Paris (75)',contract:'Service civique',date:ago(2),url:'#',desc:'service civique volontariat jeunesse animation sans expérience débutant ouvert à tous'},
-  {source:'demo',title:'Stage Master Psychologie Clinique',company:'CMP Paris 11e',location:'Paris (75)',contract:'Stage psychologie',date:ago(1),url:'#',desc:'stage psychologie clinique master psycho psychologue stagiaire enfant adolescent CMP sans expérience débutant'},
-  {source:'demo',title:'Éducateur·rice jeunes enfants',company:'Crèche Les Coccinelles',location:'Vincennes (94)',contract:'CDI',date:ago(3),url:'#',desc:'enfant jeunesse bébé éducation crèche maternelle débutant accepté'},
-  {source:'demo',title:'Agent·e d\'accueil – temps partiel',company:'Bibliothèque municipale',location:'Montreuil (93)',contract:'CDD temps partiel',date:ago(2),url:'#',desc:'accueil relation client administratif temps partiel mi-temps sans expérience'},
-];
-
-function ago(days){ return new Date(Date.now()-days*86400000).toISOString(); }
 function relDate(d){
+  if(!d) return '';
   try{
-    const diff=Math.floor((Date.now()-new Date(d))/86400000);
-    if(diff===0) return 'Aujourd\'hui';
+    const diff = Math.floor((Date.now() - new Date(d))/(1000*60*60*24));
+    if(diff<=0) return 'Aujourd\'hui';
     if(diff===1) return 'Hier';
     if(diff<7) return `Il y a ${diff} j`;
     return new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
@@ -636,7 +610,7 @@ function relDate(d){
 }
 
 let allJobs = [];
-let auPairJobs = []; 
+let auPairJobs = [];
 let favs = JSON.parse(localStorage.getItem('ines_favs') || '{}');
 let suivi = JSON.parse(localStorage.getItem('ines_suivi') || '{"todo":[],"sent":[],"reply":[]}');
 let activeCat = 'all';
@@ -668,13 +642,12 @@ function isInIdfStrict(job) {
 // ══════════════════════════════════════════════════════════════
 const CONTRACT_KW = {
   civique: ['service civique','volontariat','VSC','mission civique'],
-  stage:   ['stage psychologie','stage psycho','stage en psychologie','master psycho','psychologue stagiaire'],
+  stage: ['stage psychologie','stage psycho','stage en psychologie','master psycho','psychologue stagiaire'],
   benevole:['bénévole','bénévolat'],
   partiel: ['temps partiel','mi-temps','temps non complet'],
-  cdi:     ['CDI','contrat à durée indéterminée'],
-  cdd:     ['CDD','contrat à durée déterminée'],
+  cdi: ['CDI','contrat à durée indéterminée'],
+  cdd: ['CDD','contrat à durée déterminée'],
 };
-
 function detectContract(j) {
   const t = (j.title+' '+(j.desc||'')+' '+(j.contract||'')).toLowerCase();
   for (const [type,kws] of Object.entries(CONTRACT_KW)) {
@@ -685,60 +658,27 @@ function detectContract(j) {
   if (raw.includes('cdd')) return 'cdd';
   return 'other';
 }
-
-const CONTRACT_LABELS = {
-  cdi:'💼 CDI', cdd:'📅 CDD', partiel:'🕐 Temps partiel',
-  civique:'🌱 Service civique', stage:'🔍 Stage psycho', benevole:'💛 Bénévolat', other:''
-};
-const CONTRACT_CLS = {
-  cdi:'tag-cdi', cdd:'tag-cdd', partiel:'tag-partiel',
-  civique:'tag-civique', stage:'tag-stage', benevole:'tag-benevole', other:'tag-social'
-};
-
-function isPsychoStage(job) {
-  const text = (job.title + ' ' + (job.desc || '') + ' ' + (job.contract || '')).toLowerCase();
-  return PSYCHO_KW.some(k => text.includes(k.toLowerCase())) && !STAGE_EXCLUDE_KW.some(k => text.includes(k.toLowerCase()));
-}
-
-// ══════════════════════════════════════════════════════════════
-// RENDERING & INTERACTION
-// ══════════════════════════════════════════════════════════════
-function initPetals(){
-  const c = document.getElementById('petals');
-  if(!c) return;
-  c.innerHTML = '';
-  for(let i=0;i<18;i++){
-    const s = document.createElement('span');
-    s.textContent = ['🌸','🌷','✿','🌺'][i%4];
-    s.className = 'petal';
-    s.style.left = Math.random()*100+'%';
-    s.style.fontSize = (0.8+Math.random()*1.2)+'rem';
-    s.style.animationDuration = (8+Math.random()*12)+'s';
-    c.appendChild(s);
-  }
-}
-
-function setMotivation(){
-  const m = MOTIVATIONS[Math.floor(Math.random()*MOTIVATIONS.length)];
-  document.getElementById('heroMotivation').innerHTML = `<strong>Pensée du jour :</strong> ${m}`;
-  document.getElementById('suiviMotivation').innerHTML = `💬 ${m}`;
-}
+const CONTRACT_LABELS = { cdi:'💼 CDI', cdd:'📅 CDD', partiel:'🕐 Temps partiel', civique:'🌱 Service civique', stage:'🔍 Stage psycho', benevole:'💛 Bénévolat', other:'' };
+const CONTRACT_CLS = { cdi:'tag-cdi', cdd:'tag-cdd', partiel:'tag-partiel', civique:'tag-civique', stage:'tag-stage', benevole:'tag-benevole', other:'' };
 
 function getTags(title, desc){
-  const t = (title+' '+desc).toLowerCase();
-  const tags = [];
-  if(CAT_KW.edu.some(k=>t.includes(k)))    tags.push({label:'Éducation',cls:'tag-edu',cat:'edu'});
-  if(CAT_KW.youth.some(k=>t.includes(k)))  tags.push({label:'Jeunesse',cls:'tag-youth',cat:'youth'});
-  if(CAT_KW.admin.some(k=>t.includes(k)))  tags.push({label:'Administratif',cls:'tag-admin',cat:'admin'});
+  const t = (title + ' ' + desc).toLowerCase();
+  let tags = [];
+  if(CAT_KW.edu.some(k=>t.includes(k))) tags.push({label:'Éducation',cls:'tag-edu',cat:'edu'});
+  if(CAT_KW.youth.some(k=>t.includes(k))) tags.push({label:'Jeunesse',cls:'tag-youth',cat:'youth'});
+  if(CAT_KW.admin.some(k=>t.includes(k))) tags.push({label:'Administratif',cls:'tag-admin',cat:'admin'});
   if(CAT_KW.client.some(k=>t.includes(k))) tags.push({label:'Relation client',cls:'tag-client',cat:'client'});
-  if(CAT_KW.noxp.some(k=>t.includes(k)))   tags.push({label:'✨ Sans expérience',cls:'tag-noxp',cat:'noxp'});
+  if(CAT_KW.noxp.some(k=>t.includes(k))) tags.push({label:'✨ Sans expérience',cls:'tag-noxp',cat:'noxp'});
   if(tags.length===0) tags.push({label:'Social',cls:'tag-social',cat:'other'});
   return tags;
 }
-function isNoxp(j){ return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k)); }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna'};
-const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES'};
+function isNoxp(j){
+  return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k));
+}
+
+const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna',TablonDeAnuncios:'src-demo'};
+const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES',TablonDeAnuncios:'TablonDeAnuncios'};
 
 function cardHTML(j, isFavPage=false, isSpainCard=false){
   const isFav = !!favs[j.id];
@@ -747,8 +687,8 @@ function cardHTML(j, isFavPage=false, isSpainCard=false){
   
   let tagsHtml = '';
   let contractTag = '';
-
-  if (isSpainCard || j.id.startsWith('azes')) {
+  
+  if (isSpainCard || j.id.startsWith('azes') || j.id.startsWith('scraped')) {
     tagsHtml = `<span class="tag tag-es-aupair">🍼 Au Pair España</span>`;
     contractTag = `<span class="tag tag-housing">🏡 Logée & Nourrie</span>`;
   } else {
@@ -758,94 +698,106 @@ function cardHTML(j, isFavPage=false, isSpainCard=false){
     contractTag = contractType !== 'other' ? `<span class="tag ${CONTRACT_CLS[contractType]}">${CONTRACT_LABELS[contractType]}</span>` : '';
   }
 
+  const cleanUrl = j.url || '#';
+  const cleanTitle = (j.title || '').replace(/"/g, '&quot;');
+  const cleanCompany = (j.company || "Famille / Recruteur").replace(/"/g, '&quot;');
+  const cleanLocation = (j.location || j.city || 'Espagne').replace(/"/g, '&quot;');
+
   return `
-  <div class="job-card${isFav?' favorited':''}" id="card-${j.id}">
-    <div class="card-header">
-      <div>
-        <div class="card-title">${j.title}</div>
-        <div class="card-company">${j.company||'Structure d\'accueil'}</div>
+    <div class="job-card${isFav?' favorited':''}" id="card-${j.id}">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${cleanTitle}</div>
+          <div class="card-company">${cleanCompany}</div>
+        </div>
+        <button class="fav-btn" onclick="toggleFav('${j.id}', ${isSpainCard || j.id.startsWith('azes') || j.id.startsWith('scraped')})">${isFav?'❤️':'🤍'}</button>
       </div>
-      <button class="fav-btn" onclick="toggleFav('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">${isFav?'❤️':'🤍'}</button>
-    </div>
-    <div class="card-tags">${tagsHtml}${contractTag}</div>
-    <div class="card-footer">
-      <span class="card-location">📍 ${j.location||'Espagne'}</span>
-      <span class="card-date">${relDate(j.date)}</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
-      <span class="source-dot ${SRC_COLORS[j.source]||'src-demo'}"></span>
-      <span class="source-lbl">${SRC_LABELS[j.source]||'Adzuna'}</span>
-      <div style="margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="btn-cv" onclick="openCvModal('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">🤖 Coach CV</button>
-        <button class="btn-tiny" onclick="addToSuivi('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">📋 Suivre</button>
-        <a class="btn-apply" href="${j.url||'#'}" target="_blank" rel="noopener">Voir →</a>
+      <div class="card-tags">${tagsHtml}${contractTag}</div>
+      
+      <p style="font-size:0.82rem; color:var(--text2); line-height:1.5; margin:0.5rem 0;">
+        ${j.desc || j.description || "Cliquez sur postuler pour lire l'intégralité du descriptif d'origine."}
+      </p>
+
+      <div class="card-footer">
+        <span class="source-dot ${SRC_COLORS[j.source] || 'src-demo'}"></span>
+        <span class="source-lbl">${SRC_LABELS[j.source] || j.source}</span>
+        <span class="card-location">📍 ${cleanLocation}</span>
+        <span class="card-date">${relDate(j.date)}</span>
+        
+        <div class="card-actions">
+          <button class="btn-cv" onclick="openCvModal('${j.id}')">📝 IA CV</button>
+          <a class="btn-apply" href="${cleanUrl}" target="_blank" rel="noopener noreferrer">🚀 Postuler</a>
+        </div>
       </div>
+      ${noteSection}
     </div>
-    ${noteSection}
-  </div>`;
+  `;
 }
 
+// ══════════════════════════════════════════════════════════════
+// CORE RENDERING ENGINE
+// ══════════════════════════════════════════════════════════════
 function renderJobs(){
   const grid = document.getElementById('cardsGrid');
-  let jobs = allJobs.filter(j => {
-    if(!isInIdfStrict(j)) return false;
-    if(detectContract(j) === 'stage' && !isPsychoStage(j)) return false;
-
-    if(activeCat !== 'all'){
-      if(activeCat === 'noxp') return isNoxp(j);
+  if(!grid) return;
+  
+  let filtered = allJobs.filter(j=>{
+    if(activeCat!=='all' && activeCat!=='noxp'){
       const tags = getTags(j.title, j.desc||'');
       if(!tags.some(t=>t.cat===activeCat)) return false;
     }
-    if(activeContract !== 'all' && detectContract(j) !== activeContract) return false;
-    if(searchQuery){
-      const q = searchQuery.toLowerCase();
-      if(!(j.title+j.company+j.location+(j.desc||'')).toLowerCase().includes(q)) return false;
+    if(activeCat==='noxp' && !isNoxp(j)) return false;
+    if(activeContract!=='all'){
+      if(detectContract(j)!==activeContract) return false;
     }
     return true;
   });
 
-  document.getElementById('statTotal').textContent = jobs.length;
-  document.getElementById('statNoxp').textContent = jobs.filter(j=>isNoxp(j)).length;
+  document.getElementById('statTotal').innerText = allJobs.length;
+  document.getElementById('statNoxp').innerText = allJobs.filter(isNoxp).length;
 
-  if(jobs.length===0){
-    grid.innerHTML=`<div class="empty"><div class="empty-icon">🌸</div><p style="color:var(--text2)">Aucune offre francilienne ne correspond à ces critères exacts.</p></div>`;
+  if(filtered.length===0){
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🍃</div><p style="color:var(--text2);">Aucune offre réelle ne correspond exactement à ces filtres pour le moment.</p></div>`;
     return;
   }
-  grid.innerHTML = jobs.map(j=>cardHTML(j, false, false)).join('');
+  grid.innerHTML = filtered.map(j=>cardHTML(j, false, false)).join('');
 }
 
 function renderSpainList() {
   const grid = document.getElementById('aupairGrid');
-  if(!grid) return;
-
-  const filtered = auPairJobs.filter(j => {
-    const text = (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase();
-    if (currentSpainCityFilter === 'barcelona') return text.includes('barcelona');
-    if (currentSpainCityFilter === 'palma') return text.includes('palma') || text.includes('mallorca') || text.includes('baleares');
+  if (!grid) return;
+  
+  let filtered = auPairJobs.filter(j => {
+    if (currentSpainCityFilter === 'all') return true;
+    const txt = ((j.location || '') + ' ' + (j.title || '') + ' ' + (j.desc || '')).toLowerCase();
+    if (currentSpainCityFilter === 'barcelona') return txt.includes('barcelona');
+    if (currentSpainCityFilter === 'palma') return txt.includes('palma') || txt.includes('mallorca') || txt.includes('baleares');
     return true;
   });
 
-  document.getElementById('statTotalEs').textContent = auPairJobs.length;
-  document.getElementById('statBarcelona').textContent = auPairJobs.filter(j => (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase().includes('barcelona')).length;
-  document.getElementById('statPalma').textContent = auPairJobs.filter(j => {
-    const txt = (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase();
-    return txt.includes('palma') || txt.includes('mallorca') || txt.includes('baleares');
+  document.getElementById('statTotalEs').innerText = auPairJobs.length;
+  document.getElementById('statBarcelona').innerText = auPairJobs.filter(j => ((j.location||'')+' '+(j.title||'')).toLowerCase().includes('barcelona')).length;
+  document.getElementById('statPalma').innerText = auPairJobs.filter(j => {
+    const t = ((j.location||'')+' '+(j.title||'')).toLowerCase();
+    return t.includes('palma') || t.includes('mallorca') || t.includes('baleares');
   }).length;
 
   if (!filtered.length) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖️</div><p style="color:var(--text2);">Aucune offre Au Pair trouvée sur ces destinations. Pense à configurer tes clés Adzuna.</p></div>`;
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖 * Aucun faux flux généré *</div><p style="color:var(--text2);">Aucune offre d'Au Pair brute détectée. Relance ton script d'agrégation Python.</p></div>`;
     return;
   }
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
 }
 
 // ══════════════════════════════════════════════════════════════
-// SCRAPERS ET FLUX MULTI-SITES
+// FETCHERS (VRAIES DONNÉES STRICTES UNIQUEMENT)
 // ══════════════════════════════════════════════════════════════
-function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
+function jobId(j, src){
+  return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2));
+}
 
 async function fetchAdzuna(q){
-  const id  = localStorage.getItem('adzunaAppId');
+  const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
   try{
@@ -854,113 +806,50 @@ async function fetchAdzuna(q){
     const d = await r.json();
     if(!d.results) return [];
     return d.results.map(j=>({
-      id: jobId(j,'az'), source: 'adzuna', title: j.title, company: j.company?.display_name||'',
-      location: j.location?.display_name||'Île-de-France', contract: j.contract_type||'', date: j.created, url: j.redirect_url, desc: j.description||''
-    }));
-  }catch{ return []; }
-}
-
-async function fetchAdzunaSpainAuPair() {
-  const id = localStorage.getItem('adzunaAppId');
-  const key = localStorage.getItem('adzunaKey');
-  if (!id || !key) return [];
-  try {
-    const url = `https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=au%20pair&content-type=application/json`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if (!d.results) return [];
-    return d.results.map(j => ({
-      id: 'azes-' + j.id,
-      source: 'adzuna_es',
+      id: jobId(j,'az'),
+      source: 'adzuna',
       title: j.title,
-      company: j.company?.display_name || "Famille d'accueil",
-      location: j.location?.display_name || "España",
-      desc: j.description || "",
-      url: j.redirect_url,
+      company: j.company?.display_name||'',
+      location: j.location?.display_name||'Île-de-France',
+      contract: j.contract_type||'',
       date: j.created,
-      contract: 'Au Pair'
+      url: j.redirect_url,
+      desc: j.description||''
     }));
-  } catch (e) { return []; }
-}
-
-async function fetchRSS(rssUrl, sourceName){
-  try{
-    const proxy = `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`;
-    const r = await fetch(proxy);
-    const text = await r.text();
-    const xml = new DOMParser().parseFromString(text,'application/xml');
-    return [...xml.querySelectorAll('item')].map(item=>{
-      const title = item.querySelector('title')?.textContent||'';
-      const desc = (item.querySelector('description')?.textContent||'').replace(/<[^>]+>/g,' ');
-      return {
-        id: sourceName+'-'+Math.random().toString(36).slice(2),
-        source: sourceName,
-        title,
-        company: item.querySelector('company')?.textContent || item.querySelector('author')?.textContent || '',
-        location: item.querySelector('location')?.textContent || 'Île-de-France',
-        contract: '', date: item.querySelector('pubDate')?.textContent || new Date().toISOString(),
-        url: item.querySelector('link')?.textContent||'#', desc
-      };
-    });
   }catch{ return []; }
 }
 
-async function fetchFranceTravail(q){
-  return fetchRSS(`https://api.emploi-store.fr/partenaire/offres/v1/rss?motCle=${encodeURIComponent(q)}&region=11`, 'francetravail');
-}
-async function fetchHellowork(q){
-  return fetchRSS(`https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${encodeURIComponent(q)}&l=%C3%89le-de-France&ray=0&c=RSS`, 'hellowork');
-}
-async function fetchIndeed(q){
-  return fetchRSS(`https://fr.indeed.com/rss?q=${encodeURIComponent(q)}&l=Île-de-France`, 'indeed');
-}
-async function fetchLeBonCoin(q){
-  return fetchRSS(`https://www.leboncoin.fr/offre/emloi/rss?kwd=${encodeURIComponent(q)}&r=12`, 'leboncoin');
+async function loadLocalScrapedData() {
+  try {
+    const r = await fetch('offres.json');
+    if (!r.ok) return [];
+    return await r.json();
+  } catch {
+    return [];
+  }
 }
 
-function deduplicateJobs(jobs){
+function deduplicateJobs(arr){
   const seen = new Set();
-  return jobs.filter(j=>{
-    const key = (j.title+j.company).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,45);
-    if(seen.has(key)) return false;
-    seen.add(key);
+  return arr.filter(j=>{
+    const k = (j.title + j.company).toLowerCase().replace(/\s+/g,'');
+    if(seen.has(k)) return false;
+    seen.add(k);
     return true;
   });
 }
 
-// ══════════════════════════════════════════════════════════════
-// MOTEURS DE CHARGEMENT PRINCIPAUX
-// ══════════════════════════════════════════════════════════════
-const DEFAULT_QUERY = 'education jeunesse administratif relation client animation accueil';
-
 async function loadJobs(q){
   document.getElementById('loader').style.display = 'block';
   document.getElementById('cardsGrid').innerHTML = '';
-
+  
   try{
-    const [az, ft, hw, ind, lbc] = await Promise.allSettled([
-      fetchAdzuna(q),
-      fetchFranceTravail(q),
-      fetchHellowork(q),
-      fetchIndeed(q),
-      fetchLeBonCoin(q)
-    ]);
-
-    let merged = [
-      ...(az.status==='fulfilled'?az.value:[]),
-      ...(ft.status==='fulfilled'?ft.value:[]),
-      ...(hw.status==='fulfilled'?hw.value:[]),
-      ...(ind.status==='fulfilled'?ind.value:[]),
-      ...(lbc.status==='fulfilled'?lbc.value:[])
-    ];
-
+    const az = await fetchAdzuna(q);
+    let merged = [...az];
     let filtered = deduplicateJobs(merged).filter(isInIdfStrict);
-    if(filtered.length === 0){
-      filtered = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
-    }
     allJobs = filtered;
   }catch{
-    allJobs = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
+    allJobs = [];
   }
   document.getElementById('loader').style.display = 'none';
   renderJobs();
@@ -970,29 +859,19 @@ async function loadDataSpain() {
   const loaderEs = document.getElementById('loader-es');
   const gridEs = document.getElementById('aupairGrid');
   if(!loaderEs || !gridEs) return;
-
+  
   loaderEs.style.display = 'block';
   gridEs.innerHTML = '';
-
-  const rawJobs = await fetchAdzunaSpainAuPair();
   
-  auPairJobs = rawJobs.filter(j => {
-    const loc = j.location.toLowerCase();
-    const title = j.title.toLowerCase();
-    const desc = j.desc.toLowerCase();
-    
-    const isBarcelona = loc.includes('barcelona') || title.includes('barcelona') || desc.includes('barcelona');
-    const isPalma = loc.includes('palma') || loc.includes('mallorca') || loc.includes('baleares') || title.includes('palma') || desc.includes('palma');
-    
-    return isBarcelona || isPalma;
-  });
-
+  const scraped = await loadLocalScrapedData();
+  auPairJobs = scraped;
+  
   loaderEs.style.display = 'none';
   renderSpainList();
 }
 
 // ══════════════════════════════════════════════════════════════
-// ACTIONS, KANBAN & CONFIGURATION INTERNE
+// NAV & APP LOGIC
 // ══════════════════════════════════════════════════════════════
 function doSearch(){
   searchQuery = document.getElementById('searchInput').value.trim();
@@ -1000,11 +879,15 @@ function doSearch(){
 }
 function filterCat(btn){
   document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); activeCat = btn.dataset.cat; renderJobs();
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  renderJobs();
 }
 function filterContract(btn){
   document.querySelectorAll('[data-contract]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); activeContract = btn.dataset.contract; renderJobs();
+  btn.classList.add('active');
+  activeContract = btn.dataset.contract;
+  renderJobs();
 }
 function filterSpainCity(city, btn) {
   document.querySelectorAll('#page-aupair .chip').forEach(b => b.classList.remove('active'));
@@ -1015,61 +898,56 @@ function filterSpainCity(city, btn) {
 
 function toggleFav(id, isSpain = false){
   const collection = isSpain ? auPairJobs : allJobs;
-  const job = collection.find(j=>j.id===id) || Object.values(favs).find(f => f.id === id); 
+  const job = collection.find(j=>j.id===id) || Object.values(favs).find(f => f.id === id);
   if(!job) return;
-
-  if(favs[id]){ 
-    delete favs[id]; 
-  } else { 
-    favs[id] = {id: job.id, title:job.title, company:job.company, note:'', location: job.location, source: job.source, url: job.url, desc: job.desc || ''}; 
+  if(favs[id]){
+    delete favs[id];
+  } else {
+    favs[id] = {id: job.id, title:job.title, company:job.company, note:'', location: job.location, source: job.source, url: job.url, date: job.date, desc: job.desc||job.description, isSpain};
   }
-  localStorage.setItem('ines_favs', JSON.stringify(favs)); updateFavCount(); 
-  
-  if(document.getElementById('page-offres').classList.contains('active')) renderJobs();
-  if(document.getElementById('page-aupair').classList.contains('active')) renderSpainList();
+  localStorage.setItem('ines_favs', JSON.stringify(favs));
+  updateFavCount();
+  if(!isSpain) renderJobs(); else renderSpainList();
   if(document.getElementById('page-favoris').classList.contains('active')) renderFavs();
 }
 
-function renderFavs(){
-  const grid = document.getElementById('favsGrid'); updateFavCount();
-  const favItems = Object.values(favs);
-  if(favItems.length===0){ grid.innerHTML=`<div class="empty"><p>Pas encore de favoris.</p></div>`; return; }
-  grid.innerHTML = favItems.map(j=>cardHTML(j,true, j.id.startsWith('azes'))).join('');
-}
 function updateFavCount(){
-  const n = Object.keys(favs).length; document.getElementById('favBadge').textContent = n; document.getElementById('statFavs').textContent = n;
+  const count = Object.keys(favs).length;
+  document.getElementById('favBadge').innerText = count;
+  document.getElementById('statFavs').innerText = count;
 }
-function saveFavNote(id, val){ if(favs[id]) favs[id].note = val; localStorage.setItem('ines_favs', JSON.stringify(favs)); }
 
-function addToSuivi(id, isSpain = false){
-  const collection = isSpain ? auPairJobs : allJobs;
-  const job = collection.find(j=>j.id===id); if(!job) return;
-  if(suivi.todo.find(s=>s.id===id)||suivi.sent.find(s=>s.id===id)||suivi.reply.find(s=>s.id===id)){ alert('Déjà suivi !'); return; }
-  suivi.todo.push({id, title:job.title, company:job.company||''}); localStorage.setItem('ines_suivi', JSON.stringify(suivi));
-  updateSuiviCount(); alert('Ajouté au suivi local ! 🎯');
+function renderFavs(){
+  const grid = document.getElementById('favsGrid');
+  if(!grid) return;
+  const arr = Object.values(favs);
+  if(arr.length===0){
+    grid.innerHTML='<div class="empty"><div class="empty-icon">🤍</div><p style="color:var(--text2);">Aucun coup de cœur enregistré pour le moment.</p></div>';
+    return;
+  }
+  grid.innerHTML = arr.map(j=>cardHTML(j, true, j.isSpain)).join('');
 }
-function addManualSuivi(col){
-  const t = prompt('Poste ?'); if(!t) return;
-  suivi[col].push({id:'m-'+Date.now(), title:t, company: prompt('Entreprise ?') || ''});
-  localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi();
-}
-function moveSuivi(id, from, to){
-  const idx = suivi[from].findIndex(s=>s.id===id); if(idx===-1) return;
-  suivi[to].push(suivi[from].splice(idx,1)[0]); localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi();
-}
-function removeSuivi(id, col){ suivi[col] = suivi[col].filter(s=>s.id!==id); localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi(); }
-function updateSuiviCount(){ document.getElementById('statSuivi').textContent = suivi.todo.length + suivi.sent.length + suivi.reply.length; }
 
+function saveFavNote(id, val){
+  if(favs[id]) { favs[id].note = val; localStorage.setItem('ines_favs', JSON.stringify(favs)); }
+}
+
+// KANBAN LOGIC
+function updateSuiviCount(){ document.getElementById('statSuivi').innerText = suivi.todo.length + suivi.sent.length + suivi.reply.length; }
 function renderSuivi(){
-  const nexts = {todo:'sent', sent:'reply'}, labels = {todo:'Postulé →', sent:'Réponse →'}, cols = {todo:'col-todo', sent:'col-sent', reply:'col-reply'};
+  const labels = {todo:'Postulé →', sent:'Réponse →'}, cols = {todo:'col-todo', sent:'col-sent', reply:'col-reply'};
   for(const [col, elId] of Object.entries(cols)){
-    const el = document.getElementById(elId); if(!el) continue;
-    if(suivi[col].length===0){ el.innerHTML='<p style="font-size:.75rem;color:var(--text3);text-align:center;">Vide</p>'; continue; }
+    const el = document.getElementById(elId);
+    if(!el) continue;
+    if(suivi[col].length===0){
+      el.innerHTML='<p style="font-size:.75rem;color:var(--text3);text-align:center;padding:10px 0;">Vide</p>';
+      continue;
+    }
     el.innerHTML = suivi[col].map(s=>`
       <div class="kanban-item">
         <strong>${s.title}</strong><div class="kanban-item-co">${s.company}</div>
         <div class="kanban-item-actions">
-          ${nexts[col]?`<button class="btn-tiny" onclick="moveSuivi('${s.id}','${col}','${nexts[col]}')">${labels[col]}</button>`:''}
+          ${labels[col]?`<button class="btn-tiny" onclick="moveSuivi('${s.id}','${col}','${col==='todo'?'sent':'reply'}')">${labels[col]}</button>`:''}
           <button class="btn-tiny" style="color:#C0392B" onclick="removeSuivi('${s.id}','${col}')">✕</button>
         </div>
       </div>`).join('');
@@ -1077,31 +955,54 @@ function renderSuivi(){
   updateSuiviCount();
 }
 
-async function runCVCoach(){
-  const apiKey = localStorage.getItem('anthropicKey'); if(!apiKey){ alert('Ajoute ta clé Anthropic !'); return; }
-  const desc = document.getElementById('cvJobDesc').value.trim();
-  const skills = document.getElementById('cvUserSkills').value.trim();
-  const res = document.getElementById('cvResult'); res.style.display = 'block'; res.innerHTML = 'Analyse en cours…';
-  
-  const prompt = `Tu es un coach emploi bienveillant. Inès étudie son profil pour l'offre suivante : ${cvJobData.title}. Description: ${desc}. Compétences de l'utilisateur: ${skills}. Produis un retour structuré, constructif et hautement motivant.`;
-  try {
-    const r = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST', headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1000,messages:[{role:'user',content:prompt}]})
-    });
-    const d = await r.json(); res.innerHTML = `<div class="ai-result">${d.content[0].text}</div>`;
-  } catch { res.innerHTML = 'Erreur de contact avec l\'IA.'; }
+function addManualSuivi(col){
+  const t = prompt("Intitulé du poste :"), c = prompt("Structure ou Famille :");
+  if(!t) return;
+  suivi[col].push({id:'manual-'+Date.now(), title:t, company:c||'Non spécifié'});
+  localStorage.setItem('ines_suivi', JSON.stringify(suivi));
+  renderSuivi();
+}
+function moveSuivi(id, from, to){
+  const idx = suivi[from].findIndex(x=>x.id===id);
+  if(idx>-1){ const [item] = suivi[from].splice(idx,1); suivi[to].push(item); localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi(); }
+}
+function removeSuivi(id, col){
+  suivi[col] = suivi[col].filter(x=>x.id!==id); localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi();
 }
 
-function openCvModal(id, isSpain = false){
-  const collection = isSpain ? auPairJobs : allJobs;
-  const job = collection.find(j=>j.id===id) || Object.values(favs).find(f => f.id === id); if(!job) return; 
+// AI ENGINE
+function openCvModal(id){
+  const collection = [...allJobs, ...auPairJobs, ...Object.values(favs)];
+  const job = collection.find(x=>x.id===id);
+  if(!job) return;
   cvJobData = job;
-  document.getElementById('cvJobTitle').textContent = job.title; document.getElementById('cvJobCompany').textContent = job.company||'';
-  document.getElementById('cvJobDesc').value = job.desc||''; document.getElementById('cvResult').style.display = 'none';
+  document.getElementById('cvAiResult').style.display = 'none';
   document.getElementById('cvModal').style.display = 'flex';
 }
 function closeCvModal(){ document.getElementById('cvModal').style.display='none'; }
+
+async function generateAiTips(){
+  const key = localStorage.getItem('anthropicKey');
+  const userCv = document.getElementById('cvUserText').value.trim();
+  if(!key) { alert("Configure ta clé Anthropic Claude dans l'onglet paramètres (⚙️) d'abord."); return; }
+  
+  const target = document.getElementById('cvAiResult');
+  target.innerHTML = '<div class="ai-thinking">🧠 Claude analyse la cohérence textuelle et extrait tes forces pour ce poste...</div>';
+  target.style.display = 'block';
+
+  try {
+    const promptText = `Tu es un coach de recrutement expert. Aide Inès à postuler à l'offre suivante:\nPoste: ${cvJobData.title}\nDescription: ${cvJobData.desc||cvJobData.description}\n\nProfil d'Inès:\n${userCv}\n\nDonne-lui 3 arguments percutants à valoriser pour ce poste. Reste synthétique.`;
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-3-5-sonnet-20241022', max_tokens: 800, messages: [{ role: 'user', content: promptText }] })
+    });
+    const data = await response.json();
+    target.innerText = data.content[0].text;
+  } catch {
+    target.innerText = "Impossible de joindre l'IA. Vérifie la validité de ta clé API Anthropic.";
+  }
+}
 
 function saveKeys(){
   localStorage.setItem('adzunaAppId', document.getElementById('adzunaAppId').value.trim());
@@ -1127,15 +1028,27 @@ function showPage(name, btn){
   if(name==='favoris') renderFavs(); 
   if(name==='suivi') renderSuivi(); 
   if(name==='config') loadConfigUI();
-  if(name==='aupair' && auPairJobs.length === 0) loadDataSpain();
+  if(name==='aupair') loadDataSpain(); 
 }
+
+function initPetals(){
+  const container = document.getElementById('petals'); if(!container) return;
+  for(let i=0; i<15; i++){
+    const p = document.createElement('div'); p.className='petal'; p.innerText='🌸';
+    p.style.left = Math.random()*100 + '%'; p.style.top = '-5%';
+    p.style.animationDelay = Math.random()*5 + 's'; p.style.animationDuration = 5 + Math.random()*5 + 's';
+    container.appendChild(p);
+  }
+}
+function setMotivation(){ document.getElementById('heroMotivation').innerHTML = `💡 <strong>Conseil du jour :</strong> ${MOTIVATIONS[Math.floor(Math.random()*MOTIVATIONS.length)]}`; }
 
 function initApp(){
   initPetals(); setMotivation(); updateFavCount(); renderSuivi();
   document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
   loadJobs(DEFAULT_QUERY);
 }
-checkAuth();
+
+window.addEventListener('DOMContentLoaded', checkAuth);
 </script>
 </body>
 </html>
