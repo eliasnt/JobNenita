@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>L'espace d'Inès 🌸</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght=600;700&family=DM+Sans:wght=400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --rose: #F2A7BB;
@@ -164,6 +164,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   gap:.8rem;
   flex-wrap:wrap;
 }
+.geo-banner.es-banner {
+  background:linear-gradient(135deg, #FEF3C7, #FDE68A);
+}
 .geo-label {
   font-size:.8rem;
   color:var(--lavande-deep);
@@ -171,6 +174,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   display:flex;
   align-items:center;
   gap:.4rem;
+}
+.geo-banner.es-banner .geo-label {
+  color: #92400E;
 }
 .geo-active-badge {
   font-size:.72rem;
@@ -180,12 +186,16 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   padding:.2rem .7rem;
   font-weight:600;
 }
+.geo-banner.es-banner .geo-active-badge {
+  background: #B45309;
+}
 
 /* ── STATS STRIP ─────────────────────────────────── */
 .stats-strip{display:flex;gap:.8rem;padding:1rem 1.5rem;overflow-x:auto;scrollbar-width:none;}
 .stats-strip::-webkit-scrollbar{display:none;}
 .stat-card{background:white;border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem 1.1rem;flex-shrink:0;min-width:120px;text-align:center;}
 .stat-card .val{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--rose-deep);}
+.stat-card.es-stat .val{color:#B45309;}
 .stat-card .lbl{font-size:.72rem;color:var(--text3);margin-top:.15rem;}
 
 /* ── SEARCH ──────────────────────────────────────── */
@@ -201,7 +211,6 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .chip:hover{border-color:var(--rose-deep);color:var(--rose-deep);}
 .chip.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white;}
 .chip-lavande.active{background:var(--lavande-deep);border-color:var(--lavande-deep);}
-.filter-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;}
 
 /* ── CARDS ───────────────────────────────────────── */
 .cards-wrap{padding:0 1.5rem 4rem;display:grid;gap:.9rem;}
@@ -220,6 +229,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .tag-admin{background:#EDF3FE;color:#2254A8;}
 .tag-client{background:#FEF0F0;color:#C0392B;}
 .tag-social{background:#FEF5ED;color:#A0522D;}
+.tag-es-aupair{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;}
 .tag-noxp{background:var(--rose-light);color:var(--rose-deep);border:1px solid var(--rose);}
 .tag-cdi{background:#ECFDF5;color:#065F46;border:1px solid #6EE7B7;}
 .tag-cdd{background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;}
@@ -227,6 +237,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .tag-civique{background:#F0FDF4;color:#166534;border:1px solid #86EFAC;}
 .tag-stage{background:#FEF9C3;color:#713F12;border:1px solid #FDE68A;}
 .tag-benevole{background:#FFF1F2;color:#9F1239;border:1px solid #FDA4AF;}
+.tag-housing{background:#ECFDF5;color:#047857;border:1px solid #A7F3D0;}
 .card-footer{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.7rem;}
 .card-location{font-size:.78rem;color:var(--text3);}
 .card-date{font-size:.72rem;color:var(--text3);margin-left:auto;}
@@ -333,7 +344,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 
 <nav>
   <div class="nav-logo">✿ <span>Inès</span> cherche</div>
-  <button class="nav-tab active" onclick="showPage('offres',this)">Offres</button>
+  <button class="nav-tab active" id="tab-offres" onclick="showPage('offres',this)">Offres IdF</button>
+  <button class="nav-tab" id="tab-aupair" onclick="showPage('aupair',this)">✈️ Au Pair</button>
   <button class="nav-tab" onclick="showPage('favoris',this)">❤️ Favoris <span class="badge" id="favBadge">0</span></button>
   <button class="nav-tab" onclick="showPage('suivi',this)">📋 Suivi</button>
   <button class="nav-tab" onclick="showPage('config',this)">⚙️</button>
@@ -396,6 +408,41 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   <div id="cardsGrid" class="cards-wrap"></div>
 </div>
 
+<div class="page" id="page-aupair">
+  <div class="hero" style="background: linear-gradient(135deg, #FEFBF3 0%, #FDF4E3 100%);">
+    <div class="hero-greeting" style="color: #B45309;">Destinations de Rêve ☀️</div>
+    <h1 class="hero-title">Offres Filles Au Pair<br><em>Barcelone & Palma</em></h1>
+    <p class="hero-sub">Trouve des opportunités de familles d'accueil ciblées en Catalogne et aux Îles Baléares.</p>
+    <div class="hero-motivation" style="border-color: #FCD34D;">💃🏽 Prends ton élan ! Chaque famille cherche une personne de confiance comme toi.</div>
+  </div>
+
+  <div class="geo-banner es-banner">
+    <span class="geo-label">🇪🇸 Sélection stricte :</span>
+    <span class="geo-active-badge">Barcelona & Palma de Mallorca uniquement</span>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-card es-stat"><div class="val" id="statTotalEs">—</div><div class="lbl">offres Au Pair</div></div>
+    <div class="stat-card es-stat"><div class="val" id="statBarcelona">—</div><div class="lbl">à Barcelone 🏖️</div></div>
+    <div class="stat-card es-stat"><div class="val" id="statPalma">—</div><div class="lbl">à Palma ☀️</div></div>
+  </div>
+
+  <div class="search-section">
+    <div class="filter-chips">
+      <span style="font-size:.78rem;color:var(--text3);align-self:center;">Filtrer par Ville :</span>
+      <button class="chip active" id="chip-all-es" onclick="filterSpainCity('all', this)">Toutes les villes</button>
+      <button class="chip" onclick="filterSpainCity('barcelona', this)">🏖️ Barcelone</button>
+      <button class="chip" onclick="filterSpainCity('palma', this)">☀️ Palma de Majorque</button>
+    </div>
+  </div>
+
+  <div id="loader-es" class="loader-wrap" style="display:none;">
+    <div class="petal-loader">💃🏽</div>
+    <p style="margin-top:.8rem;font-size:.9rem;">Recherche active de familles espagnoles via le réseau Adzuna España...</p>
+  </div>
+  <div id="aupairGrid" class="cards-wrap"></div>
+</div>
+
 <div class="page" id="page-favoris">
   <div class="favs-header">
     <h2 class="favs-title">❤️ Mes favoris</h2>
@@ -431,8 +478,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 <div class="page" id="page-config">
   <div class="config-section">
     <div class="config-card">
-      <div class="config-title">🌍 Adzuna — Offres Île-de-France</div>
-      <div class="config-sub">API gratuite pour récupérer des offres locales ciblées. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
+      <div class="config-title">🌍 Adzuna — Connexion Multi-pays</div>
+      <div class="config-sub">Nécessaire pour les offres Île-de-France ET l'accès Au Pair en Espagne. Créer un compte sur <a href="https://developer.adzuna.com/" target="_blank" style="color:var(--rose-deep)">developer.adzuna.com</a></div>
       <div class="config-grid">
         <div class="field"><label>App ID</label><input type="text" id="adzunaAppId" placeholder="ex: a1b2c3d4"></div>
         <div class="field"><label>App Key</label><input type="text" id="adzunaKey" placeholder="ex: xxxxxxxxxxxxxxxx"></div>
@@ -445,15 +492,17 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
     </div>
     <button class="btn-save" onclick="saveKeys()">💾 Enregistrer la configuration</button>
     <div style="font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6;">
-      Sans clé Adzuna, l'application utilise l'aggrégation dynamique de France Travail, HelloWork, Indeed et LeBonCoin via RSS sécurisé pour l'Île-de-France.
+      Sans clé Adzuna, l'application se rabattra sur l'aggrégation RSS dynamique pour l'Île-de-France, mais la recherche en Espagne requiert l'activation de ces clés.
     </div>
   </div>
 </div>
 
-</div><div class="modal-bg" id="cvModal" style="display:none;">
+</div>
+
+<div class="modal-bg" id="cvModal" style="display:none;">
   <div class="modal">
     <h3 class="modal-title">✨ Coach CV d'Inès</h3>
-    <p class="modal-sub">Je vais analyser cette offre francilienne et te dire exactement comment valoriser ton profil.</p>
+    <p class="modal-sub">Je vais analyser cette offre et te donner la meilleure stratégie pour ton profil.</p>
     <div style="background:var(--rose-pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem .9rem;font-size:.82rem;color:var(--text);margin-bottom:.9rem;">
       <strong id="cvJobTitle" style="color:var(--rose-deep)"></strong><br>
       <span id="cvJobCompany" style="color:var(--text2)"></span>
@@ -535,7 +584,6 @@ const MOTIVATIONS = [
   'Pas besoin d\'un diplôme parfait pour faire un travail parfait. 🌸',
 ];
 
-// Départements Île-de-France stricts
 const IDF_DEPTS = ['75','77','78','91','92','93','94','95'];
 const IDF_CITIES = [
   'paris','seine-et-marne','yvelines','essonne','hauts-de-seine',
@@ -567,7 +615,6 @@ const PSYCHO_KW = [
 
 const STAGE_EXCLUDE_KW = ['docteur','PhD','bac+5 requis','5 ans d\'expérience','senior confirmé','directeur'];
 
-// Offres de Démo 100% Île-de-France (au cas où les réseaux coupent)
 const DEMO = [
   {source:'demo',title:'Animateur·rice périscolaire',company:'Ville de Paris',location:'Paris 18e (75)',contract:'CDD',date:ago(1),url:'#',desc:'animation jeunesse enfant périscolaire BAFA sans expérience débutant accessible'},
   {source:'demo',title:'Chargé·e d\'accueil polyvalent',company:'Mairie du 13e',location:'Paris (75)',contract:'CDI',date:ago(0),url:'#',desc:'accueil relation client administratif guichet usager sans expérience débutant'},
@@ -589,10 +636,12 @@ function relDate(d){
 }
 
 let allJobs = [];
+let auPairJobs = []; 
 let favs = JSON.parse(localStorage.getItem('ines_favs') || '{}');
 let suivi = JSON.parse(localStorage.getItem('ines_suivi') || '{"todo":[],"sent":[],"reply":[]}');
 let activeCat = 'all';
 let activeContract = 'all';
+let currentSpainCityFilter = 'all';
 let searchQuery = '';
 let cvJobData = {};
 
@@ -601,27 +650,16 @@ let cvJobData = {};
 // ══════════════════════════════════════════════════════════════
 function isInIdfStrict(job) {
   const loc = (job.location || '').toLowerCase();
-  const title = (job.title || '').toLowerCase();
-  const desc = (job.desc || '').toLowerCase();
-
-  // Rejeter le télétravail pur sans ancrage ou l'étranger
   if (loc.includes('remote') || loc.includes('anywhere') || loc.includes('télétravail total') || loc.includes('telework')) {
     if (!loc.includes('paris') && !loc.includes('75') && !loc.includes('idf')) return false;
   }
-  
-  // Vérification par départements IDF
   for (const dept of IDF_DEPTS) {
     if (loc.includes('(' + dept + ')') || loc.includes(' ' + dept) || loc.startsWith(dept) || loc.includes('/' + dept)) return true;
   }
-  
-  // Vérification par villes clés d'Île-de-France
   for (const city of IDF_CITIES) {
     if (loc.includes(city)) return true;
   }
-  
-  // Mention globale de la région
   if (loc.includes('île-de-france') || loc.includes('ile-de-france') || loc.includes('idf') || loc.includes('région parisienne') || loc.includes('paris')) return true;
-
   return false;
 }
 
@@ -668,6 +706,7 @@ function isPsychoStage(job) {
 function initPetals(){
   const c = document.getElementById('petals');
   if(!c) return;
+  c.innerHTML = '';
   for(let i=0;i<18;i++){
     const s = document.createElement('span');
     s.textContent = ['🌸','🌷','✿','🌺'][i%4];
@@ -698,37 +737,47 @@ function getTags(title, desc){
 }
 function isNoxp(j){ return CAT_KW.noxp.some(k=>(j.title+' '+(j.desc||'')).toLowerCase().includes(k)); }
 
-const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo'};
-const SRC_LABELS = {adzuna:'Adzuna',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo'};
+const SRC_COLORS = {adzuna:'src-adzuna',hellowork:'src-hellowork',francetravail:'src-francetravail',indeed:'src-indeed',leboncoin:'src-leboncoin',demo:'src-demo',adzuna_es:'src-adzuna'};
+const SRC_LABELS = {adzuna:'Adzuna FR',hellowork:'HelloWork',francetravail:'France Travail',indeed:'Indeed',leboncoin:'LeBonCoin',demo:'Démo',adzuna_es:'Adzuna ES'};
 
-function cardHTML(j, isFavPage=false){
-  const tags = getTags(j.title, j.desc||'');
-  const contractType = detectContract(j);
+function cardHTML(j, isFavPage=false, isSpainCard=false){
   const isFav = !!favs[j.id];
-  const tagsHtml = tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
-  const contractTag = contractType !== 'other' ? `<span class="tag ${CONTRACT_CLS[contractType]}">${CONTRACT_LABELS[contractType]}</span>` : '';
   const noteVal = (favs[j.id] && favs[j.id].note) || '';
   const noteSection = isFavPage ? `<div class="fav-note-wrap"><textarea class="fav-note" rows="2" placeholder="Notes personnelles…" onchange="saveFavNote('${j.id}',this.value)">${noteVal}</textarea></div>` : '';
+  
+  let tagsHtml = '';
+  let contractTag = '';
+
+  if (isSpainCard || j.id.startsWith('azes')) {
+    tagsHtml = `<span class="tag tag-es-aupair">🍼 Au Pair España</span>`;
+    contractTag = `<span class="tag tag-housing">🏡 Logée & Nourrie</span>`;
+  } else {
+    const tags = getTags(j.title, j.desc||'');
+    const contractType = detectContract(j);
+    tagsHtml = tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
+    contractTag = contractType !== 'other' ? `<span class="tag ${CONTRACT_CLS[contractType]}">${CONTRACT_LABELS[contractType]}</span>` : '';
+  }
+
   return `
   <div class="job-card${isFav?' favorited':''}" id="card-${j.id}">
     <div class="card-header">
       <div>
         <div class="card-title">${j.title}</div>
-        <div class="card-company">${j.company||'Structure Francilienne'}</div>
+        <div class="card-company">${j.company||'Structure d\'accueil'}</div>
       </div>
-      <button class="fav-btn" onclick="toggleFav('${j.id}')">${isFav?'❤️':'🤍'}</button>
+      <button class="fav-btn" onclick="toggleFav('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">${isFav?'❤️':'🤍'}</button>
     </div>
     <div class="card-tags">${tagsHtml}${contractTag}</div>
     <div class="card-footer">
-      <span class="card-location">📍 ${j.location||'Île-de-France'}</span>
+      <span class="card-location">📍 ${j.location||'Espagne'}</span>
       <span class="card-date">${relDate(j.date)}</span>
     </div>
     <div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
       <span class="source-dot ${SRC_COLORS[j.source]||'src-demo'}"></span>
-      <span class="source-lbl">${SRC_LABELS[j.source]||'IDF'}</span>
+      <span class="source-lbl">${SRC_LABELS[j.source]||'Adzuna'}</span>
       <div style="margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="btn-cv" onclick="openCvModal('${j.id}')">🤖 Coach CV</button>
-        <button class="btn-tiny" onclick="addToSuivi('${j.id}')">📋 Suivre</button>
+        <button class="btn-cv" onclick="openCvModal('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">🤖 Coach CV</button>
+        <button class="btn-tiny" onclick="addToSuivi('${j.id}', ${isSpainCard || j.id.startsWith('azes')})">📋 Suivre</button>
         <a class="btn-apply" href="${j.url||'#'}" target="_blank" rel="noopener">Voir →</a>
       </div>
     </div>
@@ -739,7 +788,6 @@ function cardHTML(j, isFavPage=false){
 function renderJobs(){
   const grid = document.getElementById('cardsGrid');
   let jobs = allJobs.filter(j => {
-    // Élimination stricte de ce qui n'est pas en IDF
     if(!isInIdfStrict(j)) return false;
     if(detectContract(j) === 'stage' && !isPsychoStage(j)) return false;
 
@@ -763,11 +811,36 @@ function renderJobs(){
     grid.innerHTML=`<div class="empty"><div class="empty-icon">🌸</div><p style="color:var(--text2)">Aucune offre francilienne ne correspond à ces critères exacts.</p></div>`;
     return;
   }
-  grid.innerHTML = jobs.map(j=>cardHTML(j)).join('');
+  grid.innerHTML = jobs.map(j=>cardHTML(j, false, false)).join('');
+}
+
+function renderSpainList() {
+  const grid = document.getElementById('aupairGrid');
+  if(!grid) return;
+
+  const filtered = auPairJobs.filter(j => {
+    const text = (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase();
+    if (currentSpainCityFilter === 'barcelona') return text.includes('barcelona');
+    if (currentSpainCityFilter === 'palma') return text.includes('palma') || text.includes('mallorca') || text.includes('baleares');
+    return true;
+  });
+
+  document.getElementById('statTotalEs').textContent = auPairJobs.length;
+  document.getElementById('statBarcelona').textContent = auPairJobs.filter(j => (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase().includes('barcelona')).length;
+  document.getElementById('statPalma').textContent = auPairJobs.filter(j => {
+    const txt = (j.location + ' ' + j.title + ' ' + j.desc).toLowerCase();
+    return txt.includes('palma') || txt.includes('mallorca') || txt.includes('baleares');
+  }).length;
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖️</div><p style="color:var(--text2);">Aucune offre Au Pair trouvée sur ces destinations. Pense à configurer tes clés Adzuna.</p></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
 }
 
 // ══════════════════════════════════════════════════════════════
-// SCRAPERS ET FLUX MULTI-SITES (VÉROUILLÉS ÎLE-DE-FRANCE)
+// SCRAPERS ET FLUX MULTI-SITES
 // ══════════════════════════════════════════════════════════════
 function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
 
@@ -776,7 +849,6 @@ async function fetchAdzuna(q){
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
   try{
-    // Forçage du paramètre de localisation sur Paris / Île de France à la source
     const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=40&what=${encodeURIComponent(q)}&location0=FR&location1=Paris&content-type=application/json`;
     const r = await fetch(url);
     const d = await r.json();
@@ -786,6 +858,29 @@ async function fetchAdzuna(q){
       location: j.location?.display_name||'Île-de-France', contract: j.contract_type||'', date: j.created, url: j.redirect_url, desc: j.description||''
     }));
   }catch{ return []; }
+}
+
+async function fetchAdzunaSpainAuPair() {
+  const id = localStorage.getItem('adzunaAppId');
+  const key = localStorage.getItem('adzunaKey');
+  if (!id || !key) return [];
+  try {
+    const url = `https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=au%20pair&content-type=application/json`;
+    const r = await fetch(url);
+    const d = await r.json();
+    if (!d.results) return [];
+    return d.results.map(j => ({
+      id: 'azes-' + j.id,
+      source: 'adzuna_es',
+      title: j.title,
+      company: j.company?.display_name || "Famille d'accueil",
+      location: j.location?.display_name || "España",
+      desc: j.description || "",
+      url: j.redirect_url,
+      date: j.created,
+      contract: 'Au Pair'
+    }));
+  } catch (e) { return []; }
 }
 
 async function fetchRSS(rssUrl, sourceName){
@@ -810,19 +905,15 @@ async function fetchRSS(rssUrl, sourceName){
   }catch{ return []; }
 }
 
-// Requêtes configurées pour interroger les flux RSS régionaux et locaux d'Île-de-France
 async function fetchFranceTravail(q){
   return fetchRSS(`https://api.emploi-store.fr/partenaire/offres/v1/rss?motCle=${encodeURIComponent(q)}&region=11`, 'francetravail');
 }
-
 async function fetchHellowork(q){
   return fetchRSS(`https://www.hellowork.com/fr-fr/emploi/recherche.html?k=${encodeURIComponent(q)}&l=%C3%89le-de-France&ray=0&c=RSS`, 'hellowork');
 }
-
 async function fetchIndeed(q){
   return fetchRSS(`https://fr.indeed.com/rss?q=${encodeURIComponent(q)}&l=Île-de-France`, 'indeed');
 }
-
 async function fetchLeBonCoin(q){
   return fetchRSS(`https://www.leboncoin.fr/offre/emloi/rss?kwd=${encodeURIComponent(q)}&r=12`, 'leboncoin');
 }
@@ -838,7 +929,7 @@ function deduplicateJobs(jobs){
 }
 
 // ══════════════════════════════════════════════════════════════
-// MOTEUR PRINCIPAL
+// MOTEURS DE CHARGEMENT PRINCIPAUX
 // ══════════════════════════════════════════════════════════════
 const DEFAULT_QUERY = 'education jeunesse administratif relation client animation accueil';
 
@@ -864,7 +955,6 @@ async function loadJobs(q){
     ];
 
     let filtered = deduplicateJobs(merged).filter(isInIdfStrict);
-
     if(filtered.length === 0){
       filtered = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
     }
@@ -872,13 +962,37 @@ async function loadJobs(q){
   }catch{
     allJobs = DEMO.map((j,i)=>({...j, id:'demo-'+i}));
   }
-
   document.getElementById('loader').style.display = 'none';
   renderJobs();
 }
 
+async function loadDataSpain() {
+  const loaderEs = document.getElementById('loader-es');
+  const gridEs = document.getElementById('aupairGrid');
+  if(!loaderEs || !gridEs) return;
+
+  loaderEs.style.display = 'block';
+  gridEs.innerHTML = '';
+
+  const rawJobs = await fetchAdzunaSpainAuPair();
+  
+  auPairJobs = rawJobs.filter(j => {
+    const loc = j.location.toLowerCase();
+    const title = j.title.toLowerCase();
+    const desc = j.desc.toLowerCase();
+    
+    const isBarcelona = loc.includes('barcelona') || title.includes('barcelona') || desc.includes('barcelona');
+    const isPalma = loc.includes('palma') || loc.includes('mallorca') || loc.includes('baleares') || title.includes('palma') || desc.includes('palma');
+    
+    return isBarcelona || isPalma;
+  });
+
+  loaderEs.style.display = 'none';
+  renderSpainList();
+}
+
 // ══════════════════════════════════════════════════════════════
-// SECTIONS INTERNES EXISTANTES (FAVORIS, KANBAN, CONFIG)
+// ACTIONS, KANBAN & CONFIGURATION INTERNE
 // ══════════════════════════════════════════════════════════════
 function doSearch(){
   searchQuery = document.getElementById('searchInput').value.trim();
@@ -892,24 +1006,44 @@ function filterContract(btn){
   document.querySelectorAll('[data-contract]').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); activeContract = btn.dataset.contract; renderJobs();
 }
-function toggleFav(id){
-  const job = allJobs.find(j=>j.id===id); if(!job) return;
-  if(favs[id]){ delete favs[id]; } else { favs[id] = {title:job.title, company:job.company, note:''}; }
-  localStorage.setItem('ines_favs', JSON.stringify(favs)); updateFavCount(); renderJobs();
+function filterSpainCity(city, btn) {
+  document.querySelectorAll('#page-aupair .chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSpainCityFilter = city;
+  renderSpainList();
+}
+
+function toggleFav(id, isSpain = false){
+  const collection = isSpain ? auPairJobs : allJobs;
+  const job = collection.find(j=>j.id===id) || Object.values(favs).find(f => f.id === id); 
+  if(!job) return;
+
+  if(favs[id]){ 
+    delete favs[id]; 
+  } else { 
+    favs[id] = {id: job.id, title:job.title, company:job.company, note:'', location: job.location, source: job.source, url: job.url, desc: job.desc || ''}; 
+  }
+  localStorage.setItem('ines_favs', JSON.stringify(favs)); updateFavCount(); 
+  
+  if(document.getElementById('page-offres').classList.contains('active')) renderJobs();
+  if(document.getElementById('page-aupair').classList.contains('active')) renderSpainList();
   if(document.getElementById('page-favoris').classList.contains('active')) renderFavs();
 }
+
 function renderFavs(){
-  const grid = document.getElementById('favsGrid'); const favJobs = allJobs.filter(j=>favs[j.id]); updateFavCount();
-  if(favJobs.length===0){ grid.innerHTML=`<div class="empty"><p>Pas encore de favoris.</p></div>`; return; }
-  grid.innerHTML = favJobs.map(j=>cardHTML(j,true)).join('');
+  const grid = document.getElementById('favsGrid'); updateFavCount();
+  const favItems = Object.values(favs);
+  if(favItems.length===0){ grid.innerHTML=`<div class="empty"><p>Pas encore de favoris.</p></div>`; return; }
+  grid.innerHTML = favItems.map(j=>cardHTML(j,true, j.id.startsWith('azes'))).join('');
 }
 function updateFavCount(){
   const n = Object.keys(favs).length; document.getElementById('favBadge').textContent = n; document.getElementById('statFavs').textContent = n;
 }
 function saveFavNote(id, val){ if(favs[id]) favs[id].note = val; localStorage.setItem('ines_favs', JSON.stringify(favs)); }
 
-function addToSuivi(id){
-  const job = allJobs.find(j=>j.id===id); if(!job) return;
+function addToSuivi(id, isSpain = false){
+  const collection = isSpain ? auPairJobs : allJobs;
+  const job = collection.find(j=>j.id===id); if(!job) return;
   if(suivi.todo.find(s=>s.id===id)||suivi.sent.find(s=>s.id===id)||suivi.reply.find(s=>s.id===id)){ alert('Déjà suivi !'); return; }
   suivi.todo.push({id, title:job.title, company:job.company||''}); localStorage.setItem('ines_suivi', JSON.stringify(suivi));
   updateSuiviCount(); alert('Ajouté au suivi local ! 🎯');
@@ -925,6 +1059,7 @@ function moveSuivi(id, from, to){
 }
 function removeSuivi(id, col){ suivi[col] = suivi[col].filter(s=>s.id!==id); localStorage.setItem('ines_suivi', JSON.stringify(suivi)); renderSuivi(); }
 function updateSuiviCount(){ document.getElementById('statSuivi').textContent = suivi.todo.length + suivi.sent.length + suivi.reply.length; }
+
 function renderSuivi(){
   const nexts = {todo:'sent', sent:'reply'}, labels = {todo:'Postulé →', sent:'Réponse →'}, cols = {todo:'col-todo', sent:'col-sent', reply:'col-reply'};
   for(const [col, elId] of Object.entries(cols)){
@@ -944,11 +1079,11 @@ function renderSuivi(){
 
 async function runCVCoach(){
   const apiKey = localStorage.getItem('anthropicKey'); if(!apiKey){ alert('Ajoute ta clé Anthropic !'); return; }
-  const desc = document.getElementById('cvJobJobDesc' || 'cvJobDesc').value.trim();
+  const desc = document.getElementById('cvJobDesc').value.trim();
   const skills = document.getElementById('cvUserSkills').value.trim();
   const res = document.getElementById('cvResult'); res.style.display = 'block'; res.innerHTML = 'Analyse en cours…';
   
-  const prompt = `Tu es un coach emploi bienveillant. Inès postule en Île-de-France. Offre: ${cvJobData.title}. Description: ${desc}. Compétences: ${skills}. Produis un retour structuré et motivant.`;
+  const prompt = `Tu es un coach emploi bienveillant. Inès étudie son profil pour l'offre suivante : ${cvJobData.title}. Description: ${desc}. Compétences de l'utilisateur: ${skills}. Produis un retour structuré, constructif et hautement motivant.`;
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST', headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
@@ -958,30 +1093,41 @@ async function runCVCoach(){
   } catch { res.innerHTML = 'Erreur de contact avec l\'IA.'; }
 }
 
-function openCvModal(id){
-  const job = allJobs.find(j=>j.id===id); if(!job) return; cvJobData = job;
+function openCvModal(id, isSpain = false){
+  const collection = isSpain ? auPairJobs : allJobs;
+  const job = collection.find(j=>j.id===id) || Object.values(favs).find(f => f.id === id); if(!job) return; 
+  cvJobData = job;
   document.getElementById('cvJobTitle').textContent = job.title; document.getElementById('cvJobCompany').textContent = job.company||'';
   document.getElementById('cvJobDesc').value = job.desc||''; document.getElementById('cvResult').style.display = 'none';
   document.getElementById('cvModal').style.display = 'flex';
 }
 function closeCvModal(){ document.getElementById('cvModal').style.display='none'; }
+
 function saveKeys(){
   localStorage.setItem('adzunaAppId', document.getElementById('adzunaAppId').value.trim());
   localStorage.setItem('adzunaKey', document.getElementById('adzunaKey').value.trim());
   localStorage.setItem('anthropicKey', document.getElementById('anthropicKey').value.trim());
-  showPage('offres', document.querySelector('.nav-tab')); loadJobs(DEFAULT_QUERY);
+  showPage('offres', document.getElementById('tab-offres')); 
+  loadJobs(DEFAULT_QUERY);
 }
 function loadConfigUI(){
   document.getElementById('adzunaAppId').value = localStorage.getItem('adzunaAppId')||'';
   document.getElementById('adzunaKey').value = localStorage.getItem('adzunaKey')||'';
   document.getElementById('anthropicKey').value = localStorage.getItem('anthropicKey')||'';
 }
+
 function showPage(name, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
+  
+  const targetPage = document.getElementById('page-'+name);
+  if(targetPage) targetPage.classList.add('active');
   if(btn) btn.classList.add('active');
-  if(name==='favoris') renderFavs(); if(name==='suivi') renderSuivi(); if(name==='config') loadConfigUI();
+  
+  if(name==='favoris') renderFavs(); 
+  if(name==='suivi') renderSuivi(); 
+  if(name==='config') loadConfigUI();
+  if(name==='aupair' && auPairJobs.length === 0) loadDataSpain();
 }
 
 function initApp(){
