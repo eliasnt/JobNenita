@@ -402,7 +402,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 
   <div id="loader" class="loader-wrap">
     <div class="petal-loader">🌸</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Je scanne l'API officielle d'Adzuna pour toi en Île-de-France…</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Je scanne Adzuna + Indeed RSS + Jooble en parallèle pour toi en Île-de-France…</p>
   </div>
   <div id="cardsGrid" class="cards-wrap"></div>
 </div>
@@ -410,36 +410,57 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 <div class="page" id="page-aupair">
   <div class="hero" style="background: linear-gradient(135deg, #FEFBF3 0%, #FDF4E3 100%);">
     <div class="hero-greeting" style="color: #B45309;">Destinations de Rêve ☀️</div>
-    <h1 class="hero-title">Offres Filles Au Pair<br><em>Barcelone & Palma</em></h1>
-    <p class="hero-sub">Vraies offres d'emploi en direct d'Espagne extraites via le réseau officiel Adzuna.</p>
-    <div class="hero-motivation" style="border-color: #FCD34D;">💃🏽 Les clés d'Adzuna interrogent directement le catalogue espagnol sans blocage !</div>
+    <h1 class="hero-title">Offres Filles Au Pair<br><em>Espagne & Europe</em></h1>
+    <p class="hero-sub">Offres réelles d'Au Pair, niñera & baby-sitter extraites de plusieurs sources — Barcelone, Palma, Madrid, Valence, Ibiza et plus.</p>
+    <div class="hero-motivation" style="border-color: #FCD34D;">💃🏽 Plusieurs termes de recherche interrogés simultanément pour maximiser les offres !</div>
   </div>
 
   <div class="geo-banner es-banner">
-    <span class="geo-label">🇪🇸 Sélection stricte :</span>
-    <span class="geo-active-badge">Barcelona & Palma de Mallorca (100% Réel)</span>
+    <span class="geo-label">🇪🇸 Multi-villes Espagne :</span>
+    <span class="geo-active-badge">Barcelone · Palma · Madrid · Valence · Ibiza (100% Réel)</span>
   </div>
 
   <div class="stats-strip">
     <div class="stat-card es-stat"><div class="val" id="statTotalEs">—</div><div class="lbl">offres Au Pair</div></div>
     <div class="stat-card es-stat"><div class="val" id="statBarcelona">—</div><div class="lbl">à Barcelone 🏖️</div></div>
     <div class="stat-card es-stat"><div class="val" id="statPalma">—</div><div class="lbl">à Palma ☀️</div></div>
+    <div class="stat-card es-stat"><div class="val" id="statMadrid">—</div><div class="lbl">à Madrid 🏟️</div></div>
   </div>
 
   <div class="search-section">
     <div class="filter-chips">
-      <span style="font-size:.78rem;color:var(--text3);align-self:center;">Filtrer par Ville :</span>
-      <button class="chip active" id="chip-all-es" onclick="filterSpainCity('all', this)">Toutes les villes</button>
+      <span style="font-size:.78rem;color:var(--text3);align-self:center;">Ville :</span>
+      <button class="chip active" id="chip-all-es" onclick="filterSpainCity('all', this)">Toutes</button>
       <button class="chip" onclick="filterSpainCity('barcelona', this)">🏖️ Barcelone</button>
-      <button class="chip" onclick="filterSpainCity('palma', this)">☀️ Palma de Majorque</button>
+      <button class="chip" onclick="filterSpainCity('palma', this)">☀️ Palma</button>
+      <button class="chip" onclick="filterSpainCity('madrid', this)">🏟️ Madrid</button>
+      <button class="chip" onclick="filterSpainCity('valencia', this)">🍊 Valence</button>
+      <button class="chip" onclick="filterSpainCity('ibiza', this)">🏝️ Ibiza</button>
+      <button class="chip" onclick="filterSpainCity('sevilla', this)">💃 Séville</button>
     </div>
   </div>
 
   <div id="loader-es" class="loader-wrap" style="display:none;">
     <div class="petal-loader">💃🏽</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Interrogation sécurisée de la base de données espagnole en temps réel...</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Interrogation multi-termes de la base espagnole (niñera, canguro, au pair…) en cours...</p>
   </div>
   <div id="aupairGrid" class="cards-wrap"></div>
+
+  <!-- Ressources directes Au Pair -->
+  <div style="padding:0 1.5rem 3rem;">
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:1.3rem 1.4rem;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:.3rem;">🌐 Plateformes Au Pair directes</div>
+      <div style="font-size:.8rem;color:var(--text2);margin-bottom:1rem;line-height:1.5;">Ces sites spécialisés ont leurs propres annonces — incrits-y directement pour maximiser tes chances !</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;">
+        <a href="https://www.aupairworld.com/fr" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;background:var(--rose-light);border:1px solid var(--rose);border-radius:var(--r-sm);text-decoration:none;color:var(--rose-deep);font-size:.82rem;font-weight:600;">🌍 AuPairWorld</a>
+        <a href="https://www.aupair.com/fr/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;background:var(--lavande-light);border:1px solid var(--lavande);border-radius:var(--r-sm);text-decoration:none;color:var(--lavande-deep);font-size:.82rem;font-weight:600;">👶 AuPair.com</a>
+        <a href="https://www.workaway.info/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;background:var(--sage-light);border:1px solid var(--sage);border-radius:var(--r-sm);text-decoration:none;color:#2D7A56;font-size:.82rem;font-weight:600;">🌱 Workaway</a>
+        <a href="https://www.familink.eu/fr/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;background:var(--peche-light);border:1px solid var(--peche);border-radius:var(--r-sm);text-decoration:none;color:#A0522D;font-size:.82rem;font-weight:600;">🏡 Familink</a>
+        <a href="https://es.indeed.com/jobs?q=au+pair+niñera&l=España" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;background:#EDF3FE;border:1px solid #BFDBFE;border-radius:var(--r-sm);text-decoration:none;color:#2254A8;font-size:.82rem;font-weight:600;">🔍 Indeed ES</a>
+        <a href="https://www.infojobs.net/ofertas-trabajo/au-pair" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;background:#FEF3C7;border:1px solid #FCD34D;border-radius:var(--r-sm);text-decoration:none;color:#92400E;font-size:.82rem;font-weight:600;">💼 InfoJobs ES</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="page" id="page-favoris">
@@ -483,6 +504,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
         <div class="field"><label>App ID</label><input type="text" id="adzunaAppId" placeholder="ex: a1b2c3d4"></div>
         <div class="field"><label>App Key</label><input type="text" id="adzunaKey" placeholder="ex: xxxxxxxxxxxxxxxx"></div>
       </div>
+    </div>
+    <div class="config-card">
+      <div class="config-title">🔍 Jooble — Moteur d'emploi mondial (optionnel)</div>
+      <div class="config-sub">Très simple : remplis le formulaire sur <a href="https://jooble.org/api/index" target="_blank" style="color:var(--rose-deep)">jooble.org/api</a> (nom + email) et reçois ta clé par email en quelques minutes. Donne accès à des milliers d'offres supplémentaires en IDF.</div>
+      <div class="field"><label>Clé API Jooble</label><input type="text" id="joobleKey" placeholder="ex: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
     </div>
     <div class="config-card">
       <div class="config-title">🤖 Clé API Claude (coach CV)</div>
@@ -755,27 +781,34 @@ function renderJobs(){
   grid.innerHTML = filtered.map(j=>cardHTML(j, false, false)).join('');
 }
 
+const SPAIN_CITIES = {
+  barcelona: t => t.includes('barcelona'),
+  palma: t => t.includes('palma') || t.includes('mallorca') || t.includes('baleares'),
+  madrid: t => t.includes('madrid'),
+  valencia: t => t.includes('valencia') || t.includes('valència'),
+  ibiza: t => t.includes('ibiza') || t.includes('eivissa'),
+  sevilla: t => t.includes('sevilla') || t.includes('séville'),
+};
+
 function renderSpainList() {
   const grid = document.getElementById('aupairGrid');
   if (!grid) return;
-  
+
+  const cityTxt = j => ((j.location||'')+' '+(j.title||'')+' '+(j.desc||'')).toLowerCase();
+
   let filtered = auPairJobs.filter(j => {
     if (currentSpainCityFilter === 'all') return true;
-    const txt = ((j.location || '') + ' ' + (j.title || '') + ' ' + (j.desc || '')).toLowerCase();
-    if (currentSpainCityFilter === 'barcelona') return txt.includes('barcelona');
-    if (currentSpainCityFilter === 'palma') return txt.includes('palma') || txt.includes('mallorca') || txt.includes('baleares');
-    return true;
+    const fn = SPAIN_CITIES[currentSpainCityFilter];
+    return fn ? fn(cityTxt(j)) : true;
   });
 
   document.getElementById('statTotalEs').innerText = auPairJobs.length;
-  document.getElementById('statBarcelona').innerText = auPairJobs.filter(j => ((j.location||'')+' '+(j.title||'')).toLowerCase().includes('barcelona')).length;
-  document.getElementById('statPalma').innerText = auPairJobs.filter(j => {
-    const t = ((j.location||'')+' '+(j.title||'')).toLowerCase();
-    return t.includes('palma') || t.includes('mallorca') || t.includes('baleares');
-  }).length;
+  document.getElementById('statBarcelona').innerText = auPairJobs.filter(j => SPAIN_CITIES.barcelona(cityTxt(j))).length;
+  document.getElementById('statPalma').innerText = auPairJobs.filter(j => SPAIN_CITIES.palma(cityTxt(j))).length;
+  document.getElementById('statMadrid').innerText = auPairJobs.filter(j => SPAIN_CITIES.madrid(cityTxt(j))).length;
 
   if (!filtered.length) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖</div><p style="color:var(--text2);">Aucune offre d'Au Pair réelle trouvée sur Adzuna Espagne pour cette ville aujourd'hui.</p></div>`;
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖</div><p style="color:var(--text2);">Aucune offre d'Au Pair trouvée pour cette ville. Essaie "Toutes les villes".</p></div>`;
     return;
   }
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
@@ -788,48 +821,148 @@ async function fetchAdzuna(q){
   const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
+  const isDefault = (q === DEFAULT_QUERY);
+  const queries = isDefault
+    ? ['éducateur animateur jeunesse enfant','administratif secrétaire assistant accueil','psychologie social aide bafa','formation moniteur scolaire','sans expérience débutant']
+    : [q];
+  const pages = isDefault ? [1,2] : [1];
   try{
-    // FIX EFFECTUÉ : Utilisation du paramètre correct &where=Paris au lieu de location0/location1
-    const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(q)}&where=Paris&content-type=application/json`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if(!d.results) return [];
-    return d.results.map(j=>({
-      id: jobId(j,'az'),
-      source: 'adzuna',
-      title: j.title,
-      company: j.company?.display_name||'',
-      location: j.location?.display_name||'Île-de-France',
-      contract: j.contract_type||'',
-      date: j.created,
-      url: j.redirect_url,
-      desc: j.description||''
-    }));
+    const all = await Promise.all(queries.flatMap(qk => pages.map(pg =>
+      fetch(`https://api.adzuna.com/v1/api/jobs/fr/search/${pg}?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(qk)}&where=Paris&content-type=application/json`)
+        .then(r=>r.json()).catch(()=>({results:[]}))
+    )));
+    const seen = new Set();
+    return all.flatMap(d=>(d.results||[]).map(j=>{
+      const jid = jobId(j,'az');
+      if(seen.has(jid)) return null;
+      seen.add(jid);
+      return {id:jid,source:'adzuna',title:j.title,company:j.company?.display_name||'',location:j.location?.display_name||'Île-de-France',contract:j.contract_type||'',date:j.created,url:j.redirect_url,desc:j.description||''};
+    }).filter(Boolean));
   }catch{ return []; }
+}
+
+function parseRSS(xml, source, idPrefix){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xml, 'text/xml');
+  const items = doc.querySelectorAll('item');
+  const seen = new Set();
+  return Array.from(items).map(item => {
+    const get = tag => item.querySelector(tag)?.textContent?.trim() || '';
+    const link = get('link') || get('guid');
+    if(seen.has(link)) return null;
+    seen.add(link);
+    const rawDesc = get('description').replace(/<[^>]*>/g,'').substring(0,300);
+    const location = get('location') || get('georss\\:point') || '';
+    return {
+      id: idPrefix + '-' + btoa(link).substring(0,16).replace(/[^a-z0-9]/gi,''),
+      source,
+      title: get('title'),
+      company: get('source') || '',
+      location: location || 'Île-de-France',
+      contract: '',
+      date: get('pubDate'),
+      url: link,
+      desc: rawDesc
+    };
+  }).filter(Boolean);
+}
+
+const PROXY = 'https://api.allorigins.win/get?url=';
+
+async function fetchIndeedRSS(){
+  const queries = [
+    { q:'animation+éducation+jeunesse', l:'Île-de-France' },
+    { q:'administratif+secrétaire+accueil', l:'Paris' },
+    { q:'animateur+enfant+bafa', l:'Île-de-France' },
+    { q:'assistant+social+aide', l:'Paris' },
+    { q:'éducateur+formation+sans+expérience', l:'Île-de-France' },
+  ];
+  try {
+    const all = await Promise.all(queries.map(({q,l}) => {
+      const rss = `https://fr.indeed.com/rss?q=${q}&l=${encodeURIComponent(l)}&sort=date`;
+      return fetch(PROXY + encodeURIComponent(rss))
+        .then(r=>r.json()).then(d=>parseRSS(d.contents||'','indeed','ind'))
+        .catch(()=>[]);
+    }));
+    const seen = new Set();
+    return all.flat().filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; });
+  } catch { return []; }
+}
+
+async function fetchJooble(){
+  const key = localStorage.getItem('joobleKey');
+  if(!key) return [];
+  const queries = [
+    {keywords:'animation éducation', location:'Île-de-France'},
+    {keywords:'administratif accueil secrétaire', location:'Paris'},
+    {keywords:'animateur enfant bafa', location:'Île-de-France'},
+    {keywords:'assistant social psychologie', location:'Paris'},
+  ];
+  try {
+    const all = await Promise.all(queries.map(body =>
+      fetch(`https://jooble.org/api/${key}`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({...body, resultonpage:20})
+      }).then(r=>r.json()).catch(()=>({jobs:[]}))
+    ));
+    const seen = new Set();
+    return all.flatMap(d=>(d.jobs||[]).map(j=>{
+      if(seen.has(j.id)) return null; seen.add(j.id);
+      return {
+        id:'jb-'+j.id,source:'indeed',
+        title:j.title,
+        company:j.company||'',
+        location:j.location||'Île-de-France',
+        contract:j.type||'',
+        date:j.updated,
+        url:j.link,
+        desc:(j.snippet||'').replace(/<[^>]*>/g,'')
+      };
+    }).filter(Boolean));
+  } catch { return []; }
+}
+
+async function fetchIndeedRSS_ES(){
+  const queries = [
+    { q:'au+pair+niñera', l:'Barcelona' },
+    { q:'au+pair+niñera', l:'Palma+de+Mallorca' },
+    { q:'canguro+babysitter', l:'Barcelona' },
+    { q:'cuidadora+niños', l:'Palma+de+Mallorca' },
+  ];
+  try {
+    const all = await Promise.all(queries.map(({q,l}) => {
+      const rss = `https://es.indeed.com/rss?q=${q}&l=${encodeURIComponent(l)}&sort=date`;
+      return fetch(PROXY + encodeURIComponent(rss))
+        .then(r=>r.json()).then(d=>parseRSS(d.contents||'','indeed','ines'))
+        .catch(()=>[]);
+    }));
+    const seen = new Set();
+    return all.flat().filter(j=>{ if(seen.has(j.id)) return false; seen.add(j.id); return true; })
+      .map(j=>({...j, source:'adzuna_es', contract:'Au Pair',
+        location: j.location || 'España',
+        company: j.company || "Famille d'accueil"
+      }));
+  } catch { return []; }
 }
 
 async function fetchAdzunaSpain(){
   const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
+  const terms = ['au pair nanny niñera','canguro babysitter familia','cuidadora niños au pair','au pair familia española','baby sitter niños'];
   try{
-    // FIX EFFECTUÉ : Utilisation de &what=au+pair+nanny et suppression des filtres géographiques cassés de l'URL brute
-    // Le filtrage par ville (Barcelone / Palma) s'effectue dynamiquement en local de manière ultra fluide
-    const url = `https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=au%20pair%20nanny%20ni%C3%B1era&content-type=application/json`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if(!d.results) return [];
-    return d.results.map(j=>({
-      id: jobId(j,'azes'),
-      source: 'adzuna_es',
-      title: j.title,
-      company: j.company?.display_name || "Famille d'accueil",
-      location: j.location?.display_name || 'España',
-      contract: 'Au Pair',
-      date: j.created,
-      url: j.redirect_url,
-      desc: j.description || ''
-    }));
+    const all = await Promise.all(terms.map(t=>
+      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(t)}&content-type=application/json`)
+        .then(r=>r.json()).catch(()=>({results:[]}))
+    ));
+    const seen = new Set();
+    return all.flatMap(d=>(d.results||[]).map(j=>{
+      const jid = jobId(j,'azes');
+      if(seen.has(jid)) return null;
+      seen.add(jid);
+      return {id:jid,source:'adzuna_es',title:j.title,company:j.company?.display_name||"Famille d'accueil",location:j.location?.display_name||'España',contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
+    }).filter(Boolean));
   }catch{ return []; }
 }
 
@@ -837,8 +970,12 @@ async function loadJobs(q){
   document.getElementById('loader').style.display = 'block';
   document.getElementById('cardsGrid').innerHTML = '';
   try{
-    const az = await fetchAdzuna(q);
-    allJobs = az.filter(isInIdfStrict);
+    const [az, rss, jb] = await Promise.all([fetchAdzuna(q), fetchIndeedRSS(), fetchJooble()]);
+    const seen = new Set();
+    allJobs = [...az,...rss,...jb].filter(j=>{
+      if(seen.has(j.id)) return false; seen.add(j.id);
+      return isInIdfStrict(j);
+    });
   }catch{ allJobs = []; }
   document.getElementById('loader').style.display = 'none';
   renderJobs();
@@ -848,12 +985,14 @@ async function loadDataSpain() {
   const loaderEs = document.getElementById('loader-es');
   const gridEs = document.getElementById('aupairGrid');
   if(!loaderEs || !gridEs) return;
-  
   loaderEs.style.display = 'block';
   gridEs.innerHTML = '';
   try{
-    const esData = await fetchAdzunaSpain();
-    auPairJobs = esData;
+    const [az, rss] = await Promise.all([fetchAdzunaSpain(), fetchIndeedRSS_ES()]);
+    const seen = new Set();
+    auPairJobs = [...az,...rss].filter(j=>{
+      if(seen.has(j.id)) return false; seen.add(j.id); return true;
+    });
   }catch{ auPairJobs = []; }
   loaderEs.style.display = 'none';
   renderSpainList();
@@ -983,13 +1122,15 @@ function saveKeys(){
   localStorage.setItem('adzunaAppId', document.getElementById('adzunaAppId').value.trim());
   localStorage.setItem('adzunaKey', document.getElementById('adzunaKey').value.trim());
   localStorage.setItem('anthropicKey', document.getElementById('anthropicKey').value.trim());
-  showPage('offres', document.getElementById('tab-offres')); 
+  localStorage.setItem('joobleKey', document.getElementById('joobleKey').value.trim());
+  showPage('offres', document.getElementById('tab-offres'));
   loadJobs(DEFAULT_QUERY);
 }
 function loadConfigUI(){
   document.getElementById('adzunaAppId').value = localStorage.getItem('adzunaAppId')||'';
   document.getElementById('adzunaKey').value = localStorage.getItem('adzunaKey')||'';
   document.getElementById('anthropicKey').value = localStorage.getItem('anthropicKey')||'';
+  document.getElementById('joobleKey').value = localStorage.getItem('joobleKey')||'';
 }
 
 function showPage(name, btn){
