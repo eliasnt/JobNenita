@@ -407,7 +407,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   <div id="idfSourceStatus"></div>
   <div id="loader" class="loader-wrap">
     <div class="petal-loader">🌸</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Je scanne Adzuna + Indeed RSS + Jooble en parallèle pour toi en Île-de-France…</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Je scanne Adzuna FR + Jooble en Île-de-France…</p>
   </div>
   <div id="cardsGrid" class="cards-wrap"></div>
 </div>
@@ -448,7 +448,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
   <div id="esSourceStatus"></div>
   <div id="loader-es" class="loader-wrap" style="display:none;">
     <div class="petal-loader">💃🏽</div>
-    <p style="margin-top:.8rem;font-size:.9rem;">Interrogation multi-termes de la base espagnole (niñera, canguro, au pair…) en cours...</p>
+    <p style="margin-top:.8rem;font-size:.9rem;">Interrogation Adzuna ES + Jooble pour niñera, nanny, canguro, au pair…</p>
   </div>
   <div id="aupairGrid" class="cards-wrap"></div>
 
@@ -522,8 +522,13 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
       <div class="field"><label>Clé API Anthropic</label><input type="text" id="anthropicKey" placeholder="sk-ant-…"></div>
     </div>
     <button class="btn-save" onclick="saveKeys()">💾 Enregistrer la configuration</button>
-    <div style="font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6;">
-      L'application interroge directement le réseau Adzuna France et Adzuna Espagne à l'aide de tes identifiants développeur sans intermédiaire ni blocage externe.
+    <div style="background:#FEF9C3;border:1px solid #FCD34D;border-radius:var(--r);padding:1rem 1.2rem;margin-top:1rem;">
+      <div style="font-size:.82rem;font-weight:700;color:#92400E;margin-bottom:.4rem;">💡 Veux-tu encore plus d'offres ?</div>
+      <div style="font-size:.78rem;color:#92400E;line-height:1.6;">
+        Pour accéder à IndeedRSS, InfoJobs, Jobtome et d'autres sources bloquées par le navigateur, déploie ce site sur <strong>Netlify</strong> (gratuit) au lieu de GitHub Pages.<br>
+        Netlify permet d'ajouter des fonctions serveur qui contournent le blocage CORS — 5 minutes de setup, même apparence, beaucoup plus d'offres.<br>
+        <a href="https://netlify.com" target="_blank" style="color:#92400E;font-weight:700;">→ netlify.com</a>
+      </div>
     </div>
   </div>
 </div>
@@ -830,7 +835,20 @@ function renderSpainList() {
   document.getElementById('statMadrid').innerText = auPairJobs.filter(j => cityMatch(j,'madrid')).length;
 
   if (!filtered.length) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">🏖</div><p style="color:var(--text2);">Aucune offre d'Au Pair trouvée pour cette ville. Essaie "Toutes les villes".</p></div>`;
+    const cityName = currentSpainCityFilter === 'all' ? '' : ` à ${currentSpainCityFilter === 'barcelona' ? 'Barcelone' : currentSpainCityFilter === 'palma' ? 'Palma' : currentSpainCityFilter}`;
+    grid.innerHTML = `<div class="empty">
+      <div class="empty-icon">🏖️</div>
+      <p style="color:var(--text2);margin-bottom:1rem;">Aucune offre Au Pair trouvée${cityName} sur Adzuna aujourd'hui.</p>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:1rem;">Les offres Au Pair sont principalement sur des plateformes spécialisées — clique directement ci-dessous :</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;">
+        <a href="https://www.aupairworld.com/fr/au_pair_jobs?country_id=60" target="_blank" rel="noopener" style="background:var(--rose-light);border:1px solid var(--rose);border-radius:50px;padding:.4rem 1rem;color:var(--rose-deep);font-size:.82rem;font-weight:600;text-decoration:none;">🌍 AuPairWorld Espagne</a>
+        <a href="https://www.aupair.com/fr/recherche-de-famille.html?country=ES&city=Barcelona" target="_blank" rel="noopener" style="background:var(--lavande-light);border:1px solid var(--lavande);border-radius:50px;padding:.4rem 1rem;color:var(--lavande-deep);font-size:.82rem;font-weight:600;text-decoration:none;">👶 AuPair.com Barcelone</a>
+        <a href="https://www.infojobs.net/ofertas-trabajo/au-pair/en-barcelona.xhtml" target="_blank" rel="noopener" style="background:#FFF7ED;border:1px solid #FCD34D;border-radius:50px;padding:.4rem 1rem;color:#92400E;font-size:.82rem;font-weight:600;text-decoration:none;">💼 InfoJobs Barcelone</a>
+        <a href="https://www.infojobs.net/ofertas-trabajo/au-pair/en-palma-de-mallorca.xhtml" target="_blank" rel="noopener" style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:50px;padding:.4rem 1rem;color:#92400E;font-size:.82rem;font-weight:600;text-decoration:none;">☀️ InfoJobs Palma</a>
+        <a href="https://es.indeed.com/emplois?q=au+pair&l=Barcelona%2C+Catalua" target="_blank" rel="noopener" style="background:#EDF3FE;border:1px solid #BFDBFE;border-radius:50px;padding:.4rem 1rem;color:#2254A8;font-size:.82rem;font-weight:600;text-decoration:none;">🔍 Indeed Barcelone</a>
+        <a href="https://es.indeed.com/emplois?q=au+pair&l=Palma+de+Mallorca" target="_blank" rel="noopener" style="background:#EDF3FE;border:1px solid #BFDBFE;border-radius:50px;padding:.4rem 1rem;color:#2254A8;font-size:.82rem;font-weight:600;text-decoration:none;">🔍 Indeed Palma</a>
+      </div>
+    </div>`;
     return;
   }
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
@@ -990,34 +1008,38 @@ async function fetchJoobleSpain(){
   } catch { return []; }
 }
 
-// ── ADZUNA ES — PAR VILLE CIBLÉE (termes correctement encodés) ──
+// ── HELPER : détecte la ville depuis le champ location Adzuna ──
+function inferSpainCity(location) {
+  const l = (location||'').toLowerCase();
+  if (l.includes('barcelona')) return 'Barcelona';
+  if (l.includes('palma') || l.includes('mallorca') || l.includes('balear')) return 'Palma de Mallorca';
+  if (l.includes('madrid')) return 'Madrid';
+  if (l.includes('valenc')) return 'Valencia';
+  if (l.includes('ibiza') || l.includes('eivissa')) return 'Ibiza';
+  if (l.includes('sevilla') || l.includes('seville')) return 'Sevilla';
+  return '';
+}
+
+// ── ADZUNA ES — Toute l'Espagne + filtre client-side (meilleurs résultats) ──
 async function fetchAdzunaSpain(){
   const id = localStorage.getItem('adzunaAppId');
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
-  // Noms simples : Adzuna ES reconnaît mieux 'Palma' que 'Palma de Mallorca'
-  const citySearches = [
-    {where:'Barcelona',  city:'Barcelona'},
-    {where:'Palma',      city:'Palma de Mallorca'},
-    {where:'Mallorca',   city:'Palma de Mallorca'},
-    {where:'Madrid',     city:'Madrid'},
-    {where:'Valencia',   city:'Valencia'},
-    {where:'Ibiza',      city:'Ibiza'},
-  ];
-  // Termes en clair — encodeURIComponent() appliqué dans la construction de l'URL
-  const terms = ['au pair niñera', 'canguro babysitter', 'cuidadora niños', 'nanny au pair'];
+  // Termes simples séparés : Adzuna ES a peu de listings "au pair" → on élargit au max
+  const terms = ['niñera', 'nanny', 'babysitter', 'au pair', 'canguro', 'cuidadora niños', 'familia au pair'];
+  const pages = [1, 2];
   try{
-    const combos = citySearches.flatMap(c => terms.map(t => ({...c, term:t})));
-    const all = await Promise.all(combos.map(({where,city,term}) =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=20&what=${encodeURIComponent(term)}&where=${encodeURIComponent(where)}&content-type=application/json`)
-        .then(r=>r.json()).then(d=>({d,city})).catch(()=>({d:{results:[]},city}))
-    ));
+    const all = await Promise.all(terms.flatMap(t => pages.map(pg =>
+      fetch(`https://api.adzuna.com/v1/api/jobs/es/search/${pg}?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(t)}&content-type=application/json`)
+        .then(r=>r.json()).catch(()=>({results:[]}))
+    )));
     const seen = new Set();
-    return all.flatMap(({d,city})=>(d.results||[]).map(j=>{
+    return all.flatMap(d=>(d.results||[]).map(j=>{
       const jid = jobId(j,'azes');
       if(seen.has(jid)) return null;
       seen.add(jid);
-      return {id:jid,source:'adzuna_es',_sourceCity:city,title:j.title,company:j.company?.display_name||"Famille d'accueil",location:j.location?.display_name||city,contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
+      const loc = j.location?.display_name || '';
+      return {id:jid,source:'adzuna_es',_sourceCity:inferSpainCity(loc),title:j.title,company:j.company?.display_name||"Famille d'accueil",location:loc||'España',contract:'Au Pair',date:j.created,url:j.redirect_url,desc:j.description||''};
     }).filter(Boolean));
   }catch{ return []; }
 }
@@ -1088,8 +1110,11 @@ async function fetchJobtomeES(){
 function renderSourceStatus(stats, containerId) {
   const el = document.getElementById(containerId);
   if(!el) return;
-  const labels = {adzuna:'Adzuna FR',indeed_rss:'Indeed RSS',jooble:'Jooble FR',adzuna_es:'Adzuna ES',indeed_es:'Indeed ES',infojobs:'InfoJobs',jobtome:'Jobtome',jooble_es:'Jooble ES'};
-  const html = Object.entries(stats).map(([k,n])=>`<span style="display:inline-flex;align-items:center;gap:3px;background:${n>0?'#ECFDF5':'#FEF2F2'};border:1px solid ${n>0?'#6EE7B7':'#FECACA'};border-radius:50px;padding:2px 9px;font-size:.7rem;font-weight:600;color:${n>0?'#065F46':'#991B1B'}">${n>0?'✅':'❌'} ${labels[k]||k}${n>0?' ('+n+')':''}</span>`).join('');
+  const labels = {adzuna:'Adzuna FR', jooble:'Jooble FR', adzuna_es:'Adzuna ES', jooble_es:'Jooble ES'};
+  // N'afficher que les sources configurées (avec résultats > 0 ou explicitement testées)
+  const html = Object.entries(stats)
+    .filter(([,n]) => n >= 0)
+    .map(([k,n])=>`<span style="display:inline-flex;align-items:center;gap:3px;background:${n>0?'#ECFDF5':'#FEF2F2'};border:1px solid ${n>0?'#6EE7B7':'#FECACA'};border-radius:50px;padding:2px 9px;font-size:.7rem;font-weight:600;color:${n>0?'#065F46':'#991B1B'}">${n>0?'✅':'⚠️'} ${labels[k]||k}${n>0?' ('+n+')':' (0)'}</span>`).join('');
   el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:5px;padding:.5rem 1.5rem;border-bottom:1px solid var(--border);background:var(--rose-pale);">${html}</div>`;
 }
 
@@ -1097,10 +1122,12 @@ async function loadJobs(q){
   document.getElementById('loader').style.display = 'block';
   document.getElementById('cardsGrid').innerHTML = '';
   try{
-    const [az, rss, jb] = await Promise.all([fetchAdzuna(q), fetchIndeedRSS(), fetchJooble()]);
-    renderSourceStatus({adzuna:az.length, indeed_rss:rss.length, jooble:jb.length}, 'idfSourceStatus');
+    const [az, jb] = await Promise.all([fetchAdzuna(q), fetchJooble()]);
+    const stats = {adzuna: az.length};
+    if(localStorage.getItem('joobleKey')) stats.jooble = jb.length;
+    renderSourceStatus(stats, 'idfSourceStatus');
     const seen = new Set();
-    allJobs = [...az,...rss,...jb].filter(j=>{
+    allJobs = [...az,...jb].filter(j=>{
       if(seen.has(j.id)) return false; seen.add(j.id);
       return isInIdfStrict(j) && !isDefinitelyNonFrance(j);
     });
@@ -1116,10 +1143,12 @@ async function loadDataSpain() {
   loaderEs.style.display = 'block';
   gridEs.innerHTML = '';
   try{
-    const [az, rss, ij, jt, jbes] = await Promise.all([fetchAdzunaSpain(), fetchIndeedRSS_ES(), fetchInfoJobsRSS(), fetchJobtomeES(), fetchJoobleSpain()]);
-    renderSourceStatus({adzuna_es:az.length, indeed_es:rss.length, infojobs:ij.length, jobtome:jt.length, jooble_es:jbes.length}, 'esSourceStatus');
+    const [az, jbes] = await Promise.all([fetchAdzunaSpain(), fetchJoobleSpain()]);
+    const stats = {adzuna_es: az.length};
+    if(localStorage.getItem('joobleKey')) stats.jooble_es = jbes.length;
+    renderSourceStatus(stats, 'esSourceStatus');
     const seen = new Set();
-    auPairJobs = [...az,...rss,...ij,...jt,...jbes].filter(j=>{
+    auPairJobs = [...az,...jbes].filter(j=>{
       if(seen.has(j.id)) return false; seen.add(j.id); return true;
     });
   }catch{ auPairJobs = []; }
