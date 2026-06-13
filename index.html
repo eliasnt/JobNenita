@@ -211,6 +211,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .chip:hover{border-color:var(--rose-deep);color:var(--rose-deep);}
 .chip.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white;}
 .chip-lavande.active{background:var(--lavande-deep);border-color:var(--lavande-deep);}
+.filter-chips.margin-top-sm { margin-top: .4rem; }
 
 /* ── CARDS ───────────────────────────────────────── */
 .cards-wrap{padding:0 1.5rem 4rem;display:grid;gap:.9rem;}
@@ -246,7 +247,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 .btn-cv:hover{background:var(--lavande-deep);color:white;border-color:var(--lavande-deep);}
 .btn-apply{background:linear-gradient(135deg,var(--rose-deep),var(--lavande-deep));color:white;border:none;border-radius:50px;font-size:.75rem;font-weight:600;padding:.4rem 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:opacity 0.2s;}
 .btn-apply:hover{opacity:.88;}
-.source-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.source-dot {width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .src-adzuna{background:#059669;}
 .src-hellowork{background:#0284C7;}
 .src-francetravail{background:#EA580C;}
@@ -499,6 +500,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 1.5rem;disp
 
 </div>
 
+<!-- CV COACH MODAL -->
 <div id="cvModal" class="modal-bg" style="display:none;">
   <div class="modal">
     <h2 class="modal-title">📝 Coach de Candidature Intelligent</h2>
@@ -781,7 +783,7 @@ function renderSpainList() {
   grid.innerHTML = filtered.map(j => cardHTML(j, false, true)).join('');
 }
 
-// ── FETCHERS VIA API ADZUNA (ZÉRO BLOCAGE) ──
+// ── FETCHERS VIA API ADZUNA (CORRIGÉS ET SÉCURISÉS) ──
 function jobId(j, src){ return src+'-'+(j.id||j.ref||Math.random().toString(36).slice(2)); }
 
 async function fetchAdzuna(q){
@@ -789,7 +791,8 @@ async function fetchAdzuna(q){
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
   try{
-    const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(q)}&location0=FR&location1=Paris&content-type=application/json`;
+    // FIX EFFECTUÉ : Utilisation du paramètre correct &where=Paris au lieu de location0/location1
+    const url = `https://api.adzuna.com/v1/api/jobs/fr/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=${encodeURIComponent(q)}&where=Paris&content-type=application/json`;
     const r = await fetch(url);
     const d = await r.json();
     if(!d.results) return [];
@@ -812,8 +815,9 @@ async function fetchAdzunaSpain(){
   const key = localStorage.getItem('adzunaKey');
   if(!id||!key) return [];
   try{
-    // Recherche de vraies annonces de type 'au pair' ou 'niñera' en Espagne (es)
-    const url = `https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=au%20pair%20frances&content-type=application/json`;
+    // FIX EFFECTUÉ : Utilisation de &what=au+pair+nanny et suppression des filtres géographiques cassés de l'URL brute
+    // Le filtrage par ville (Barcelone / Palma) s'effectue dynamiquement en local de manière ultra fluide
+    const url = `https://api.adzuna.com/v1/api/jobs/es/search/1?app_id=${id}&app_key=${key}&results_per_page=50&what=au%20pair%20nanny%20ni%C3%B1era&content-type=application/json`;
     const r = await fetch(url);
     const d = await r.json();
     if(!d.results) return [];
@@ -896,7 +900,7 @@ function toggleFav(id, isSpain = false){
 function updateFavCount(){
   const count = Object.keys(favs).length;
   document.getElementById('favBadge').innerText = count;
-  document.getElementById('statFavs').innerText = count;
+  if(document.getElementById('statFavs')) document.getElementById('statFavs').innerText = count;
 }
 
 function renderFavs(){
@@ -913,7 +917,7 @@ function renderFavs(){
 function saveFavNote(id, val){ if(favs[id]) { favs[id].note = val; localStorage.setItem('ines_favs', JSON.stringify(favs)); } }
 
 // KANBAN LOGIC
-function updateSuiviCount(){ document.getElementById('statSuivi').innerText = suivi.todo.length + suivi.sent.length + suivi.reply.length; }
+function updateSuiviCount(){ if(document.getElementById('statSuivi')) document.getElementById('statSuivi').innerText = suivi.todo.length + suivi.sent.length + suivi.reply.length; }
 function renderSuivi(){
   const labels = {todo:'Postulé →', sent:'Réponse →'}, cols = {todo:'col-todo', sent:'col-sent', reply:'col-reply'};
   for(const [col, elId] of Object.entries(cols)){
@@ -1006,6 +1010,7 @@ function showPage(name, btn){
 
 function initPetals(){
   const container = document.getElementById('petals'); if(!container) return;
+  container.innerHTML = '';
   for(let i=0; i<15; i++){
     const p = document.createElement('div'); p.className='petal'; p.innerText='🌸';
     p.style.left = Math.random()*100 + '%'; p.style.top = '-5%';
@@ -1013,7 +1018,7 @@ function initPetals(){
     container.appendChild(p);
   }
 }
-function setMotivation(){ document.getElementById('heroMotivation').innerHTML = `💡 <strong>Conseil du jour :</strong> ${MOTIVATIONS[Math.floor(Math.random()*MOTIVATIONS.length)]}`; }
+function setMotivation(){ if(document.getElementById('heroMotivation')) document.getElementById('heroMotivation').innerHTML = `💡 <strong>Conseil du jour :</strong> ${MOTIVATIONS[Math.floor(Math.random()*MOTIVATIONS.length)]}`; }
 
 function initApp(){
   initPetals(); setMotivation(); updateFavCount(); renderSuivi();
